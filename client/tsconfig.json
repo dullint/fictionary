@@ -1,0 +1,14 @@
+{
+  "include": ["src", "../server"],
+  "exclude": ["node_modules", "dist"],
+  "compilerOptions": {
+    "target": "es5",
+    "declaration": true,
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@server/src*": ["../server/src*"]
+    }
+  }
+}
