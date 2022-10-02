@@ -6,6 +6,8 @@ import { useParams } from 'react-router-dom';
 import { Game } from '@server/src/game/games';
 import WordPrompt from '../WordPrompt';
 import Leaderboard from '../Leaderboard';
+import WordGuess from '../WordGuess';
+import WordResult from '../WordResult';
 
 export const PlayerContext = createContext<Player[]>([]);
 export const GameContext = createContext(null);
@@ -45,9 +47,9 @@ const Room = () => {
       case GameStep.PROMPT:
         return <WordPrompt />;
       case GameStep.GUESS:
-        return <WordPrompt />;
+        return <WordGuess />;
       case GameStep.RESULTS:
-        return <WordPrompt />;
+        return <WordResult />;
       case GameStep.FINISHED:
         return <Leaderboard />;
       default:

@@ -17,11 +17,6 @@ export const getPlayers = async (io: Server, roomId: string) => {
   });
 };
 
-const updateRoomPlayers = async (io: Server, roomId: string) => {
-  const players = await getPlayers(io, roomId);
-  io.to(roomId).emit('players', players);
-};
-
 export const checkIfRoomExists = (io: Server, roomId: string) => {
   const serverRooms = Array.from(io.sockets.adapter.rooms.keys());
   return serverRooms.includes(roomId);

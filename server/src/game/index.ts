@@ -1,41 +1,31 @@
 import { Server, Socket } from 'socket.io';
 import { getPlayers, getSocketRoom } from '../room/helpers';
 
-import { get_random_word } from './helpers';
+import { getGame, get_random_word, updateGame } from './helpers';
 import GAMES, { Game } from './games';
 import { DictionnaryEntry } from './types';
 
 export const gameHandler = (io: Server, socket: Socket) => {
-  const getGame = () => {
-    const roomId = getSocketRoom(socket);
-    return GAMES.get(roomId);
-  };
-
-  const updateGame = (game: Game) => {
-    const roomId = getSocketRoom(socket);
-    io.to(roomId).emit('game', game);
-    console.log(`Game of room ${roomId} updated`);
-  };
-
   const beginGame = () => {
-    const game = getGame();
+    const game = getGame(socket);
     if (!game) return;
     console.log(`User ${socket.id} begun game`);
     game.goToNextStep();
-    updateGame(game);
+    updateGame(io, socket, game);
     getWord();
   };
 
   const getWord = () => {
-    const game = getGame();
+    const game = getGame(socket);
     if (!game) return;
     const word = get_random_word();
     game.updateEntry(word);
-    updateGame(game);
+    updateGame(io, socket, game);
   };
+
   const submitDefinition = async (entry: DictionnaryEntry) => {
     const { word, definition } = entry;
-    const game = getGame();
+    const game = getGame(socket);
     if (!game) return;
     game.addDefinition(socket.id, definition);
     const roomId = getSocketRoom(socket);
@@ -44,16 +34,16 @@ export const gameHandler = (io: Server, socket: Socket) => {
     console.log({ game, numberOfPlayers, numberOfDefinitions });
     if (numberOfDefinitions == numberOfPlayers) {
       game.goToNextStep();
-      updateGame(game);
+      updateGame(io, socket, game);
     }
   };
 
   const queryGame = () => {
-    const game = getGame();
+    const game = getGame(socket);
     if (!game) {
       return;
     }
-    updateGame(game);
+    updateGame(io, socket, game);
   };
 
   socket.on('get_new_word', getWord);
