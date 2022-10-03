@@ -1,3 +1,4 @@
+import { Button, TextField } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SocketContext } from '../../App';
@@ -24,13 +25,13 @@ const Home = () => {
   return (
     <div className="Home">
       <h1>Home</h1>
-      <button onClick={handleCreateGame}>Create a game</button>
+      <Button onClick={handleCreateGame}>Create game</Button>
       <div>
-        <input
+        <TextField
           placeholder="Room Id"
           onChange={(e) => setRoomId(e.target.value)}
         />
-        <button onClick={handleEnterRoom}>Join a game</button>
+        <Button onClick={handleEnterRoom}>Join game</Button>
       </div>
     </div>
   );

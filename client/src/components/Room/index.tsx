@@ -10,7 +10,7 @@ import WordGuess from '../WordGuess';
 import WordResult from '../WordResult';
 
 export const PlayerContext = createContext<Player[]>([]);
-export const GameContext = createContext(null);
+export const GameContext = createContext<Game>(null);
 
 export enum GameStep {
   WAIT,
@@ -33,7 +33,6 @@ const Room = () => {
 
       socket.emit('game');
       socket.on('game', (game: Game) => {
-        console.log(game);
         return setGame(game);
       });
     }

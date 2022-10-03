@@ -1,5 +1,5 @@
 import { Button, TextField } from '@mui/material';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { SocketContext } from '../../App';
 import { GameContext } from '../Room';
 
@@ -19,7 +19,8 @@ const WordPrompt = () => {
   const handleSubmit = () => {
     if (definition) {
       setHasSubmited(true);
-      socket.emit('submit_definition', { word: entry.word, definition });
+      const submittedEntry = { word: entry.word, definition };
+      socket.emit('submit_definition', { entry: submittedEntry });
     }
   };
   const handleModify = () => {

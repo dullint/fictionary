@@ -23,7 +23,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     updateGame(io, socket, game);
   };
 
-  const submitDefinition = async (entry: DictionnaryEntry) => {
+  const submitDefinition = async ({ entry }: { entry: DictionnaryEntry }) => {
     const { word, definition } = entry;
     const game = getGame(socket);
     if (!game) return;
@@ -31,7 +31,6 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const roomId = getSocketRoom(socket);
     const numberOfPlayers = (await getPlayers(io, roomId)).length;
     const numberOfDefinitions = Object.keys(game.definitions).length;
-    console.log({ game, numberOfPlayers, numberOfDefinitions });
     if (numberOfDefinitions == numberOfPlayers) {
       game.goToNextStep();
       updateGame(io, socket, game);
@@ -40,14 +39,26 @@ export const gameHandler = (io: Server, socket: Socket) => {
 
   const queryGame = () => {
     const game = getGame(socket);
-    if (!game) {
-      return;
-    }
+    if (!game) return;
     updateGame(io, socket, game);
+  };
+
+  const selectDefinition = async ({ socketId }: { socketId: string }) => {
+    const game = getGame(socket);
+    if (!game) return;
+    const roomId = getSocketRoom(socket);
+    game.selectDefinition(socket.id, socketId);
+    const numberOfPlayers = (await getPlayers(io, roomId)).length;
+    const numberOfSelectedDefinitions = Object.keys(game.selections).length;
+    if (numberOfSelectedDefinitions == numberOfPlayers) {
+      game.goToNextStep();
+      updateGame(io, socket, game);
+    }
   };
 
   socket.on('get_new_word', getWord);
   socket.on('begin_game', beginGame);
   socket.on('submit_definition', submitDefinition);
   socket.on('game', queryGame);
+  socket.on('select_definition', selectDefinition);
 };

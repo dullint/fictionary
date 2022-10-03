@@ -16,6 +16,10 @@ export interface GameSettings {
   roundNumber: number;
 }
 
+export interface SelectedDefinitions {
+  [socketId: string]: string;
+}
+
 export interface Scores {
   [socketId: string]: number;
 }

@@ -4,6 +4,7 @@ import {
   GameSettings,
   GameStep,
   Scores,
+  SelectedDefinitions,
 } from './types';
 
 const GAMES = new Map<string, Game>();
@@ -12,6 +13,7 @@ export class Game {
   round: number;
   entry: DictionnaryEntry | null;
   definitions: Definitions;
+  selections: SelectedDefinitions;
   gameSettings: GameSettings;
   gameStep: GameStep;
   scores: Scores;
@@ -20,6 +22,7 @@ export class Game {
     this.round = 1;
     this.entry = null;
     this.definitions = {};
+    this.selections = {};
     this.gameSettings = gameSettings;
     this.gameStep = GameStep.WAIT;
     this.scores = {};
@@ -35,6 +38,13 @@ export class Game {
 
   removeDefinition(socketId: string) {
     delete this.definitions?.[socketId];
+  }
+
+  selectDefinition(choosingSocketId: string, definitionSocketId: string) {
+    this.selections = {
+      ...this.selections,
+      [choosingSocketId]: definitionSocketId,
+    };
   }
 
   setGameSettings(gameSettings: GameSettings) {

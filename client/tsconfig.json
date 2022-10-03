@@ -7,6 +7,7 @@
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
+    "types": ["@emotion/core"],
     "paths": {
       "@server/src*": ["../server/src*"]
     }

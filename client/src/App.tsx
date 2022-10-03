@@ -14,6 +14,9 @@ const App = () => {
     const server = 'http://localhost:3021';
     const socket = io(server);
     setSocket(socket);
+
+    socket.emit('game');
+    socket.emit('player');
   }, []);
 
   return (
