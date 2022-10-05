@@ -1,5 +1,6 @@
 import { Button, TextField } from '@mui/material';
 import React, { useContext, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import { GameContext } from '../Room';
 
@@ -8,10 +9,11 @@ const WordPrompt = () => {
   const socket = useContext(SocketContext);
   const [definition, setDefinition] = useState('');
   const [hasSubmited, setHasSubmited] = useState(false);
+  const { roomId } = useParams();
   const entry = game?.entry;
 
   const handleKnowWord = () => {
-    socket.emit('get_new_word');
+    socket.emit('get_new_word', { roomId });
   };
   const handleTextFieldChange = (event) => {
     setDefinition(event.target.value);
@@ -19,13 +21,12 @@ const WordPrompt = () => {
   const handleSubmit = () => {
     if (definition) {
       setHasSubmited(true);
-      const submittedEntry = { word: entry.word, definition };
-      socket.emit('submit_definition', { entry: submittedEntry });
+      socket.emit('submit_definition', { roomId, definition });
     }
   };
   const handleModify = () => {
     setHasSubmited(false);
-    socket.emit('modify_definition', { word: entry.word });
+    socket.emit('remove_definition', { roomId, word: entry.word });
   };
 
   return (

@@ -25,6 +25,7 @@ const CreateRoom = () => {
       maxPromptTime,
       roundNumber,
     };
+    console.log(gameSettings);
     const created = await createRoom(socket, newRoomId, gameSettings).catch(
       (err) => {
         console.log(err);

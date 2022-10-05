@@ -76,6 +76,11 @@ export const roomHandler = (io: Server, socket: Socket) => {
     updateRoomPlayers(roomId);
   };
 
+  const deleteRoom = ({ roomId }: { roomId: string }) => {
+    GAMES.delete(roomId);
+    io.in(roomId).socketsLeave(roomId);
+  };
+
   socket.on('update_username', updateUsername);
   socket.on('create_room', createRoom);
   socket.on('join_room', joinRoom);

@@ -4,9 +4,6 @@ import { SocketContext } from '../../App';
 import { GameContext } from '../Room';
 import { shuffle } from 'shuffle-seed';
 import { useParams } from 'react-router-dom';
-// import { Socket } from 'socket.io-client';
-import { css } from '@emotion/react';
-import { borderColor } from '@mui/system';
 
 const WordGuess = () => {
   const game = useContext(GameContext);

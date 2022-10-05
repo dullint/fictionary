@@ -28,10 +28,10 @@ const Room = () => {
 
   useEffect(() => {
     if (socket) {
-      socket.emit('players');
+      socket.emit('players', { roomId });
       socket.on('players', (players: Player[]) => setPlayers(players));
 
-      socket.emit('game');
+      socket.emit('game', { roomId });
       socket.on('game', (game: Game) => {
         return setGame(game);
       });

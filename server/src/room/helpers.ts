@@ -9,9 +9,9 @@ export const getSocketRoom = (socket: Socket) =>
 export const getPlayers = async (io: Server, roomId: string) => {
   const playerSockets = await io.in(roomId).fetchSockets();
   return playerSockets.map((socket) => {
-    const { username } = socket.data;
     const player: Player = {
-      username,
+      socketId: socket.id,
+      username: socket.data?.username,
     };
     return player;
   });

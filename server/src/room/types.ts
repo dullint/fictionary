@@ -1,6 +1,7 @@
 import { GameSettings } from '../game/types';
 
 export interface Player {
+  socketId: string;
   username: string;
 }
 export interface UpdateUsernamePayload {

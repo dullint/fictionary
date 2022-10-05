@@ -12,7 +12,7 @@ const WaitingRoom = () => {
   const players = useContext(PlayerContext);
 
   const handlePlay = () => {
-    socket.emit('begin_game');
+    socket.emit('new_round', { roomId });
   };
 
   const handleLeaveRoom = () => {
