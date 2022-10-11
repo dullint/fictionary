@@ -14,7 +14,6 @@ export const getPlayers = async (io: Server, roomId: string) => {
       username: socket.data?.username,
       color: socket.data?.color,
     };
-    console.log(player);
     return player;
   });
 };

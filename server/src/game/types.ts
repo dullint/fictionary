@@ -1,6 +1,12 @@
 export interface DictionnaryEntry {
   word: string;
   definition: string;
+  type: EntryType;
+}
+
+export enum EntryType {
+  VERB = 'verb',
+  NOUN = 'noun',
 }
 
 export enum GameStep {

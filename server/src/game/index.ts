@@ -76,6 +76,16 @@ export const gameHandler = (io: Server, socket: Socket) => {
     }
   };
 
+  const getNewWord = () => {
+    const roomId = getSocketRoom(socket);
+    const game = GAMES.get(roomId);
+    if (!game) return;
+    const entry = get_random_entry();
+    game.entry = entry;
+    io.to(roomId).emit('game', game);
+    runTimer(io, roomId, game.gameSettings.maxPromptTime, game);
+  };
+
   socket.on('reset_game', resetGame);
   socket.on('update_scores', updateScores);
   socket.on('new_round', launchNewRound);
@@ -83,4 +93,5 @@ export const gameHandler = (io: Server, socket: Socket) => {
   socket.on('game', queryGame);
   socket.on('select_definition', selectDefinition);
   socket.on('remove_definition', removeDefinition);
+  socket.on('get_new_word', getNewWord);
 };
