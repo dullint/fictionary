@@ -7,6 +7,7 @@ import {
   generateInviteUsername,
   getPlayers,
   getSocketRoom,
+  selectColor,
 } from './helpers';
 
 export const roomHandler = (io: Server, socket: Socket) => {
@@ -30,6 +31,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
     } else {
       await socket.join(roomId);
       socket.emit('room_joined');
+      socket.data.color = selectColor((await getPlayers(io, roomId)).length);
       socket.data.username = generateInviteUsername();
       console.log(
         `User ${socket.id} of username ${socket.data.username}  joined room: ${roomId}`
@@ -41,6 +43,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
   const createRoom = async ({ roomId, gameSettings }: createRoomPayload) => {
     await socket.join(roomId);
     socket.emit('room_created');
+    socket.data.color = selectColor((await getPlayers(io, roomId)).length);
     socket.data.username = generateInviteUsername();
     console.log(
       `User ${socket.id} of username ${socket.data.username}  created room: ${roomId}`

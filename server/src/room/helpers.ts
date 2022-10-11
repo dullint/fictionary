@@ -12,7 +12,9 @@ export const getPlayers = async (io: Server, roomId: string) => {
     const player: Player = {
       socketId: socket.id,
       username: socket.data?.username,
+      color: socket.data?.color,
     };
+    console.log(player);
     return player;
   });
 };
@@ -35,4 +37,9 @@ export const checkIfUsernameTaken = async (
   const players = await getPlayers(io, roomId);
   const roomUsernames = players.map((player) => player.username);
   return roomUsernames.includes(username);
+};
+
+export const selectColor = (n: number) => {
+  const hue = n * 137.508; // use golden angle approximation
+  return `hsl(${hue},100%,75%)`;
 };

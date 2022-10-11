@@ -1,8 +1,16 @@
-import { Button, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  Divider,
+  Grid,
+  TextField,
+  Typography,
+} from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import { joinRoom } from '../../services/room';
+import { css } from '@emotion/react';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -23,17 +31,44 @@ const Home = () => {
   };
 
   return (
-    <div className="Home">
-      <h1>Home</h1>
-      <Button onClick={handleCreateGame}>Create game</Button>
-      <div>
+    <Grid container direction="column" justifyContent="center">
+      <Typography
+        variant={'h3'}
+        align={'center'}
+        sx={{ marginBottom: 5, marginTop: 5 }}
+      >
+        Fictionnary
+      </Typography>
+      <Button
+        onClick={handleCreateGame}
+        variant="contained"
+        sx={{ alignSelf: 'center' }}
+      >
+        Create game
+      </Button>
+      <Divider sx={{ margin: 2 }} />
+      <Grid
+        container
+        direction="row"
+        alignItems="center"
+        justifyContent="center"
+      >
         <TextField
           placeholder="Room Id"
           onChange={(e) => setRoomId(e.target.value)}
+          sx={{ width: 150, backgroundColor: 'white' }}
+          inputProps={{ maxLength: 5, style: { textAlign: 'center' } }}
+          size="small"
         />
-        <Button onClick={handleEnterRoom}>Join game</Button>
-      </div>
-    </div>
+        <Button
+          onClick={handleEnterRoom}
+          variant="contained"
+          sx={{ margin: 2 }}
+        >
+          Join game
+        </Button>
+      </Grid>
+    </Grid>
   );
 };
 

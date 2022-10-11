@@ -37,7 +37,6 @@ const Room = () => {
       });
     }
   }, [socket, roomId]);
-  console.log(game);
 
   const renderComponent = (gameStep: GameStep) => {
     switch (gameStep) {

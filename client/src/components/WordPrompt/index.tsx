@@ -1,4 +1,4 @@
-import { Button, TextField } from '@mui/material';
+import { Button, Grid, TextField, Typography } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
@@ -30,11 +30,18 @@ const WordPrompt = () => {
   };
 
   return (
-    <div>
-      <h1>WordPrompt</h1>
+    <Grid container direction="column">
+      <Typography variant="subtitle1" sx={{ m: 2 }}>
+        Time to write your definition!
+      </Typography>
       {entry && (
-        <div>
-          <h2>{entry.word}</h2>
+        <Grid>
+          <Typography
+            variant="h4"
+            sx={{ fontStyle: 'italic', textTransform: 'uppercase' }}
+          >
+            {entry.word}
+          </Typography>
           {hasSubmited ? (
             <p>{definition}</p>
           ) : (
@@ -43,23 +50,29 @@ const WordPrompt = () => {
               value={definition}
               label="Definition"
               multiline
-              maxRows={4}
+              fullWidth
+              rows={4}
               onChange={handleTextFieldChange}
+              sx={{ backgroundColor: 'white', marginTop: 2, marginBottom: 2 }}
             />
           )}
-          <div>
-            <div>
-              <Button onClick={handleKnowWord}>I already know this word</Button>
+          <Grid>
+            <Grid>
               {hasSubmited ? (
-                <Button onClick={handleModify}>Modify</Button>
+                <Button onClick={handleModify} variant="contained">
+                  Modify
+                </Button>
               ) : (
-                <Button onClick={handleSubmit}>Submit</Button>
+                <Button onClick={handleSubmit} variant="contained">
+                  Submit
+                </Button>
               )}
-            </div>
-          </div>
-        </div>
+              <Button onClick={handleKnowWord}>I already know this word</Button>
+            </Grid>
+          </Grid>
+        </Grid>
       )}
-    </div>
+    </Grid>
   );
 };
 
