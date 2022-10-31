@@ -1,8 +1,10 @@
-import { Button, Typography } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
+import { ResponsiveBar } from '@nivo/bar';
 import React, { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import { GameContext, PlayerContext } from '../Room';
+import ScoreBar from '../ScoreBar';
 
 const Leaderboard = () => {
   const game = useContext(GameContext);
@@ -21,21 +23,34 @@ const Leaderboard = () => {
     socket.emit('reset_game', { roomId });
   };
 
-  console.log(game);
+  const data = players
+    .map((player) => {
+      const { socketId, username, color } = player;
+      return {
+        username,
+        score: scores?.[socketId] ?? 0,
+        color,
+      };
+    })
+    .sort((player1, player2) => player1.score - player2.score)
+    .slice(0, 3);
 
   return (
-    <div>
+    <Grid alignItems="center" container justifyContent="center" height={300}>
       <h1>Leaderboard</h1>
-      {players.map((player) => {
-        const socketId = player.socketId;
-        const score = scores?.[socketId];
-        return <Typography>{`${player.username}: ${score} Points`}</Typography>;
-      })}
-      <Button onClick={handleLeaveToMenu}>Leave to menu</Button>
-      <Button onClick={handleGoToWaitingRoom}>
-        Send Everyone to Waiting Room
-      </Button>
-    </div>
+      <ScoreBar players={players} scores={scores} />
+      <Grid
+        alignItems="center"
+        container
+        justifyContent="center"
+        flexDirection={'column'}
+      >
+        <Button onClick={handleLeaveToMenu}>Leave to menu</Button>
+        <Button onClick={handleGoToWaitingRoom}>
+          Send Everyone to Waiting Room
+        </Button>
+      </Grid>
+    </Grid>
   );
 };
 

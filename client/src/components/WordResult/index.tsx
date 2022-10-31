@@ -1,8 +1,10 @@
-import { Button, Typography } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import React, { useContext } from 'react';
+
 import { useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import { GameContext, PlayerContext } from '../Room';
+import ScoreBar from '../ScoreBar';
 import { calculatePlayerRoundScore } from './helpers';
 
 const WordResult = () => {
@@ -36,20 +38,16 @@ const WordResult = () => {
   }, {});
 
   return (
-    <div>
+    <Grid
+      alignItems="center"
+      container
+      justifyContent="center"
+      height={players.length * 150}
+    >
       <h1>Round Results</h1>
-      {players.map((player) => {
-        const socketId = player.socketId;
-        const roundScore = roundScores?.[socketId];
-        const newScore = newScores?.[socketId];
-        return (
-          <Typography>{`${player.username}: ${
-            roundScore ? '+' : ''
-          }${roundScore} => ${newScore} Points`}</Typography>
-        );
-      })}
+      <ScoreBar players={players} scores={newScores} />
       <Button onClick={handleNextStep}>Continue</Button>
-    </div>
+    </Grid>
   );
 };
 
