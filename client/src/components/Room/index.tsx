@@ -30,7 +30,7 @@ const Room = () => {
 
   useEffect(() => {
     if (socket) {
-      // socket.emit('join_room', {roomId})
+      socket.emit('join_room', { roomId });
       socket.emit('players', { roomId });
       socket.on('players', (players: Player[]) => setPlayers(players));
 

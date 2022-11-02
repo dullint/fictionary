@@ -8,6 +8,7 @@ import {
   getPlayers,
   getSocketRoom,
   selectColor,
+  selectNewAdmin,
 } from './helpers';
 
 export const roomHandler = (io: Server, socket: Socket) => {
@@ -23,6 +24,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
   };
 
   const joinRoom = async ({ roomId }: { roomId: string }) => {
+    if (Array.from(socket.rooms.values()).includes(roomId)) return;
     if (!checkIfRoomExists(io, roomId)) {
       console.log('Room do not exist');
       socket.emit('room_join_error', {
@@ -75,6 +77,9 @@ export const roomHandler = (io: Server, socket: Socket) => {
   };
 
   const leaveRoom = async ({ roomId }: { roomId: string }) => {
+    if (socket.data?.isAdmin) {
+      selectNewAdmin(io, socket.id, roomId);
+    }
     socket.leave(roomId);
     console.log(`User ${socket.id} left room: ${roomId}`);
     updateRoomPlayers(roomId);

@@ -43,3 +43,15 @@ export const selectColor = (n: number) => {
   const hue = n * 137.508; // use golden angle approximation
   return `hsl(${hue},100%,75%)`;
 };
+
+export const selectNewAdmin = async (
+  io: Server,
+  socketId: string,
+  roomId: string
+) => {
+  const playerSockets = await io.in(roomId).fetchSockets();
+  const otherSockets = playerSockets.filter((socket) => socket.id != socketId);
+  if (otherSockets.length > 1) {
+    otherSockets[0].data.isAdmin = true;
+  }
+};
