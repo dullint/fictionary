@@ -6,8 +6,7 @@ import CreateRoom from './components/CreateGame';
 import { io, Socket } from 'socket.io-client';
 import { ThemeProvider } from '@mui/material/styles';
 import { getTheme } from './theme';
-import { Box, Grid } from '@mui/material';
-import { Container } from '@mui/system';
+import { Grid } from '@mui/material';
 
 export const SocketContext = createContext(null);
 
@@ -16,7 +15,7 @@ const App = () => {
   const theme = getTheme();
 
   useEffect(() => {
-    const server = 'http://localhost:3021';
+    const server = process.env.REACT_APP_SERVER_URL;
     const socket = io(server);
     setSocket(socket);
 
