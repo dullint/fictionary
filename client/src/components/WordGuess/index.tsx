@@ -32,21 +32,23 @@ const WordGuess = () => {
   const suffledDefinitions = shuffle(definitionToDisplay, seed);
   return (
     <div>
-      <h1>WordGuess</h1>
+      <Typography variant="subtitle1" sx={{ m: 2 }}>
+        Guess the Right Word!
+      </Typography>
       <Grid container>
         {suffledDefinitions.map(([socketId, definition]) => (
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            md={4}
-            // sx={{ border: '1px solid red', borderColor: 'red' }}
-          >
+          <Grid item xs={12} sm={6}>
             <CardActionArea
               sx={{
-                minWidth: 100,
+                height: 270,
+                width: 270,
                 border: socketId === selectedSocketDef ? '1px solid red' : '',
-                // borderColor: 'red',
+                backgroundColor: 'white',
+                m: 1,
+                display: 'flex',
+                alignItems: 'start',
+                justifyContent: 'start',
+                borderRadius: 3,
               }}
               onClick={() => handleSelectDefinition(socketId)}
             >
@@ -57,6 +59,11 @@ const WordGuess = () => {
             </CardActionArea>
           </Grid>
         ))}
+        <Typography variant="body1" sx={{ m: 1 }}>
+          {selectedSocketDef
+            ? 'Waiting for other players to pick a definition'
+            : null}
+        </Typography>
       </Grid>
     </div>
   );

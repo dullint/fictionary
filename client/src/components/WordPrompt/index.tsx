@@ -1,9 +1,9 @@
-import { Button, Grid, MenuItem, TextField, Typography } from '@mui/material';
-import { Box } from '@mui/system';
+import { Button, Grid, TextField, Typography } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import { GameContext } from '../Room';
+import { CHARACTER_LIMIT } from './constants';
 
 const WordPrompt = () => {
   const game = useContext(GameContext);
@@ -87,9 +87,10 @@ const WordPrompt = () => {
               value={definition}
               multiline
               fullWidth
+              helperText={`${definition.length}/${CHARACTER_LIMIT}`}
               rows={6}
               onChange={handleTextFieldChange}
-              inputProps={{ maxLength: 350, lineHeight: '22px' }}
+              inputProps={{ maxLength: CHARACTER_LIMIT, lineHeight: '22px' }}
               sx={{
                 marginTop: 0,
                 marginBottom: '14px',
@@ -113,7 +114,12 @@ const WordPrompt = () => {
           </Grid>
         </Grid>
       )}
-      <Grid container direction="row" justifyContent="flex-end">
+      <Grid container direction="row" justifyContent="space-between">
+        <Typography display="flex" alignItems={'center'} variant="body1">
+          {hasSubmited
+            ? 'Waiting for other player to submit their definition!'
+            : null}
+        </Typography>
         <Grid
           container
           justifyContent="center"

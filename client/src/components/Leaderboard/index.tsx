@@ -1,10 +1,10 @@
-import { Button, Grid, Typography } from '@mui/material';
-import { ResponsiveBar } from '@nivo/bar';
+import { Button, Grid } from '@mui/material';
 import React, { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import { GameContext, PlayerContext } from '../Room';
 import ScoreBar from '../ScoreBar';
+import { isRoomAdmin } from '../WaitingRoom/helpers';
 
 const Leaderboard = () => {
   const game = useContext(GameContext);
@@ -22,18 +22,7 @@ const Leaderboard = () => {
   const handleGoToWaitingRoom = () => {
     socket.emit('reset_game', { roomId });
   };
-
-  const data = players
-    .map((player) => {
-      const { socketId, username, color } = player;
-      return {
-        username,
-        score: scores?.[socketId] ?? 0,
-        color,
-      };
-    })
-    .sort((player1, player2) => player1.score - player2.score)
-    .slice(0, 3);
+  const isAdmin = isRoomAdmin(players, socket.id);
 
   return (
     <Grid alignItems="center" container justifyContent="center" height={300}>
@@ -45,10 +34,14 @@ const Leaderboard = () => {
         justifyContent="center"
         flexDirection={'column'}
       >
-        <Button onClick={handleLeaveToMenu}>Leave to menu</Button>
-        <Button onClick={handleGoToWaitingRoom}>
-          Send Everyone to Waiting Room
+        <Button onClick={handleLeaveToMenu} sx={{ m: 2 }}>
+          Leave to menu
         </Button>
+        {isAdmin && (
+          <Button onClick={handleGoToWaitingRoom}>
+            Send Everyone to Waiting Room
+          </Button>
+        )}
       </Grid>
     </Grid>
   );

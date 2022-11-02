@@ -45,6 +45,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
     socket.emit('room_created');
     socket.data.color = selectColor((await getPlayers(io, roomId)).length);
     socket.data.username = generateInviteUsername();
+    socket.data.isAdmin = true;
     console.log(
       `User ${socket.id} of username ${socket.data.username}  created room: ${roomId}`
     );

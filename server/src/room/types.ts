@@ -4,6 +4,7 @@ export interface Player {
   socketId: string;
   username: string;
   color: string;
+  isAdmin: boolean;
 }
 export interface UpdateUsernamePayload {
   roomId: string;

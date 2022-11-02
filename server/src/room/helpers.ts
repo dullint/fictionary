@@ -13,6 +13,7 @@ export const getPlayers = async (io: Server, roomId: string) => {
       socketId: socket.id,
       username: socket.data?.username,
       color: socket.data?.color,
+      isAdmin: socket.data?.isAdmin,
     };
     return player;
   });

@@ -1,10 +1,18 @@
-import { Avatar, Button, Grid, Snackbar, Typography } from '@mui/material';
+import {
+  Avatar,
+  Button,
+  Grid,
+  Snackbar,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import { PlayerContext } from '../Room';
 import UsernameDialog from '../UsernameDialog';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { isRoomAdmin } from './helpers';
 
 const WaitingRoom = () => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -13,6 +21,7 @@ const WaitingRoom = () => {
   const { roomId } = useParams();
   const socket = useContext(SocketContext);
   const players = useContext(PlayerContext);
+  const isAdmin = isRoomAdmin(players, socket.id);
 
   const handlePlay = () => {
     socket.emit('new_round', { roomId });
@@ -27,8 +36,8 @@ const WaitingRoom = () => {
     setCopyToClipboardMsg(true);
     navigator.clipboard.writeText(roomId);
   };
+  console.log({ players, socket });
 
-  console.log(players);
   return (
     <Grid
       alignItems="center"
@@ -76,15 +85,24 @@ const WaitingRoom = () => {
             </Grid>
           ))}
       </Grid>
-      <Button
-        onClick={handlePlay}
-        variant="contained"
-        size="large"
-        sx={{ m: 2 }}
+      <Tooltip
+        title={isAdmin ? null : 'Waiting for the admin to launch the game'}
+        placement="top"
       >
-        Play
-      </Button>
-      <Button onClick={handleLeaveRoom} size="large">
+        <span>
+          <Button
+            onClick={handlePlay}
+            variant="contained"
+            size="large"
+            sx={{ m: 1 }}
+            disabled={!isAdmin}
+          >
+            Play
+          </Button>
+        </span>
+      </Tooltip>
+
+      <Button onClick={handleLeaveRoom} size="large" sx={{ m: 1 }}>
         Leave Room
       </Button>
       <UsernameDialog open={openDialog} setOpen={setOpenDialog} />
