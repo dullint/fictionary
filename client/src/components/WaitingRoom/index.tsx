@@ -34,9 +34,8 @@ const WaitingRoom = () => {
 
   const handleCopyToClipboard = () => {
     setCopyToClipboardMsg(true);
-    navigator.clipboard.writeText(roomId);
+    navigator.clipboard.writeText(window.location.href);
   };
-  console.log({ players, socket });
 
   return (
     <Grid
@@ -48,13 +47,19 @@ const WaitingRoom = () => {
       <Typography variant="h6" align="center">
         Room code:
       </Typography>
-      <Button
-        onClick={handleCopyToClipboard}
-        sx={{ m: 2 }}
-        endIcon={<ContentCopyIcon />}
-      >
-        <Typography sx={{ fontSize: 40 }}>{roomId}</Typography>
-      </Button>
+      <Typography variant="h3">{roomId}</Typography>
+      <Grid container alignContent={'center'} justifyContent="center">
+        <Typography display="flex" alignItems={'center'}>
+          Send the link to your friends:{' '}
+        </Typography>
+        <Button
+          onClick={handleCopyToClipboard}
+          sx={{ m: 0 }}
+          endIcon={<ContentCopyIcon />}
+        >
+          <Typography>{`/room/${roomId}`}</Typography>
+        </Button>
+      </Grid>
       <Snackbar
         open={copyToClipboardMsg}
         onClose={() => setCopyToClipboardMsg(false)}
