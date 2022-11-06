@@ -38,11 +38,7 @@ const App = () => {
         container
         sx={{
           margin: 6,
-          maxWidth: 600,
           padding: 2,
-          border: '1px solid',
-          minWidth: 500,
-          minHeight: 400,
         }}
       >
         <SocketContext.Provider value={socket}>

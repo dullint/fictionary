@@ -38,7 +38,6 @@ const Room = () => {
       socket.on('game', (game: Game) => setGame(game));
     }
   }, [socket, roomId]);
-  console.log({ players, socket, game });
 
   const renderComponent = (gameStep: GameStep) => {
     switch (gameStep) {

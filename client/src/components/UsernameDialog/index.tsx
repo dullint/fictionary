@@ -18,22 +18,18 @@ const UsernameDialog = (props: Propstype) => {
   const socket = useContext(SocketContext);
   const { roomId } = useParams();
   const [username, setUsername] = useState<string>(null);
+  const [usernameErrorMessage, setUsernameErrorMessage] = useState(null);
 
   const handleTextFieldChange = (event) => {
     setUsername(event.target.value);
+    setUsernameErrorMessage(null);
   };
 
   const handleSubmit = async () => {
-    if (username) {
-      const set = await updateUsername(socket, roomId, username).catch(
-        (err) => {
-          alert(err.message);
-        }
-      );
-      if (set) setOpen(false);
-    } else {
-      setOpen(false);
-    }
+    const set = await updateUsername(socket, roomId, username).catch((err) => {
+      setUsernameErrorMessage(err.message);
+    });
+    if (set) setOpen(false);
   };
 
   return (
@@ -57,12 +53,17 @@ const UsernameDialog = (props: Propstype) => {
               maxLength: 15,
               style: { fontSize: 20, fontWeight: 900 },
             }}
-            sx={{ m: 2, width: 270 }}
+            sx={{ m: 1, width: 270 }}
           />
+          {usernameErrorMessage && (
+            <Typography sx={{ color: 'red' }}>
+              {usernameErrorMessage}
+            </Typography>
+          )}
           <Button
             onClick={handleSubmit}
             variant="contained"
-            sx={{ width: 100 }}
+            sx={{ width: 100, marginTop: 2 }}
           >
             OK
           </Button>

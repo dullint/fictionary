@@ -1,21 +1,11 @@
 import React, { useContext, useState } from 'react';
-import { generateRandomRoomId } from './helpers';
-import { useNavigate } from 'react-router-dom';
 import { SocketContext } from '../../App';
-import { createRoom } from '../../services/room';
 import {
   Button,
   ButtonGroup,
   Dialog,
-  DialogActions,
   DialogContent,
-  DialogTitle,
-  FormControl,
-  FormHelperText,
   Grid,
-  InputLabel,
-  MenuItem,
-  Select,
   Typography,
 } from '@mui/material';
 import { GameSettings } from '../../../../server/src/game/types';
@@ -53,10 +43,15 @@ const GameSettingsDialog = (props: PropsType) => {
           <Typography variant={'h5'} sx={{ m: 1 }}>
             Game Settings
           </Typography>
+          {!isAdmin && (
+            <Typography variant={'body1'}>
+              Only the admin can change the settings
+            </Typography>
+          )}
           <Typography variant={'subtitle1'} sx={{ m: 1 }}>
             Number of rounds:
           </Typography>
-          <ButtonGroup variant="outlined">
+          <ButtonGroup variant="outlined" disabled={!isAdmin}>
             {roundNumberOptions.map((value) => {
               return (
                 <Button
@@ -75,7 +70,7 @@ const GameSettingsDialog = (props: PropsType) => {
           >
             Max writing time:
           </Typography>
-          <ButtonGroup variant="outlined">
+          <ButtonGroup variant="outlined" disabled={!isAdmin}>
             {promptTimeOptions.map((value) => {
               return (
                 <Button
@@ -87,11 +82,11 @@ const GameSettingsDialog = (props: PropsType) => {
             })}
           </ButtonGroup>
           <Button
-            onClick={handleSubmit}
+            onClick={isAdmin ? handleSubmit : () => setOpen(false)}
             variant="contained"
             sx={{ marginTop: 3 }}
           >
-            Save settings
+            {isAdmin ? 'Save settings' : 'Close'}
           </Button>
         </Grid>
       </DialogContent>

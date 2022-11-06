@@ -4,7 +4,6 @@ import GAMES, { Game } from '../game/games';
 import {
   checkIfRoomExists,
   checkIfUsernameTaken,
-  generateInviteUsername,
   getPlayers,
   getSocketRoom,
   selectColor,
@@ -45,11 +44,8 @@ export const roomHandler = (io: Server, socket: Socket) => {
     await socket.join(roomId);
     socket.emit('room_created');
     socket.data.color = selectColor((await getPlayers(io, roomId)).length);
-    socket.data.username = generateInviteUsername();
     socket.data.isAdmin = true;
-    console.log(
-      `User ${socket.id} of username ${socket.data.username}  created room: ${roomId}`
-    );
+    console.log(`User ${socket.id} created room: ${roomId}`);
 
     updateRoomPlayers(roomId);
     GAMES.set(roomId, new Game(gameSettings));
@@ -60,19 +56,21 @@ export const roomHandler = (io: Server, socket: Socket) => {
     roomId,
     username,
   }: UpdateUsernamePayload) => {
+    if (!username) {
+      socket.emit('update_username_error', {
+        message: 'You must choose a username',
+      });
+      return;
+    }
     if (await checkIfUsernameTaken(io, roomId, username)) {
-      console.log('Username already taken');
       socket.emit('update_username_error', {
         message: 'Username already taken',
       });
-    } else {
-      socket.emit('username_updated');
-      console.log(
-        `User ${socket.data.username} changed his username to ${username}`
-      );
-      socket.data.username = username;
-      updateRoomPlayers(roomId);
+      return;
     }
+    socket.emit('username_updated');
+    socket.data.username = username;
+    updateRoomPlayers(roomId);
   };
 
   const leaveRoom = async ({ roomId }: { roomId: string }) => {

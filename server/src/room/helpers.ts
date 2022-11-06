@@ -24,7 +24,7 @@ export const checkIfRoomExists = (io: Server, roomId: string) => {
   return serverRooms.includes(roomId);
 };
 
-export const generateInviteUsername = () => {
+const generateInviteUsername = () => {
   const random_number = Math.floor(Math.random() * 10000) + 1;
   return `Invite-${random_number}`;
 };

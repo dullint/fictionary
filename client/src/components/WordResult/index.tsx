@@ -42,7 +42,6 @@ const WordResult = () => {
       [username]: previousScore + roundScore,
     };
   }, {});
-  console.log({ displayNewScores, scores, newScores });
 
   return (
     <Grid

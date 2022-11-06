@@ -7,7 +7,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import { PlayerContext } from '../Room';
@@ -16,20 +16,25 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { getPlayTooltip, isRoomAdmin } from './helpers';
 import GameSettingsDialog from '../GameSettingsDialog';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { getMyPlayer } from '../WordGuess/helpers';
 
 const WaitingRoom = () => {
+  const socket = useContext(SocketContext);
+  const players = useContext(PlayerContext);
   const [openUsernameDialog, setOpenUsernameDialog] = useState(true);
   const [openSettingsDialog, setOpenSettingsDialog] = useState(false);
   const [copyToClipboardMsg, setCopyToClipboardMsg] = useState(false);
   const navigate = useNavigate();
   const { roomId } = useParams();
-  const socket = useContext(SocketContext);
-  const players = useContext(PlayerContext);
   const isAdmin = isRoomAdmin(players, socket.id);
 
   const handlePlay = () => {
     socket.emit('new_round', { roomId });
   };
+
+  // useEffect(() => {
+  //   if (getMyPlayer(players, socket.id)?.username) setOpenUsernameDialog(false);
+  // }, [players, socket]);
 
   const handleLeaveRoom = () => {
     socket.emit('leave_room', { roomId });
@@ -144,7 +149,7 @@ const WaitingRoom = () => {
       <GameSettingsDialog
         open={openSettingsDialog}
         setOpen={setOpenSettingsDialog}
-        isAdmin={true}
+        isAdmin={isAdmin}
       />
     </Grid>
   );

@@ -53,7 +53,6 @@ const WordPrompt = () => {
 
   const minutes = counter && Math.floor(counter / 60);
   const seconds = counter && counter - minutes * 60;
-  console.log(entryWidth);
   return (
     <Grid container direction="column">
       <Grid container justifyContent={'space-between'} flexDirection="row">
@@ -79,6 +78,7 @@ const WordPrompt = () => {
           </Box>
           <TextField
             autoFocus
+            disabled={hasSubmited}
             value={definition}
             multiline
             fullWidth
