@@ -1,4 +1,5 @@
-import { get_random_entry, runTimer } from './helpers';
+import { Server } from 'socket.io';
+import { get_random_entry } from './helpers';
 import {
   Definitions,
   DictionnaryEntry,
@@ -18,6 +19,7 @@ export class Game {
   gameSettings: GameSettings;
   gameStep: GameStep;
   scores: Scores;
+  timer: NodeJS.Timer | null;
 
   constructor(gameSettings: GameSettings) {
     this.round = 0;
@@ -27,6 +29,7 @@ export class Game {
     this.gameSettings = gameSettings;
     this.gameStep = GameStep.WAIT;
     this.scores = {};
+    this.timer = null;
   }
 
   removeDefinition(socketId: string) {
@@ -41,6 +44,7 @@ export class Game {
   }
 
   goToNextStep() {
+    if (this.timer) clearInterval(this.timer);
     if (this.gameStep == GameStep.PROMPT) {
       this.gameStep = GameStep.GUESS;
     } else if (this.gameStep == GameStep.GUESS) {
@@ -64,6 +68,19 @@ export class Game {
     this.selections = {};
     this.scores = {};
   }
+
+  runTimer = (io: Server, roomId: string, time: number) => {
+    var counter = time * 60;
+    this.timer = setInterval(() => {
+      io.emit('timer', counter);
+      if (counter === 0 && this.timer) {
+        clearInterval(this.timer);
+        this.goToNextStep();
+        io.to(roomId).emit('game', this);
+      }
+      counter--;
+    }, 1000);
+  };
 }
 
 export default GAMES;

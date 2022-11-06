@@ -1,7 +1,7 @@
 import { Server, Socket } from 'socket.io';
 import { getPlayers, getSocketRoom } from '../room/helpers';
 
-import { get_random_entry, runTimer } from './helpers';
+import { get_random_entry } from './helpers';
 import GAMES, { Game } from './games';
 import { DictionnaryEntry, GameSettings, GameStep, Scores } from './types';
 
@@ -14,7 +14,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const numberOfPlayers = (await getPlayers(io, roomId)).length;
     const numberOfDefinitions = Object.keys(game.definitions).length;
     if (numberOfDefinitions == numberOfPlayers) {
-      game.gameStep = GameStep.GUESS;
+      game.goToNextStep();
       io.to(roomId).emit('game', game);
     }
   };
@@ -41,9 +41,9 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const numberOfPlayers = (await getPlayers(io, roomId)).length;
     const numberOfSelectedDefinitions = Object.keys(game.selections).length;
     if (numberOfSelectedDefinitions == numberOfPlayers) {
-      game.gameStep = GameStep.RESULTS;
-      io.to(roomId).emit('game', game);
+      game.goToNextStep();
     }
+    io.to(roomId).emit('game', game);
   };
 
   const updateScores = ({ scores }: { scores: Scores }) => {
@@ -72,7 +72,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     } else {
       game.newRound();
       io.to(roomId).emit('game', game);
-      runTimer(io, roomId, game.gameSettings.maxPromptTime, game);
+      game.runTimer(io, roomId, game.gameSettings.maxPromptTime);
     }
   };
 
@@ -83,7 +83,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const entry = get_random_entry();
     game.entry = entry;
     io.to(roomId).emit('game', game);
-    runTimer(io, roomId, game.gameSettings.maxPromptTime, game);
+    game.runTimer(io, roomId, game.gameSettings.maxPromptTime);
   };
 
   const changeSettings = ({ gameSettings }: { gameSettings: GameSettings }) => {

@@ -38,8 +38,6 @@ const WordResult = () => {
     };
   }, {});
 
-  console.log({ selections, roundScores });
-
   return (
     <Grid
       alignItems="center"

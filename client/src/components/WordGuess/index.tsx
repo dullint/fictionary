@@ -32,6 +32,9 @@ const WordGuess = () => {
     );
     return acc;
   }, {});
+  votingPlayersByDefinitions['REAL_DEFINITION'] = players.filter(
+    (player) => selections[player.username] === 'REAL_DEFINITION'
+  );
   console.log({ suffledDefinitions, selections, votingPlayersByDefinitions });
   return (
     <Grid container direction="column">
@@ -55,13 +58,13 @@ const WordGuess = () => {
             />
             <Grid container>
               <AvatarGroup>
-                {/* {votingPlayersByDefinitions[socketId].map((player) => {
+                {(votingPlayersByDefinitions[username] ?? []).map((player) => {
                   return (
                     <Avatar
                       sx={{ height: 20, width: 20, bgcolor: player.color }}
                     />
                   );
-                })} */}
+                })}
               </AvatarGroup>
             </Grid>
           </Grid>
