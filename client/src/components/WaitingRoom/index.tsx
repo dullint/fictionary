@@ -94,6 +94,7 @@ const WaitingRoom = () => {
         container
         justifyContent="center"
         sx={{ marginTop: 2, marginBottom: 2 }}
+        maxWidth={500}
       >
         {players &&
           players.map((player) => (
@@ -102,9 +103,7 @@ const WaitingRoom = () => {
               direction="column"
               justifyContent="center"
               alignItems="center"
-              lg={3}
-              md={4}
-              xs={6}
+              sx={{ maxWidth: 130 }}
             >
               <Avatar
                 sx={{

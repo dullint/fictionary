@@ -25,7 +25,6 @@ export const roomHandler = (io: Server, socket: Socket) => {
 
   const joinRoom = async ({ roomId }: { roomId: string }) => {
     if (!checkIfRoomExists(io, roomId)) {
-      console.log('Room do not exist');
       socket.emit('join_room_error', {
         message: 'Room do not exist',
       });
@@ -37,9 +36,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
     socket.emit('room_joined');
     socket.data.color = selectColor((await getPlayers(io, roomId)).length);
     socket.data.isAdmin = false;
-    console.log(
-      `User ${socket.id} of username ${socket.data.username}  joined room: ${roomId}`
-    );
+    console.log(`User ${socket.id} joined room: ${roomId}`);
     updateRoomPlayers(roomId);
   };
 

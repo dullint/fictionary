@@ -20,7 +20,7 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-  console.log(`Player Connected with id ${socket.id}`);
+  console.log(`Player connected with id ${socket.id}`);
 
   roomHandler(io, socket);
   gameHandler(io, socket);
@@ -30,7 +30,6 @@ io.on('connection', (socket) => {
     console.log({ roomId });
     if (roomId) {
       const players = await getPlayers(io, roomId);
-      console.log({ players });
       io.to(roomId).emit(
         'players',
         players.filter((player) => player.socketId != socket.id)
