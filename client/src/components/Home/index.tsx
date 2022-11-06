@@ -29,54 +29,54 @@ const Home = () => {
   };
 
   return (
-    <Grid
-      container
-      direction="column"
-      justifyContent="center"
-      alignItems={'center'}
-    >
-      <Typography
-        variant={'h3'}
-        align={'center'}
-        sx={{ marginBottom: 5, marginTop: 5 }}
-      >
+    <Grid container direction="column">
+      <Typography variant={'h3'} align={'center'} sx={{ m: 3 }}>
         Fictionnary
       </Typography>
-      <Button
-        onClick={handleCreateGame}
-        variant="contained"
-        sx={{ alignSelf: 'center', width: 300, height: 40 }}
-      >
-        Create game
-      </Button>
       <Grid
         container
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{ width: 300, margin: 2 }}
+        direction="column"
+        justifyContent="center"
+        alignItems={'center'}
       >
-        <TextField
-          placeholder="Room Id"
-          onChange={(e) => {
-            setRoomId(e.target.value.toLocaleUpperCase());
-            setJoinRoomErrorMessage(null);
-          }}
-          sx={{ width: 150, backgroundColor: 'white' }}
-          value={roomId}
-          inputProps={{ maxLength: 5, style: { textAlign: 'center' } }}
-          size="small"
-        />
         <Button
-          onClick={handleEnterRoom}
+          onClick={handleCreateGame}
           variant="contained"
-          sx={{ marginLeft: 2, width: 130, height: 40 }}
+          sx={{ alignSelf: 'center', width: 300, height: 40 }}
         >
-          Join game
+          Create game
         </Button>
-        {joinRoomErrorMessage && (
-          <Typography sx={{ color: 'red' }}>{joinRoomErrorMessage}</Typography>
-        )}
+        <Grid
+          container
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ width: 300, margin: 2 }}
+        >
+          <TextField
+            placeholder="Room Id"
+            onChange={(e) => {
+              setRoomId(e.target.value.toLocaleUpperCase());
+              setJoinRoomErrorMessage(null);
+            }}
+            sx={{ width: 150, backgroundColor: 'white' }}
+            value={roomId}
+            inputProps={{ maxLength: 5, style: { textAlign: 'center' } }}
+            size="small"
+          />
+          <Button
+            onClick={handleEnterRoom}
+            variant="contained"
+            sx={{ marginLeft: 2, width: 130, height: 40 }}
+          >
+            Join game
+          </Button>
+          {joinRoomErrorMessage && (
+            <Typography sx={{ color: 'red' }}>
+              {joinRoomErrorMessage}
+            </Typography>
+          )}
+        </Grid>
       </Grid>
     </Grid>
   );

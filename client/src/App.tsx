@@ -34,7 +34,17 @@ const App = () => {
         background: 'radial-gradient(#F5F5F5, #f0f3ff)',
       }}
     >
-      <Grid container sx={{ maxWidth: 600, padding: 2 }}>
+      <Grid
+        container
+        sx={{
+          margin: 6,
+          maxWidth: 600,
+          padding: 2,
+          border: '1px solid',
+          minWidth: 500,
+          minHeight: 400,
+        }}
+      >
         <SocketContext.Provider value={socket}>
           <ThemeProvider theme={theme}>
             <Routes>

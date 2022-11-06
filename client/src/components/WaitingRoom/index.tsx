@@ -78,18 +78,20 @@ const WaitingRoom = () => {
         autoHideDuration={2000}
         message="Copied to clipboard"
       />
-      {/* <Button onClick={handleChangeGameSettings} size="large" sx={{ m: 1 }}>
-        Change Game Settings
-      </Button> */}
-      <IconButton
+      <Button
         color="primary"
         onClick={handleChangeGameSettings}
         size="large"
+        variant="outlined"
+        endIcon={<SettingsIcon />}
       >
-        <input hidden accept="image/*" type="file" />
-        <SettingsIcon />
-      </IconButton>
-      <Grid container justifyContent="center" spacing={1} sx={{ m: 2 }}>
+        Game settings
+      </Button>
+      <Grid
+        container
+        justifyContent="center"
+        sx={{ marginTop: 2, marginBottom: 2 }}
+      >
         {players &&
           players.map((player) => (
             <Grid
@@ -97,17 +99,19 @@ const WaitingRoom = () => {
               direction="column"
               justifyContent="center"
               alignItems="center"
-              xs={4}
+              lg={3}
+              md={4}
+              xs={6}
             >
               <Avatar
                 sx={{
-                  width: 100,
-                  height: 100,
+                  width: 80,
+                  height: 80,
                   m: 1,
                   bgcolor: player.color,
                 }}
               />
-              <Typography variant="body1" align="center">
+              <Typography variant="subtitle1" align="center">
                 {player.username}
               </Typography>
             </Grid>
