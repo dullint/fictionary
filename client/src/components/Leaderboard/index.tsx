@@ -27,7 +27,12 @@ const Leaderboard = () => {
   return (
     <Grid alignItems="center" container justifyContent="center" height={300}>
       <h1>Leaderboard</h1>
-      <ScoreBar players={players} scores={scores} />
+      <ScoreBar
+        players={players}
+        scores={scores}
+        layout="vertical"
+        number={3}
+      />
       <Grid
         alignItems="center"
         container

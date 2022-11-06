@@ -1,5 +1,5 @@
-import { Button, Grid, Tooltip } from '@mui/material';
-import React, { useContext } from 'react';
+import { Box, Button, Grid, Tooltip, Typography } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
@@ -16,6 +16,11 @@ const WordResult = () => {
   const players = useContext(PlayerContext);
   const { roomId } = useParams();
   const isAdmin = isRoomAdmin(players, socket.id);
+  const [displayNewScores, setDisplayNewScores] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => setDisplayNewScores(true), 1000);
+  }, []);
 
   const handleNextStep = () => {
     socket.emit('update_scores', { roomId, scores: newScores });
@@ -37,6 +42,7 @@ const WordResult = () => {
       [username]: previousScore + roundScore,
     };
   }, {});
+  console.log({ displayNewScores, scores, newScores });
 
   return (
     <Grid
@@ -45,8 +51,12 @@ const WordResult = () => {
       justifyContent="center"
       height={players.length * 150}
     >
-      <h1>Round Results</h1>
-      <ScoreBar players={players} scores={newScores} />
+      <Typography variant="subtitle1">New Scores after this round:</Typography>
+      <ScoreBar
+        players={players}
+        scores={displayNewScores ? newScores : scores}
+        animate={displayNewScores}
+      />
       <Tooltip
         title={isAdmin ? null : 'Waiting for the admin to continue'}
         placement="top"

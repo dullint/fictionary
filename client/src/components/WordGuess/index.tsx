@@ -5,6 +5,7 @@ import { GameContext, PlayerContext } from '../Room';
 import { shuffle } from 'shuffle-seed';
 import { useParams } from 'react-router-dom';
 import DefinitionDisplay from '../DefinitionDisplay';
+import { getMyPlayer, getVotingPlayersByDefinitions } from './helpers';
 
 const WordGuess = () => {
   const game = useContext(GameContext);
@@ -26,16 +27,11 @@ const WordGuess = () => {
   ]);
   const seed = `${entry.word}-${roomId}`;
   const suffledDefinitions = shuffle(definitionToDisplay, seed);
-  const votingPlayersByDefinitions = players.reduce((acc, { username }) => {
-    acc[username] = players.filter(
-      (player) => selections[player.username] === username
-    );
-    return acc;
-  }, {});
-  votingPlayersByDefinitions['REAL_DEFINITION'] = players.filter(
-    (player) => selections[player.username] === 'REAL_DEFINITION'
+  const votingPlayersByDefinitions = getVotingPlayersByDefinitions(
+    players,
+    selections
   );
-  console.log({ suffledDefinitions, selections, votingPlayersByDefinitions });
+  const playerColor = getMyPlayer(players, socket.id).color;
   return (
     <Grid container direction="column">
       <Typography variant="subtitle1" sx={{ m: 2 }}>
@@ -47,8 +43,19 @@ const WordGuess = () => {
             item
             onClick={() => handleSelectDefinition(username)}
             sx={{
-              border: username === selectedUsernameDef ? '1px solid red' : '',
-              '&:hover': { border: '1px solid' },
+              boxShadow:
+                username === selectedUsernameDef
+                  ? `0px 0px 7px ${playerColor}`
+                  : '',
+              boxSizing: 'border-box',
+              borderRadius: 4,
+              '&:hover': {
+                boxShadow:
+                  username === selectedUsernameDef
+                    ? `0px 0px 7px ${playerColor}`
+                    : `0px 0px 10px -5px black`,
+              },
+              padding: 1,
             }}
           >
             <DefinitionDisplay

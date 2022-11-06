@@ -11,25 +11,25 @@ interface PropsType {
 const DefinitionDisplay = (props: PropsType) => {
   const { word, definition, type } = props;
   return (
-    <Typography sx={{ m: 1 }}>
-      <Box
+    <Box>
+      <Typography
         component="span"
         fontWeight={900}
         fontSize={20}
         sx={{ marginRight: 0.5 }}
       >
         {word}
-      </Box>
-      <Box
+      </Typography>
+      <Typography
         component="span"
         fontStyle={'italic'}
         fontWeight={100}
         sx={{ marginRight: 1 }}
       >
         {type}
-      </Box>
-      <Box component="span">{definition}</Box>
-    </Typography>
+      </Typography>
+      <Typography component="span">{definition}</Typography>
+    </Box>
   );
 };
 

@@ -6,10 +6,13 @@ import { Player } from '../../../../server/src/room/types';
 interface PropsType {
   players: Player[];
   scores: Scores;
+  animate?: boolean;
+  layout?: 'horizontal' | 'vertical';
+  number?: number;
 }
 
 const ScoreBar = (props: PropsType) => {
-  const { players, scores } = props;
+  const { players, scores, animate, layout = 'horizontal', number } = props;
   const data = players
     .map(({ username, color }) => {
       return {
@@ -18,30 +21,48 @@ const ScoreBar = (props: PropsType) => {
         color,
       };
     })
-    .sort((player1, player2) => player1.score - player2.score);
+    .sort((player1, player2) => player1.score - player2.score)
+    .slice(0, number);
 
   return (
     <ResponsiveBar
       theme={{ fontSize: 20 }}
       data={data}
+      animate={animate}
       keys={['score']}
       indexBy="username"
-      margin={{ top: 50, bottom: 50, left: 150 }}
+      margin={{
+        left: layout === 'vertical' ? 50 : 120,
+        right: 50,
+        bottom: layout === 'vertical' ? 50 : 0,
+      }}
       padding={0.2}
       colors={(d) => d.data.color}
       colorBy="indexValue"
-      layout="horizontal"
+      layout={layout}
       isInteractive={false}
-      motionConfig="slow"
+      motionConfig={{ friction: 100 }}
       enableGridY={false}
       axisTop={null}
       axisRight={null}
-      axisBottom={null}
-      axisLeft={{
-        tickSize: 5,
-        tickPadding: 5,
-        tickRotation: 0,
-      }}
+      axisBottom={
+        layout === 'vertical'
+          ? {
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+            }
+          : null
+      }
+      axisLeft={
+        layout === 'horizontal'
+          ? {
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+            }
+          : null
+      }
       labelSkipWidth={12}
       labelSkipHeight={12}
       labelTextColor={'white'}

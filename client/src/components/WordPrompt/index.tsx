@@ -1,12 +1,16 @@
-import { Button, Grid, TextField, Typography } from '@mui/material';
-import React, { useContext, useEffect, useState } from 'react';
+import { Box, Button, Grid, TextField, Typography } from '@mui/material';
+import FindReplaceIcon from '@mui/icons-material/FindReplace';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
+import DefinitionDisplay from '../DefinitionDisplay';
 import { GameContext } from '../Room';
 import { CHARACTER_LIMIT } from './constants';
 
 const WordPrompt = () => {
   const game = useContext(GameContext);
+  const entryRef = useRef(null);
+  const [entryWidth, setEntryWidth] = useState(0);
   const socket = useContext(SocketContext);
   const [definition, setDefinition] = useState('');
   const [hasSubmited, setHasSubmited] = useState(false);
@@ -14,6 +18,9 @@ const WordPrompt = () => {
   const { roomId } = useParams();
   const entry = game?.entry;
 
+  useEffect(() => {
+    setEntryWidth(entryRef.current.clientWidth);
+  }, [entryRef]);
   const handleKnowWord = () => {
     socket.emit('get_new_word');
   };
@@ -46,60 +53,52 @@ const WordPrompt = () => {
 
   const minutes = counter && Math.floor(counter / 60);
   const seconds = counter && counter - minutes * 60;
-
+  console.log(entryWidth);
   return (
     <Grid container direction="column">
-      <Typography variant="subtitle1" sx={{ m: 2 }}>
-        Time to write your definition!
-      </Typography>
+      <Grid container justifyContent={'space-between'} flexDirection="row">
+        <Typography variant="subtitle1" sx={{ m: 2 }}>
+          Time to write your definition!
+        </Typography>
+        <Button
+          onClick={handleKnowWord}
+          endIcon={<FindReplaceIcon />}
+          size="small"
+        >
+          I know this word
+        </Button>
+      </Grid>
       {entry && (
         <Grid container direction="column">
-          <Grid container direction="row" alignItems={'center'}>
-            <Typography
-              variant="h4"
-              sx={{
-                fontStyle: 'italic',
-                marginRight: 1,
-                marginLeft: 2,
-              }}
-            >
-              {entry.word}
-            </Typography>
-            <Typography variant="button">· {entry.type}</Typography>
-          </Grid>
-          {hasSubmited ? (
-            <Typography
-              sx={{
-                marginTop: '16.5px',
-                marginBottom: '30.5px',
-                marginLeft: '14px',
-                marginRight: '14px',
-                height: '132px',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {definition}
-            </Typography>
-          ) : (
-            <TextField
-              autoFocus
-              value={definition}
-              multiline
-              fullWidth
-              helperText={`${definition.length}/${CHARACTER_LIMIT}`}
-              rows={6}
-              onChange={handleTextFieldChange}
-              inputProps={{ maxLength: CHARACTER_LIMIT, lineHeight: '22px' }}
-              sx={{
-                marginTop: 0,
-                marginBottom: '14px',
-                '& .MuiOutlinedInput-input': {
-                  lineHeight: '22px',
-                },
-              }}
-            />
-          )}
-          <Grid container direction="row" justifyContent="space-between">
+          <Box zIndex={2} position="absolute" ref={entryRef} sx={{ m: 2 }}>
+            <DefinitionDisplay
+              word={entry.word}
+              type={entry.type}
+              definition={''}
+            ></DefinitionDisplay>
+          </Box>
+          <TextField
+            autoFocus
+            value={definition}
+            multiline
+            fullWidth
+            helperText={`${definition.length}/${CHARACTER_LIMIT}`}
+            rows={6}
+            onChange={handleTextFieldChange}
+            inputProps={{
+              maxLength: CHARACTER_LIMIT,
+              lineHeight: '22px',
+            }}
+            sx={{
+              marginTop: 0,
+              marginBottom: '14px',
+              '& .MuiOutlinedInput-input': {
+                lineHeight: '22px',
+                textIndent: entryWidth,
+              },
+            }}
+          />
+          <Grid container direction="row" justifyContent="start">
             {hasSubmited ? (
               <Button onClick={handleModify} variant="contained">
                 Modify
@@ -109,7 +108,6 @@ const WordPrompt = () => {
                 Submit
               </Button>
             )}
-            <Button onClick={handleKnowWord}>I know this word</Button>
           </Grid>
         </Grid>
       )}
