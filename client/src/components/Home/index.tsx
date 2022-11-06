@@ -2,7 +2,7 @@ import { Button, Grid, TextField, Typography } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SocketContext } from '../../App';
-import { createRoom, joinRoom } from '../../services/room';
+import { checkRoomExistence, createRoom, joinRoom } from '../../services/room';
 import { generateRandomRoomId } from '../GameSettingsDialog/helpers';
 import { defaultGameSettings } from './constants';
 
@@ -19,7 +19,7 @@ const Home = () => {
     if (created) navigate(`/room/${newRoomId}`);
   };
 
-  const handleEnterRoom = async () => {
+  const handleJoinGame = async () => {
     if (roomId) {
       const entered = await joinRoom(socket, roomId).catch((err) => {
         setJoinRoomErrorMessage(err.message);
@@ -65,7 +65,7 @@ const Home = () => {
             size="small"
           />
           <Button
-            onClick={handleEnterRoom}
+            onClick={handleJoinGame}
             variant="contained"
             sx={{ marginLeft: 2, width: 130, height: 40 }}
           >

@@ -13,6 +13,7 @@ import {
 export const roomHandler = (io: Server, socket: Socket) => {
   const updateRoomPlayers = async (roomId: string) => {
     const players = await getPlayers(io, roomId);
+    console.log(players);
     io.to(roomId).emit('players', players);
   };
 
@@ -30,10 +31,12 @@ export const roomHandler = (io: Server, socket: Socket) => {
       });
       return;
     }
-    if (Array.from(socket.rooms.values()).includes(roomId)) return;
-    await socket.join(roomId);
+    if (!Array.from(socket.rooms.values()).includes(roomId)) {
+      await socket.join(roomId);
+    }
     socket.emit('room_joined');
     socket.data.color = selectColor((await getPlayers(io, roomId)).length);
+    socket.data.isAdmin = false;
     console.log(
       `User ${socket.id} of username ${socket.data.username}  joined room: ${roomId}`
     );

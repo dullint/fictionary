@@ -8,7 +8,8 @@ import WordPrompt from '../WordPrompt';
 import Leaderboard from '../Leaderboard';
 import WordGuess from '../WordGuess';
 import WordResult from '../WordResult';
-import { Button, Grid, Typography } from '@mui/material';
+import { joinGameAndQueryInfo } from '../../services/room';
+import LoadingPage from '../LoadingPage';
 
 export const PlayerContext = createContext<Player[]>([]);
 export const GameContext = createContext<Game>(null);
@@ -26,15 +27,20 @@ const Room = () => {
   const [players, setPlayers] = useState<Player[]>([]);
   const { roomId } = useParams();
   const [game, setGame] = useState(null);
-  const navigate = useNavigate();
+  const [joinErrorMessage, setJoinErrorMessage] = useState(null);
 
   useEffect(() => {
     if (socket) {
-      socket.emit('join_room', { roomId });
-      socket.emit('players', { roomId });
+      const onRoomEnter = async () => {
+        const { game, players } = await joinGameAndQueryInfo(socket, roomId);
+        console.log({ players });
+        setGame(game);
+        setPlayers(players);
+      };
+      onRoomEnter().catch((err) => {
+        setJoinErrorMessage(err.message);
+      });
       socket.on('players', (players: Player[]) => setPlayers(players));
-
-      socket.emit('game', { roomId });
       socket.on('game', (game: Game) => setGame(game));
     }
   }, [socket, roomId]);
@@ -52,26 +58,7 @@ const Room = () => {
       case GameStep.FINISHED:
         return <Leaderboard />;
       default:
-        return (
-          <Grid
-            flexDirection={'column'}
-            justifyContent="center"
-            alignItems={'center'}
-            container
-          >
-            <Typography variant="subtitle1">
-              {`The room ${roomId} does not exist, please come back to the menu`}
-            </Typography>
-            <Button
-              onClick={() => navigate('/')}
-              variant="contained"
-              size="large"
-              sx={{ m: 2 }}
-            >
-              Go to Menu
-            </Button>
-          </Grid>
-        );
+        return <LoadingPage joinErrorMessage={joinErrorMessage} />;
     }
   };
 

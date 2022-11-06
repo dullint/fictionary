@@ -21,7 +21,9 @@ import { getMyPlayer } from '../WordGuess/helpers';
 const WaitingRoom = () => {
   const socket = useContext(SocketContext);
   const players = useContext(PlayerContext);
-  const [openUsernameDialog, setOpenUsernameDialog] = useState(true);
+  const [openUsernameDialog, setOpenUsernameDialog] = useState(
+    !getMyPlayer(players, socket.id)?.username
+  );
   const [openSettingsDialog, setOpenSettingsDialog] = useState(false);
   const [copyToClipboardMsg, setCopyToClipboardMsg] = useState(false);
   const navigate = useNavigate();
@@ -31,10 +33,6 @@ const WaitingRoom = () => {
   const handlePlay = () => {
     socket.emit('new_round', { roomId });
   };
-
-  // useEffect(() => {
-  //   if (getMyPlayer(players, socket.id)?.username) setOpenUsernameDialog(false);
-  // }, [players, socket]);
 
   const handleLeaveRoom = () => {
     socket.emit('leave_room', { roomId });

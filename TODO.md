@@ -5,3 +5,4 @@
 - feat: better leaderborad
 - feat: better avatars with letters and colors
 - bug: kick people out of room when room doesn't exist anymore
+- fix: delete game when room is deleted
