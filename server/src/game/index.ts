@@ -3,7 +3,7 @@ import { getPlayers, getSocketRoom } from '../room/helpers';
 
 import { get_random_entry, runTimer } from './helpers';
 import GAMES, { Game } from './games';
-import { DictionnaryEntry, GameStep, Scores } from './types';
+import { DictionnaryEntry, GameSettings, GameStep, Scores } from './types';
 
 export const gameHandler = (io: Server, socket: Socket) => {
   const submitDefinition = async ({ definition }: { definition: string }) => {
@@ -86,6 +86,13 @@ export const gameHandler = (io: Server, socket: Socket) => {
     runTimer(io, roomId, game.gameSettings.maxPromptTime, game);
   };
 
+  const changeSettings = ({ gameSettings }: { gameSettings: GameSettings }) => {
+    const roomId = getSocketRoom(socket);
+    const game = GAMES.get(roomId);
+    if (!game) return;
+    game.gameSettings = gameSettings;
+  };
+
   socket.on('reset_game', resetGame);
   socket.on('update_scores', updateScores);
   socket.on('new_round', launchNewRound);
@@ -94,4 +101,5 @@ export const gameHandler = (io: Server, socket: Socket) => {
   socket.on('select_definition', selectDefinition);
   socket.on('remove_definition', removeDefinition);
   socket.on('get_new_word', getNewWord);
+  socket.on('change_game_settings', changeSettings);
 };

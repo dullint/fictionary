@@ -2,7 +2,6 @@ import React, { createContext, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Home from './components/Home';
 import Room from './components/Room';
-import CreateRoom from './components/CreateGame';
 import { io, Socket } from 'socket.io-client';
 import { ThemeProvider } from '@mui/material/styles';
 import { getTheme } from './theme';
@@ -40,7 +39,6 @@ const App = () => {
           <ThemeProvider theme={theme}>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/room/create-room" element={<CreateRoom />} />
               <Route path="/room/:roomId" element={<Room />} />
             </Routes>
           </ThemeProvider>

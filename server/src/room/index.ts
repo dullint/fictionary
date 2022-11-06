@@ -24,22 +24,21 @@ export const roomHandler = (io: Server, socket: Socket) => {
   };
 
   const joinRoom = async ({ roomId }: { roomId: string }) => {
-    if (Array.from(socket.rooms.values()).includes(roomId)) return;
     if (!checkIfRoomExists(io, roomId)) {
       console.log('Room do not exist');
-      socket.emit('room_join_error', {
+      socket.emit('join_room_error', {
         message: 'Room do not exist',
       });
-    } else {
-      await socket.join(roomId);
-      socket.emit('room_joined');
-      socket.data.color = selectColor((await getPlayers(io, roomId)).length);
-      socket.data.username = generateInviteUsername();
-      console.log(
-        `User ${socket.id} of username ${socket.data.username}  joined room: ${roomId}`
-      );
-      updateRoomPlayers(roomId);
+      return;
     }
+    if (Array.from(socket.rooms.values()).includes(roomId)) return;
+    await socket.join(roomId);
+    socket.emit('room_joined');
+    socket.data.color = selectColor((await getPlayers(io, roomId)).length);
+    console.log(
+      `User ${socket.id} of username ${socket.data.username}  joined room: ${roomId}`
+    );
+    updateRoomPlayers(roomId);
   };
 
   const createRoom = async ({ roomId, gameSettings }: createRoomPayload) => {

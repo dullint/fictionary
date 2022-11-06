@@ -2,6 +2,7 @@ import {
   Avatar,
   Button,
   Grid,
+  IconButton,
   Snackbar,
   Tooltip,
   Typography,
@@ -12,10 +13,13 @@ import { SocketContext } from '../../App';
 import { PlayerContext } from '../Room';
 import UsernameDialog from '../UsernameDialog';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { isRoomAdmin } from './helpers';
+import { getPlayTooltip, isRoomAdmin } from './helpers';
+import GameSettingsDialog from '../GameSettingsDialog';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 const WaitingRoom = () => {
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openUsernameDialog, setOpenUsernameDialog] = useState(true);
+  const [openSettingsDialog, setOpenSettingsDialog] = useState(false);
   const [copyToClipboardMsg, setCopyToClipboardMsg] = useState(false);
   const navigate = useNavigate();
   const { roomId } = useParams();
@@ -32,10 +36,18 @@ const WaitingRoom = () => {
     navigate('/');
   };
 
+  const handleChangeGameSettings = () => {
+    setOpenSettingsDialog(true);
+  };
+
   const handleCopyToClipboard = () => {
     setCopyToClipboardMsg(true);
     navigator.clipboard.writeText(window.location.href);
   };
+
+  const allPlayersHaveAUsername = players
+    .map((player) => player?.username)
+    .every((username) => username);
 
   return (
     <Grid
@@ -66,6 +78,17 @@ const WaitingRoom = () => {
         autoHideDuration={2000}
         message="Copied to clipboard"
       />
+      {/* <Button onClick={handleChangeGameSettings} size="large" sx={{ m: 1 }}>
+        Change Game Settings
+      </Button> */}
+      <IconButton
+        color="primary"
+        onClick={handleChangeGameSettings}
+        size="large"
+      >
+        <input hidden accept="image/*" type="file" />
+        <SettingsIcon />
+      </IconButton>
       <Grid container justifyContent="center" spacing={1} sx={{ m: 2 }}>
         {players &&
           players.map((player) => (
@@ -91,7 +114,7 @@ const WaitingRoom = () => {
           ))}
       </Grid>
       <Tooltip
-        title={isAdmin ? null : 'Waiting for the admin to launch the game'}
+        title={getPlayTooltip(isAdmin, allPlayersHaveAUsername)}
         placement="top"
       >
         <span>
@@ -100,7 +123,7 @@ const WaitingRoom = () => {
             variant="contained"
             size="large"
             sx={{ m: 1 }}
-            disabled={!isAdmin}
+            disabled={!isAdmin || !allPlayersHaveAUsername}
           >
             Play
           </Button>
@@ -110,7 +133,15 @@ const WaitingRoom = () => {
       <Button onClick={handleLeaveRoom} size="large" sx={{ m: 1 }}>
         Leave Room
       </Button>
-      <UsernameDialog open={openDialog} setOpen={setOpenDialog} />
+      <UsernameDialog
+        open={openUsernameDialog}
+        setOpen={setOpenUsernameDialog}
+      />
+      <GameSettingsDialog
+        open={openSettingsDialog}
+        setOpen={setOpenSettingsDialog}
+        isAdmin={true}
+      />
     </Grid>
   );
 };

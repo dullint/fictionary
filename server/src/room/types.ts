@@ -2,7 +2,7 @@ import { GameSettings } from '../game/types';
 
 export interface Player {
   socketId: string;
-  username: string;
+  username?: string;
   color: string;
   isAdmin: boolean;
 }
