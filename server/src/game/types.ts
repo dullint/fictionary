@@ -23,13 +23,13 @@ export interface GameSettings {
 }
 
 export interface SelectedDefinitions {
-  [socketId: string]: string;
+  [username: string]: string;
 }
 
 export interface Scores {
-  [socketId: string]: number;
+  [username: string]: number;
 }
 
 export interface Definitions {
-  [socketId: string]: string;
+  [username: string]: string;
 }

@@ -10,7 +10,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const roomId = getSocketRoom(socket);
     const game = GAMES.get(roomId);
     if (!game) return;
-    game.definitions[socket.id] = definition;
+    game.definitions[socket.data.username] = definition;
     const numberOfPlayers = (await getPlayers(io, roomId)).length;
     const numberOfDefinitions = Object.keys(game.definitions).length;
     if (numberOfDefinitions == numberOfPlayers) {
@@ -23,7 +23,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const roomId = getSocketRoom(socket);
     const game = GAMES.get(roomId);
     if (!game) return;
-    delete game.definitions[socket.id];
+    delete game.definitions[socket.data.username];
   };
 
   const queryGame = () => {
@@ -33,11 +33,11 @@ export const gameHandler = (io: Server, socket: Socket) => {
     io.to(roomId).emit('game', game);
   };
 
-  const selectDefinition = async ({ socketId }: { socketId: string }) => {
+  const selectDefinition = async ({ username }: { username: string }) => {
     const roomId = getSocketRoom(socket);
     const game = GAMES.get(roomId);
     if (!game) return;
-    game.selections[socket.id] = socketId;
+    game.selections[socket.data.username] = username;
     const numberOfPlayers = (await getPlayers(io, roomId)).length;
     const numberOfSelectedDefinitions = Object.keys(game.selections).length;
     if (numberOfSelectedDefinitions == numberOfPlayers) {

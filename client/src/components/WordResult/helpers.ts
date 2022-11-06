@@ -1,15 +1,15 @@
 import { SelectedDefinitions } from '../../../../server/src/game/types';
 
 export const calculatePlayerRoundScore = (
-  socketId: string,
+  username: string,
   selections: SelectedDefinitions
 ) => {
   const voteForHimPoints = Object.values(selections).reduce(
-    (acc, defSocketId) => acc + Number(defSocketId === socketId),
+    (acc, votedUsername) => acc + Number(votedUsername === username),
     0
   );
   const findRightDefPoint = Number(
-    selections?.[socketId] === 'REAL_DEFINITION'
+    selections?.[username] === 'REAL_DEFINITION'
   );
   return voteForHimPoints + findRightDefPoint;
 };

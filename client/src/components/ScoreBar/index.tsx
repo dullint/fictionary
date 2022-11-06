@@ -11,11 +11,10 @@ interface PropsType {
 const ScoreBar = (props: PropsType) => {
   const { players, scores } = props;
   const data = players
-    .map((player) => {
-      const { socketId, username, color } = player;
+    .map(({ username, color }) => {
       return {
         username,
-        score: scores?.[socketId] ?? 0,
+        score: scores?.[username] ?? 0,
         color,
       };
     })

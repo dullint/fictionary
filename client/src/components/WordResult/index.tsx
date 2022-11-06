@@ -22,22 +22,23 @@ const WordResult = () => {
     socket.emit('new_round', { roomId });
   };
 
-  const roundScores = players.reduce((acc, player) => {
+  const roundScores = players.reduce((acc, { username }) => {
     return {
       ...acc,
-      [player.socketId]: calculatePlayerRoundScore(player.socketId, selections),
+      [username]: calculatePlayerRoundScore(username, selections),
     };
   }, {});
 
-  const newScores = players.reduce((acc, player) => {
-    const socketId = player.socketId;
-    const previousScore = scores?.[socketId] ?? 0;
-    const roundScore = roundScores?.[socketId];
+  const newScores = players.reduce((acc, { username }) => {
+    const previousScore = scores?.[username] ?? 0;
+    const roundScore = roundScores?.[username];
     return {
       ...acc,
-      [player.socketId]: previousScore + roundScore,
+      [username]: previousScore + roundScore,
     };
   }, {});
+
+  console.log({ selections, roundScores });
 
   return (
     <Grid

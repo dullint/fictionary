@@ -46,7 +46,6 @@ const WordPrompt = () => {
 
   const minutes = counter && Math.floor(counter / 60);
   const seconds = counter && counter - minutes * 60;
-  console.log(entry);
 
   return (
     <Grid container direction="column">
