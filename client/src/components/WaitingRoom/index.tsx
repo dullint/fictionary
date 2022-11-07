@@ -2,12 +2,11 @@ import {
   Avatar,
   Button,
   Grid,
-  IconButton,
   Snackbar,
   Tooltip,
   Typography,
 } from '@mui/material';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import { PlayerContext } from '../Room';

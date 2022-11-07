@@ -1,4 +1,5 @@
 - core: animation when revealing results
+- set scroll in waiting room and word displays
 - feat: better leaderborad
-- feat: better avatars with letters and colors and loading avatar while choosing pseudo
+- feat: better avatars with letters and colors and loading avatar while choosing pseudo, dictionary avatar
 - debt: clean handlers

@@ -91,6 +91,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const game = GAMES.get(roomId);
     if (!game) return;
     game.goToNextStep();
+    io.to(roomId).emit('game', game);
   };
 
   const changeSettings = ({ gameSettings }: { gameSettings: GameSettings }) => {

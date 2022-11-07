@@ -68,6 +68,7 @@ const WordGuess = () => {
             />
             <VoteBanner
               votingPlayers={votingPlayersByDefinitions[username] ?? []}
+              revealed={false}
             />
           </Grid>
         ))}

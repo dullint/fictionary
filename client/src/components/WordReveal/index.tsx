@@ -1,5 +1,5 @@
-import { Typography, Grid, Tooltip, Button } from '@mui/material';
-import React, { useContext } from 'react';
+import { Grid, Tooltip, Button } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
 import { SocketContext } from '../../App';
 import { GameContext, PlayerContext } from '../Room';
 import { useParams } from 'react-router-dom';
@@ -8,6 +8,8 @@ import { getVotingPlayersByDefinitions } from '../WordGuess/helpers';
 import VoteBanner from '../VoteBanner';
 import { getDefinitionsToDisplay } from '../WordGuess/helpers';
 import { isRoomAdmin } from '../WaitingRoom/helpers';
+import { Box } from '@mui/system';
+import { ANIMATION_TIME_BY_DEF } from './constants';
 
 const WordReveal = () => {
   const game = useContext(GameContext);
@@ -18,6 +20,7 @@ const WordReveal = () => {
   const { roomId } = useParams();
   const socket = useContext(SocketContext);
   const isAdmin = isRoomAdmin(players, socket.id);
+  const [revealedDefPlayers, setRevealedDefPlayers] = useState<string[]>([]);
 
   const handleNextStep = () => {
     socket.emit('show_results');
@@ -28,10 +31,32 @@ const WordReveal = () => {
     entry,
     roomId
   );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (revealedDefPlayers.length === definitionsToDisplay.length) {
+        setRevealedDefPlayers([]);
+        return;
+      }
+      setRevealedDefPlayers((revealedDefPlayers) => [
+        ...revealedDefPlayers,
+        definitionsToDisplay[revealedDefPlayers.length][0],
+      ]);
+    }, ANIMATION_TIME_BY_DEF);
+    return () => clearInterval(interval);
+  }, [definitionsToDisplay, revealedDefPlayers.length]);
+
   const votingPlayersByDefinitions = getVotingPlayersByDefinitions(
     players,
     selections
   );
+
+  const extendedPlayers = players.concat({
+    username: 'REAL_DEFINITION',
+    socketId: 'dictionary',
+    color: 'black',
+    isAdmin: false,
+  });
   return (
     <Grid container direction="column">
       <Grid container direction="column">
@@ -51,6 +76,11 @@ const WordReveal = () => {
             />
             <VoteBanner
               votingPlayers={votingPlayersByDefinitions[username] ?? []}
+              authorPlayer={extendedPlayers.find(
+                (player) => player.username === username
+              )}
+              size={'big'}
+              revealed={revealedDefPlayers.includes(username)}
             />
           </Grid>
         ))}
@@ -58,12 +88,19 @@ const WordReveal = () => {
       <Tooltip
         title={isAdmin ? null : 'Waiting for the admin to continue'}
         placement="top"
+        sx={{ m: 3 }}
       >
-        <span>
-          <Button onClick={handleNextStep} disabled={!isAdmin}>
+        <Box display="flex" justifyContent={'center'}>
+          <Button
+            onClick={handleNextStep}
+            disabled={!isAdmin}
+            variant="contained"
+            size="large"
+            sx={{ m: 1 }}
+          >
             Continue
           </Button>
-        </span>
+        </Box>
       </Tooltip>
     </Grid>
   );

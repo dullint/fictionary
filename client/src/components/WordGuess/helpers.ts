@@ -31,7 +31,7 @@ export const getDefinitionsToDisplay = (
   definitions: Definitions,
   entry: DictionnaryEntry,
   roomId: string
-) => {
+): [string, string][] => {
   const definitionToDisplay = Object.entries(definitions).concat([
     ['REAL_DEFINITION', entry.definition],
   ]);

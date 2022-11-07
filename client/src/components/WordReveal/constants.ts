@@ -1,0 +1,2 @@
+export const ANIMATION_TIME_BY_DEF = 4 * 1000;
+export const ANIMATION_POINTS_DELAY = 500;

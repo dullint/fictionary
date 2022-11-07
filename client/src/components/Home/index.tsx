@@ -2,7 +2,7 @@ import { Button, Grid, TextField, Typography } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SocketContext } from '../../App';
-import { checkRoomExistence, createRoom, joinRoom } from '../../services/room';
+import { createRoom, joinRoom } from '../../services/room';
 import { generateRandomRoomId } from '../GameSettingsDialog/helpers';
 import { defaultGameSettings } from './constants';
 

@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import WaitingRoom from '../WaitingRoom';
 import { SocketContext } from '../../App';
 import { Player } from '@server/src/room/types';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Game } from '@server/src/game/games';
 import WordPrompt from '../WordPrompt';
 import Leaderboard from '../Leaderboard';
@@ -35,7 +35,6 @@ const Room = () => {
     if (socket) {
       const onRoomEnter = async () => {
         const { game, players } = await joinGameAndQueryInfo(socket, roomId);
-        console.log({ players });
         setGame(game);
         setPlayers(players);
       };
