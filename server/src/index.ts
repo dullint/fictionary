@@ -5,6 +5,7 @@ import cors from 'cors';
 import { roomHandler } from './room';
 import { gameHandler } from './game';
 import { getPlayers, getSocketRoom } from './room/helpers';
+import GAMES from './game/games';
 const app = express();
 
 app.use(cors());
@@ -27,13 +28,12 @@ io.on('connection', (socket) => {
 
   socket.on('disconnecting', async () => {
     const roomId = getSocketRoom(socket);
-    console.log({ roomId });
     if (roomId) {
-      const players = await getPlayers(io, roomId);
-      io.to(roomId).emit(
-        'players',
-        players.filter((player) => player.socketId != socket.id)
+      const playersLeft = (await getPlayers(io, roomId)).filter(
+        (player) => player.socketId != socket.id
       );
+      if (playersLeft.length === 0) GAMES.delete(roomId);
+      io.to(roomId).emit('players', playersLeft);
     }
   });
   socket.on('disconnection', async () => {

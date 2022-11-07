@@ -8,7 +8,7 @@ export const joinRoom = async (
   roomId: string
 ): Promise<boolean> => {
   return new Promise((rs, rj) => {
-    socket.emit('join_room', { roomId });
+    socket.emit('join-room', { roomId });
     socket.on('room_joined', () => rs(true));
     socket.on('join_room_error', (error) => rj(error));
   });

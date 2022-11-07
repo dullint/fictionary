@@ -35,7 +35,7 @@ const WaitingRoom = () => {
   };
 
   const handleLeaveRoom = () => {
-    socket.emit('leave_room', { roomId });
+    socket.emit('leave-room', { roomId });
     navigate('/');
   };
 

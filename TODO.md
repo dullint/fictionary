@@ -1,8 +1,4 @@
-- core: definition visualisation
-- core: word guess avatars
-- core: loading when joining room
 - core: animation when revealing results
 - feat: better leaderborad
-- feat: better avatars with letters and colors
-- bug: kick people out of room when room doesn't exist anymore
-- fix: delete game when room is deleted
+- feat: better avatars with letters and colors and loading avatar while choosing pseudo
+- debt: clean handlers

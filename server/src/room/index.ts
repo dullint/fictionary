@@ -13,13 +13,13 @@ import {
 export const roomHandler = (io: Server, socket: Socket) => {
   const updateRoomPlayers = async (roomId: string) => {
     const players = await getPlayers(io, roomId);
-    console.log(players);
     io.to(roomId).emit('players', players);
   };
 
   const queryPlayers = async () => {
     const roomId = getSocketRoom(socket);
     const players = await getPlayers(io, roomId);
+    if (players.length === 0) GAMES.delete(roomId);
     io.to(roomId).emit('players', players);
   };
 
@@ -30,12 +30,20 @@ export const roomHandler = (io: Server, socket: Socket) => {
       });
       return;
     }
+    const socketOtherRooms = Array.from(socket.rooms.values()).filter(
+      (room) => room != roomId && room != socket.id
+    );
+    if (socketOtherRooms.length > 0) {
+      socket.emit('join_room_error', {
+        message: 'User already in a room',
+      });
+      return;
+    }
     if (!Array.from(socket.rooms.values()).includes(roomId)) {
       await socket.join(roomId);
     }
     socket.emit('room_joined');
     socket.data.color = selectColor((await getPlayers(io, roomId)).length);
-    socket.data.isAdmin = false;
     console.log(`User ${socket.id} joined room: ${roomId}`);
     updateRoomPlayers(roomId);
   };
@@ -77,6 +85,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
     if (socket.data?.isAdmin) {
       selectNewAdmin(io, socket.id, roomId);
     }
+    socket.data = {};
     socket.leave(roomId);
     console.log(`User ${socket.id} left room: ${roomId}`);
     updateRoomPlayers(roomId);
@@ -89,7 +98,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
 
   socket.on('update_username', updateUsername);
   socket.on('create_room', createRoom);
-  socket.on('join_room', joinRoom);
-  socket.on('leave_room', leaveRoom);
+  socket.on('join-room', joinRoom);
+  socket.on('leave-room', leaveRoom);
   socket.on('players', queryPlayers);
 };
