@@ -13,6 +13,7 @@ export enum GameStep {
   WAIT,
   PROMPT,
   GUESS,
+  REVEAL,
   RESULTS,
   FINISHED,
 }

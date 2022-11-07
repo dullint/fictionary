@@ -83,7 +83,7 @@ const WordPrompt = () => {
             multiline
             fullWidth
             helperText={`${definition.length}/${CHARACTER_LIMIT}`}
-            rows={6}
+            rows={5}
             onChange={handleTextFieldChange}
             inputProps={{
               maxLength: CHARACTER_LIMIT,

@@ -69,11 +69,11 @@ export const gameHandler = (io: Server, socket: Socket) => {
     if (game.round >= game.gameSettings.roundNumber) {
       game.gameStep = GameStep.FINISHED;
       io.to(roomId).emit('game', game);
-    } else {
-      game.newRound();
-      io.to(roomId).emit('game', game);
-      game.runTimer(io, roomId, game.gameSettings.maxPromptTime);
+      return;
     }
+    game.newRound();
+    io.to(roomId).emit('game', game);
+    game.runTimer(io, roomId, game.gameSettings.maxPromptTime);
   };
 
   const getNewWord = () => {
@@ -84,6 +84,13 @@ export const gameHandler = (io: Server, socket: Socket) => {
     game.entry = entry;
     io.to(roomId).emit('game', game);
     game.runTimer(io, roomId, game.gameSettings.maxPromptTime);
+  };
+
+  const showResults = () => {
+    const roomId = getSocketRoom(socket);
+    const game = GAMES.get(roomId);
+    if (!game) return;
+    game.goToNextStep();
   };
 
   const changeSettings = ({ gameSettings }: { gameSettings: GameSettings }) => {
@@ -102,4 +109,5 @@ export const gameHandler = (io: Server, socket: Socket) => {
   socket.on('remove_definition', removeDefinition);
   socket.on('get_new_word', getNewWord);
   socket.on('change_game_settings', changeSettings);
+  socket.on('show_results', showResults);
 };

@@ -32,17 +32,18 @@ const App = () => {
       height={'100vh'}
       sx={{
         background: 'radial-gradient(#F5F5F5, #f0f3ff)',
-        padding: 4,
       }}
     >
-      <SocketContext.Provider value={socket}>
-        <ThemeProvider theme={theme}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/room/:roomId" element={<Room />} />
-          </Routes>
-        </ThemeProvider>
-      </SocketContext.Provider>
+      <Grid container sx={{ padding: 3, maxWidth: 700 }}>
+        <SocketContext.Provider value={socket}>
+          <ThemeProvider theme={theme}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/room/:roomId" element={<Room />} />
+            </Routes>
+          </ThemeProvider>
+        </SocketContext.Provider>
+      </Grid>
     </Grid>
   );
 };

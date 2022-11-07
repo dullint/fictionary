@@ -10,6 +10,7 @@ import WordGuess from '../WordGuess';
 import WordResult from '../WordResult';
 import { joinGameAndQueryInfo } from '../../services/room';
 import LoadingPage from '../LoadingPage';
+import WordReveal from '../WordReveal';
 
 export const PlayerContext = createContext<Player[]>([]);
 export const GameContext = createContext<Game>(null);
@@ -18,6 +19,7 @@ export enum GameStep {
   WAIT,
   PROMPT,
   GUESS,
+  REVEAL,
   RESULTS,
   FINISHED,
 }
@@ -53,6 +55,8 @@ const Room = () => {
         return <WordPrompt />;
       case GameStep.GUESS:
         return <WordGuess />;
+      case GameStep.REVEAL:
+        return <WordReveal />;
       case GameStep.RESULTS:
         return <WordResult />;
       case GameStep.FINISHED:

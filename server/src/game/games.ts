@@ -47,8 +47,15 @@ export class Game {
     if (this.timer) clearInterval(this.timer);
     if (this.gameStep == GameStep.PROMPT) {
       this.gameStep = GameStep.GUESS;
-    } else if (this.gameStep == GameStep.GUESS) {
+      return;
+    }
+    if (this.gameStep == GameStep.GUESS) {
+      this.gameStep = GameStep.REVEAL;
+      return;
+    }
+    if (this.gameStep == GameStep.REVEAL) {
       this.gameStep = GameStep.RESULTS;
+      return;
     }
   }
 

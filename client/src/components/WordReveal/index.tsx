@@ -1,30 +1,28 @@
-import { Typography, Grid } from '@mui/material';
-import React, { useContext, useState } from 'react';
+import { Typography, Grid, Tooltip, Button } from '@mui/material';
+import React, { useContext } from 'react';
 import { SocketContext } from '../../App';
 import { GameContext, PlayerContext } from '../Room';
 import { useParams } from 'react-router-dom';
 import DefinitionDisplay from '../DefinitionDisplay';
-import {
-  getDefinitionsToDisplay,
-  getMyPlayer,
-  getVotingPlayersByDefinitions,
-} from './helpers';
+import { getVotingPlayersByDefinitions } from '../WordGuess/helpers';
 import VoteBanner from '../VoteBanner';
+import { getDefinitionsToDisplay } from '../WordGuess/helpers';
+import { isRoomAdmin } from '../WaitingRoom/helpers';
 
-const WordGuess = () => {
+const WordReveal = () => {
   const game = useContext(GameContext);
   const players = useContext(PlayerContext);
   const definitions = game?.definitions;
   const entry = game?.entry;
   const selections = game.selections;
-  const [selectedUsernameDef, setSelectedUsernameDef] = useState(null);
   const { roomId } = useParams();
   const socket = useContext(SocketContext);
+  const isAdmin = isRoomAdmin(players, socket.id);
 
-  const handleSelectDefinition = (username) => {
-    setSelectedUsernameDef(username);
-    socket.emit('select_definition', { username });
+  const handleNextStep = () => {
+    socket.emit('show_results');
   };
+
   const definitionsToDisplay = getDefinitionsToDisplay(
     definitions,
     entry,
@@ -34,30 +32,15 @@ const WordGuess = () => {
     players,
     selections
   );
-  const playerColor = getMyPlayer(players, socket.id).color;
   return (
     <Grid container direction="column">
-      <Typography variant="subtitle1" sx={{ m: 2 }}>
-        Guess the Right Word!
-      </Typography>
       <Grid container direction="column">
         {definitionsToDisplay.map(([username, definition]) => (
           <Grid
             item
-            onClick={() => handleSelectDefinition(username)}
             sx={{
-              boxShadow:
-                username === selectedUsernameDef
-                  ? `0px 0px 7px ${playerColor}`
-                  : '',
               boxSizing: 'border-box',
               borderRadius: 2,
-              '&:hover': {
-                boxShadow:
-                  username === selectedUsernameDef
-                    ? `0px 0px 7px ${playerColor}`
-                    : `0px 0px 10px -5px black`,
-              },
               padding: 1,
             }}
           >
@@ -71,14 +54,19 @@ const WordGuess = () => {
             />
           </Grid>
         ))}
-        <Typography variant="body1" sx={{ m: 1 }}>
-          {selectedUsernameDef
-            ? 'Waiting for other players to pick a definition'
-            : null}
-        </Typography>
       </Grid>
+      <Tooltip
+        title={isAdmin ? null : 'Waiting for the admin to continue'}
+        placement="top"
+      >
+        <span>
+          <Button onClick={handleNextStep} disabled={!isAdmin}>
+            Continue
+          </Button>
+        </span>
+      </Tooltip>
     </Grid>
   );
 };
 
-export default WordGuess;
+export default WordReveal;
