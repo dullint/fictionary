@@ -36,18 +36,18 @@ const WordGuess = () => {
   );
   const playerColor = getMyPlayer(players, socket.id).color;
   return (
-    <Grid container direction="column" height={1}>
+    <Grid container direction="column" height={1} width={1}>
       <Typography variant="subtitle1" sx={{ m: 2 }}>
         Guess the Right Word!
       </Typography>
       <Box
         display="flex"
+        width={1}
         flexDirection="column"
         sx={{ overflowY: 'auto', flex: 1, padding: 1 }}
       >
         {definitionsToDisplay.map(([username, definition]) => (
-          <Grid
-            container
+          <Box
             onClick={() => handleSelectDefinition(username)}
             sx={{
               boxShadow:
@@ -74,7 +74,7 @@ const WordGuess = () => {
               votingPlayers={votingPlayersByDefinitions[username] ?? []}
               revealed={false}
             />
-          </Grid>
+          </Box>
         ))}
         <Typography variant="body1" sx={{ m: 1 }}>
           {selectedUsernameDef

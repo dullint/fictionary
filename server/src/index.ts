@@ -4,7 +4,7 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import { roomHandler } from './room';
 import { gameHandler } from './game';
-import { getPlayers, getSocketRoom } from './room/helpers';
+import { getPlayers, getSocketRoom, selectNewAdmin } from './room/helpers';
 import GAMES from './game/games';
 const app = express();
 
@@ -33,6 +33,9 @@ io.on('connection', (socket) => {
         (player) => player.socketId != socket.id
       );
       if (playersLeft.length === 0) GAMES.delete(roomId);
+      if (socket.data?.isAdmin && playersLeft.length > 0) {
+        selectNewAdmin(io, socket.id, roomId);
+      }
       io.to(roomId).emit('players', playersLeft);
     }
   });

@@ -1,5 +1,5 @@
 import { Grid, Tooltip, Button } from '@mui/material';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { SocketContext } from '../../App';
 import { GameContext, PlayerContext } from '../Room';
 import { useParams } from 'react-router-dom';
@@ -9,8 +9,10 @@ import VoteBanner from '../VoteBanner';
 import { getDefinitionsToDisplay } from '../WordGuess/helpers';
 import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { Box } from '@mui/system';
-import { ANIMATION_TIME_BY_DEF } from './constants';
+import { BEFORE_AUTHOR_REVEAL_DELAY, BEFORE_NEXT_DEF_DELAY } from './constants';
 import { isMobile } from 'react-device-detect';
+import { delay } from './helpers';
+// import { delay } from './helpers';
 
 const WordReveal = () => {
   const game = useContext(GameContext);
@@ -22,6 +24,7 @@ const WordReveal = () => {
   const socket = useContext(SocketContext);
   const isAdmin = isRoomAdmin(players, socket.id);
   const [revealedDefPlayers, setRevealedDefPlayers] = useState<string[]>([]);
+  const definitionsRef = useRef([]);
 
   const handleNextStep = () => {
     socket.emit('show_results');
@@ -34,16 +37,29 @@ const WordReveal = () => {
   );
 
   useEffect(() => {
+    definitionsRef.current = definitionsRef.current.slice(
+      0,
+      definitionsToDisplay.length
+    );
+  }, [definitionsToDisplay]);
+
+  useEffect(() => {
+    definitionsRef.current?.[revealedDefPlayers?.length]?.scrollIntoView({
+      behavior: 'smooth',
+    });
     const interval = setInterval(() => {
       if (revealedDefPlayers.length === definitionsToDisplay.length) {
-        setRevealedDefPlayers([]);
         return;
       }
+      definitionsRef.current?.[revealedDefPlayers?.length]?.scrollIntoView({
+        behavior: 'smooth',
+      });
+      setTimeout(() => {}, BEFORE_AUTHOR_REVEAL_DELAY);
       setRevealedDefPlayers((revealedDefPlayers) => [
         ...revealedDefPlayers,
         definitionsToDisplay[revealedDefPlayers.length][0],
       ]);
-    }, ANIMATION_TIME_BY_DEF);
+    }, BEFORE_NEXT_DEF_DELAY);
     return () => clearInterval(interval);
   }, [definitionsToDisplay, revealedDefPlayers.length]);
 
@@ -59,15 +75,19 @@ const WordReveal = () => {
     isAdmin: false,
   });
   return (
-    <Grid container flexDirection="column" height={1}>
+    <Grid container flexDirection="column" height={1} width={1}>
       <Box
         display="flex"
+        width={1}
         flexDirection="column"
         sx={{ overflowY: 'auto', flex: 1, padding: 1 }}
       >
-        {definitionsToDisplay.map(([username, definition]) => (
-          <Grid
-            container
+        {definitionsToDisplay.map(([username, definition], index) => (
+          <Box
+            display="flex"
+            flexDirection={'column'}
+            key={`definition-${username}`}
+            ref={(el) => (definitionsRef.current[index] = el)}
             sx={{
               boxSizing: 'border-box',
               borderRadius: 2,
@@ -87,21 +107,23 @@ const WordReveal = () => {
               size={isMobile ? 'small' : 'big'}
               revealed={revealedDefPlayers.includes(username)}
             />
-          </Grid>
+          </Box>
         ))}
       </Box>
       <Tooltip
         title={isAdmin ? null : 'Waiting for the admin to continue'}
         placement="top"
-        sx={{ m: 3 }}
+        sx={{ m: 1 }}
       >
         <Box display="flex" justifyContent={'center'}>
           <Button
             onClick={handleNextStep}
-            disabled={!isAdmin}
+            disabled={
+              !isAdmin ||
+              revealedDefPlayers.length !== definitionsToDisplay.length
+            }
             variant="contained"
             size="large"
-            sx={{ m: 1 }}
           >
             Continue
           </Button>

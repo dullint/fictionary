@@ -32,6 +32,13 @@ const UsernameDialog = (props: Propstype) => {
     if (set) setOpen(false);
   };
 
+  const handlePressKey = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleSubmit();
+    }
+  };
+
   return (
     <Dialog open={open}>
       <DialogContent>
@@ -41,19 +48,25 @@ const UsernameDialog = (props: Propstype) => {
           alignItems={'center'}
           justifyContent="center"
         >
-          <Typography variant="h5" sx={{ m: 1 }}>
+          <Typography
+            fontSize={22}
+            fontWeight={700}
+            sx={{ marginBottom: 2 }}
+            align="left"
+          >
             Choose your username
           </Typography>
           <TextField
+            onKeyPress={handlePressKey}
             hiddenLabel
             autoFocus
+            fullWidth
             variant="outlined"
             onChange={handleTextFieldChange}
             inputProps={{
               maxLength: 15,
               style: { fontSize: 20, fontWeight: 900 },
             }}
-            sx={{ m: 1, width: 270 }}
           />
           {usernameErrorMessage && (
             <Typography sx={{ color: 'red' }}>

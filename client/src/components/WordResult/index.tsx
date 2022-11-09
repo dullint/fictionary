@@ -1,4 +1,12 @@
-import { Button, Grid, Tooltip, Typography } from '@mui/material';
+import {
+  Avatar,
+  Badge,
+  Button,
+  Grid,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import { Box } from '@mui/system';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { useParams } from 'react-router-dom';
@@ -43,25 +51,69 @@ const WordResult = () => {
     };
   }, {});
 
+  const displayedScores = displayNewScores ? newScores : scores;
+
   return (
     <Grid
       alignItems="center"
       container
       justifyContent="center"
-      height={players.length * 150}
+      direction="column"
+      height={1}
     >
-      <Typography variant="subtitle1">New Scores after this round:</Typography>
-      <ScoreBar
-        players={players}
-        scores={displayNewScores ? newScores : scores}
-        animate={displayNewScores}
-      />
+      <Typography variant="h4" sx={{ marginTop: 2 }}>
+        Scores:
+      </Typography>
+      <Grid
+        container
+        justifyContent="center"
+        alignItems={'center'}
+        sx={{ marginTop: 2, marginBottom: 2, overflowY: 'auto', flex: 1 }}
+        maxWidth={500}
+      >
+        {players &&
+          players.map((player) => (
+            <Grid
+              container
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+              sx={{ maxWidth: 130 }}
+            >
+              <Badge
+                overlap="circular"
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                badgeContent={
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg">
+                    {displayedScores?.[player?.username]}
+                  </Avatar>
+                }
+              >
+                <Avatar
+                  sx={{
+                    width: 80,
+                    height: 80,
+                    m: 1,
+                    bgcolor: player.color,
+                  }}
+                />
+              </Badge>
+              <Typography variant="subtitle1" align="center">
+                {player.username}
+              </Typography>
+            </Grid>
+          ))}
+      </Grid>
       <Tooltip
         title={isAdmin ? null : 'Waiting for the admin to continue'}
         placement="top"
       >
         <span>
-          <Button onClick={handleNextStep} disabled={!isAdmin}>
+          <Button
+            onClick={handleNextStep}
+            disabled={!isAdmin}
+            variant="contained"
+          >
             Continue
           </Button>
         </span>

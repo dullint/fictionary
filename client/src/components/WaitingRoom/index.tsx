@@ -137,7 +137,7 @@ const WaitingRoom = () => {
         </span>
       </Tooltip>
 
-      <Button onClick={handleLeaveRoom} size="large" sx={{ m: 1 }}>
+      <Button onClick={handleLeaveRoom} size="large">
         Leave Room
       </Button>
       <UsernameDialog

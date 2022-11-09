@@ -46,6 +46,10 @@ const Room = () => {
     }
   }, [socket, roomId]);
 
+  useEffect(() => {
+    console.log({ players });
+  }, [players]);
+
   const renderComponent = (gameStep: GameStep) => {
     switch (gameStep) {
       case GameStep.WAIT:
