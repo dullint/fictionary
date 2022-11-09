@@ -28,13 +28,19 @@ const App = () => {
       alignItems="start"
       justifyContent="center"
       margin={0}
-      width={1}
+      width={'100vw'}
       height={'100vh'}
       sx={{
         background: 'radial-gradient(#F5F5F5, #f0f3ff)',
       }}
+      overflow={'hidden'}
     >
-      <Grid container sx={{ padding: 3, maxWidth: 700 }}>
+      <Grid
+        container
+        height={1}
+        width={1}
+        sx={{ padding: 3, maxWidth: 700, minWidth: 200 }}
+      >
         <SocketContext.Provider value={socket}>
           <ThemeProvider theme={theme}>
             <Routes>

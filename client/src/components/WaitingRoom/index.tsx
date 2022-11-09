@@ -57,6 +57,7 @@ const WaitingRoom = () => {
       container
       justifyContent="center"
       direction="column"
+      height={1}
     >
       <Typography variant="h6" align="center">
         Room code:
@@ -92,7 +93,8 @@ const WaitingRoom = () => {
       <Grid
         container
         justifyContent="center"
-        sx={{ marginTop: 2, marginBottom: 2 }}
+        alignItems={'center'}
+        sx={{ marginTop: 2, marginBottom: 2, overflowY: 'auto', flex: 1 }}
         maxWidth={500}
       >
         {players &&

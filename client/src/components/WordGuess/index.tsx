@@ -1,4 +1,4 @@
-import { Typography, Grid } from '@mui/material';
+import { Typography, Grid, Box } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { SocketContext } from '../../App';
 import { GameContext, PlayerContext } from '../Room';
@@ -36,14 +36,18 @@ const WordGuess = () => {
   );
   const playerColor = getMyPlayer(players, socket.id).color;
   return (
-    <Grid container direction="column">
+    <Grid container direction="column" height={1}>
       <Typography variant="subtitle1" sx={{ m: 2 }}>
         Guess the Right Word!
       </Typography>
-      <Grid container direction="column">
+      <Box
+        display="flex"
+        flexDirection="column"
+        sx={{ overflowY: 'auto', flex: 1, padding: 1 }}
+      >
         {definitionsToDisplay.map(([username, definition]) => (
           <Grid
-            item
+            container
             onClick={() => handleSelectDefinition(username)}
             sx={{
               boxShadow:
@@ -77,7 +81,7 @@ const WordGuess = () => {
             ? 'Waiting for other players to pick a definition'
             : null}
         </Typography>
-      </Grid>
+      </Box>
     </Grid>
   );
 };

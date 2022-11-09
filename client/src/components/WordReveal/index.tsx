@@ -10,6 +10,7 @@ import { getDefinitionsToDisplay } from '../WordGuess/helpers';
 import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { Box } from '@mui/system';
 import { ANIMATION_TIME_BY_DEF } from './constants';
+import { isMobile } from 'react-device-detect';
 
 const WordReveal = () => {
   const game = useContext(GameContext);
@@ -58,11 +59,15 @@ const WordReveal = () => {
     isAdmin: false,
   });
   return (
-    <Grid container direction="column">
-      <Grid container direction="column">
+    <Grid container flexDirection="column" height={1}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        sx={{ overflowY: 'auto', flex: 1, padding: 1 }}
+      >
         {definitionsToDisplay.map(([username, definition]) => (
           <Grid
-            item
+            container
             sx={{
               boxSizing: 'border-box',
               borderRadius: 2,
@@ -79,12 +84,12 @@ const WordReveal = () => {
               authorPlayer={extendedPlayers.find(
                 (player) => player.username === username
               )}
-              size={'big'}
+              size={isMobile ? 'small' : 'big'}
               revealed={revealedDefPlayers.includes(username)}
             />
           </Grid>
         ))}
-      </Grid>
+      </Box>
       <Tooltip
         title={isAdmin ? null : 'Waiting for the admin to continue'}
         placement="top"

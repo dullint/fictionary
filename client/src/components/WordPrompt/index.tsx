@@ -6,6 +6,7 @@ import { SocketContext } from '../../App';
 import DefinitionDisplay from '../DefinitionDisplay';
 import { GameContext } from '../Room';
 import { CHARACTER_LIMIT } from './constants';
+import { isMobile } from 'react-device-detect';
 
 const WordPrompt = () => {
   const game = useContext(GameContext);
@@ -45,6 +46,13 @@ const WordPrompt = () => {
     }
   });
 
+  const handlePressKey = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleSubmit();
+    }
+  };
+
   useEffect(() => {
     if (game?.entry) {
       setDefinition('');
@@ -79,11 +87,12 @@ const WordPrompt = () => {
           <TextField
             autoFocus
             disabled={hasSubmited}
+            onKeyPress={handlePressKey}
             value={definition}
             multiline
+            rows={isMobile ? 10 : 6}
             fullWidth
             helperText={`${definition.length}/${CHARACTER_LIMIT}`}
-            rows={5}
             onChange={handleTextFieldChange}
             inputProps={{
               maxLength: CHARACTER_LIMIT,

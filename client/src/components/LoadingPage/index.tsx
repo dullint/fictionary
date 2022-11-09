@@ -27,7 +27,7 @@ const LoadingPage = (props: PropsType) => {
           alignItems={'center'}
           container
         >
-          <Typography variant="subtitle1">
+          <Typography variant="subtitle1" align={'center'}>
             {errorMessage.concat('\nPlease go back to the Home page.')}
           </Typography>
           <Button
