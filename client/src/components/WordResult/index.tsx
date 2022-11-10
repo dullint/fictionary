@@ -85,7 +85,7 @@ const WordResult = () => {
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                 badgeContent={
                   <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg">
-                    {displayedScores?.[player?.username]}
+                    {displayedScores?.[player?.username] ?? 0}
                   </Avatar>
                 }
               >

@@ -1,5 +1,11 @@
 import { Grid, Tooltip, Button } from '@mui/material';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { SocketContext } from '../../App';
 import { GameContext, PlayerContext } from '../Room';
 import { useParams } from 'react-router-dom';
@@ -11,8 +17,6 @@ import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { Box } from '@mui/system';
 import { BEFORE_AUTHOR_REVEAL_DELAY, BEFORE_NEXT_DEF_DELAY } from './constants';
 import { isMobile } from 'react-device-detect';
-import { delay } from './helpers';
-// import { delay } from './helpers';
 
 const WordReveal = () => {
   const game = useContext(GameContext);
@@ -24,17 +28,18 @@ const WordReveal = () => {
   const socket = useContext(SocketContext);
   const isAdmin = isRoomAdmin(players, socket.id);
   const [revealedDefPlayers, setRevealedDefPlayers] = useState<string[]>([]);
+  const [numberRevealedDef, setNumberRevealedDef] = useState(0);
+  const [revealedUsername, setRevealedUsername] = useState<string[]>([]);
   const definitionsRef = useRef([]);
-
-  const handleNextStep = () => {
-    socket.emit('show_results');
-  };
-
   const definitionsToDisplay = getDefinitionsToDisplay(
     definitions,
     entry,
     roomId
   );
+
+  const handleNextStep = () => {
+    socket.emit('show_results');
+  };
 
   useEffect(() => {
     definitionsRef.current = definitionsRef.current.slice(
@@ -44,24 +49,25 @@ const WordReveal = () => {
   }, [definitionsToDisplay]);
 
   useEffect(() => {
-    definitionsRef.current?.[revealedDefPlayers?.length]?.scrollIntoView({
-      behavior: 'smooth',
-    });
     const interval = setInterval(() => {
-      if (revealedDefPlayers.length === definitionsToDisplay.length) {
-        return;
+      if (revealedUsername.length === definitionsToDisplay.length) {
+        return () => clearInterval(interval);
       }
-      definitionsRef.current?.[revealedDefPlayers?.length]?.scrollIntoView({
+      definitionsRef.current?.[revealedUsername.length]?.scrollIntoView({
         behavior: 'smooth',
       });
-      setTimeout(() => {}, BEFORE_AUTHOR_REVEAL_DELAY);
-      setRevealedDefPlayers((revealedDefPlayers) => [
-        ...revealedDefPlayers,
-        definitionsToDisplay[revealedDefPlayers.length][0],
-      ]);
+      setTimeout(
+        () =>
+          setRevealedUsername((revealedUsername) => [
+            ...revealedUsername,
+            definitionsToDisplay?.[revealedUsername.length]?.[0],
+          ]),
+        BEFORE_AUTHOR_REVEAL_DELAY
+      );
+      console.log(revealedUsername);
     }, BEFORE_NEXT_DEF_DELAY);
     return () => clearInterval(interval);
-  }, [definitionsToDisplay, revealedDefPlayers.length]);
+  });
 
   const votingPlayersByDefinitions = getVotingPlayersByDefinitions(
     players,
@@ -105,7 +111,7 @@ const WordReveal = () => {
                 (player) => player.username === username
               )}
               size={isMobile ? 'small' : 'big'}
-              revealed={revealedDefPlayers.includes(username)}
+              revealed={revealedUsername.includes(username)}
             />
           </Box>
         ))}
@@ -120,7 +126,7 @@ const WordReveal = () => {
             onClick={handleNextStep}
             disabled={
               !isAdmin ||
-              revealedDefPlayers.length !== definitionsToDisplay.length
+              revealedUsername.length !== definitionsToDisplay.length
             }
             variant="contained"
             size="large"
