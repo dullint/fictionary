@@ -6,16 +6,17 @@ import { roomHandler } from './room';
 import { gameHandler } from './game';
 import { getPlayers, getSocketRoom, selectNewAdmin } from './room/helpers';
 import GAMES from './game/games';
+import path from 'path';
 const app = express();
 
 app.use(cors());
-
+app.use(express.static(path.join(__dirname + '/public')));
 const server = http.createServer(app);
 const port = process.env.PORT || 3021;
 
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:3020'],
+    origin: process.env.CLIENT_URL || 'http://localhost:3020',
     methods: ['GET', 'POST'],
   },
 });
