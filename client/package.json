@@ -18,6 +18,7 @@
     "@types/react-dom": "^18.0.6",
     "@types/socket.io": "^3.0.2",
     "@types/socket.io-client": "^3.0.0",
+    "ajv": "^8.11.0",
     "app-b-server": "file:./game/tupes",
     "react": "^18.2.0",
     "react-device-detect": "^2.2.2",
