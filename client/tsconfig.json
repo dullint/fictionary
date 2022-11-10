@@ -1,16 +1,11 @@
 {
-  "include": ["src", "../server", "types/index.d.ts"],
+  "include": ["src", "../server", "types/index.d.ts", "../tsconfig.json"],
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {
     "target": "es5",
     "declaration": true,
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "types": ["@emotion/core"],
-    "paths": {
-      "@server/src*": ["../server/src*"]
-    },
-    "plugins": [{ "name": "typescript-plugin-css-modules" }]
+    "baseUrl": "."
   }
 }

@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import WaitingRoom from '../WaitingRoom';
 import { SocketContext } from '../../App';
-import { Player } from '@server/src/room/types';
+import { Player } from '../../../../server/room/types';
 import { useParams } from 'react-router-dom';
-import { Game } from '@server/src/game/games';
+import { Game } from '../../../../server/game/games';
 import WordPrompt from '../WordPrompt';
 import Leaderboard from '../Leaderboard';
 import WordGuess from '../WordGuess';

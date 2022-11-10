@@ -2,10 +2,10 @@ import {
   Definitions,
   DictionnaryEntry,
   SelectedDefinitions,
-} from '../../../../server/src/game/types';
+} from '../../../../server/game/types';
 import { shuffle } from 'shuffle-seed';
 
-import { Player } from '../../../../server/src/room/types';
+import { Player } from '../../../../server/room/types';
 
 export const getMyPlayer = (players: Player[], socketId: string) => {
   return players.filter((player) => player.socketId === socketId)?.[0];

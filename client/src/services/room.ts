@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io-client';
-import { GameSettings } from '@server/src/game/types';
-import { Player } from '../../../server/src/room/types';
-import { Game } from '../../../server/src/game/games';
+import { GameSettings } from '../../../server/game/types';
+import { Player } from '../../../server/room/types';
+import { Game } from '../../../server/game/games';
 
 export const joinRoom = async (
   socket: Socket,

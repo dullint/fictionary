@@ -8,7 +8,7 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
-import { GameSettings } from '../../../../server/src/game/types';
+import { GameSettings } from '../../../../server/game/types';
 
 export interface PropsType {
   open: boolean;

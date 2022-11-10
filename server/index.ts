@@ -10,12 +10,12 @@ import path from 'path';
 const app = express();
 
 app.use(cors());
-app.use(express.static(path.join(__dirname + '/public')));
+app.use(express.static(path.resolve(__dirname, '../client/build')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 const server = http.createServer(app);
-const port = process.env.PORT || 3021;
+const port = process.env.PORT || 3020;
 
 const io = new Server(server, {
   cors: {
