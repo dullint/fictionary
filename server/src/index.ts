@@ -11,6 +11,9 @@ const app = express();
 
 app.use(cors());
 app.use(express.static(path.join(__dirname + '/public')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 const server = http.createServer(app);
 const port = process.env.PORT || 3021;
 
@@ -20,7 +23,6 @@ const io = new Server(server, {
     methods: ['GET', 'POST'],
   },
 });
-
 io.on('connection', (socket) => {
   console.log(`Player connected with id ${socket.id}`);
 
