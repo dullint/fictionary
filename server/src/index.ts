@@ -19,11 +19,10 @@ const port = process.env.PORT || 3021;
 
 const io = new Server(server, {
   cors: {
-    origin: 'https://sea-lion-app-w7b99.ondigitalocean.app/',
+    origin: 'http://localhost:3020',
     methods: ['GET', 'POST'],
   },
 });
-console.log(process.env.PORT);
 io.on('connection', (socket) => {
   console.log(`Player connected with id ${socket.id}`);
 
@@ -48,4 +47,4 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(port, () => console.log('SERVER IS RUNNING'));
+server.listen(port, () => console.log(`SERVER IS RUNNING ON PORT ${port}`));
