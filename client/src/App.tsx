@@ -14,7 +14,7 @@ const App = () => {
   const theme = getTheme();
 
   useEffect(() => {
-    const server = process.env.REACT_APP_SERVER_URL;
+    const server = 'https://sea-lion-app-w7b99.ondigitalocean.app/';
     const socket = io(server);
     setSocket(socket);
 

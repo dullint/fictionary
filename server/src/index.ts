@@ -19,10 +19,11 @@ const port = process.env.PORT || 3021;
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:3020',
+    origin: 'https://sea-lion-app-w7b99.ondigitalocean.app/',
     methods: ['GET', 'POST'],
   },
 });
+console.log(process.env.PORT);
 io.on('connection', (socket) => {
   console.log(`Player connected with id ${socket.id}`);
 
