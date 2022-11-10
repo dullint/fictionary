@@ -28,7 +28,7 @@ const DefinitionDisplay = (props: PropsType) => {
       >
         {type}
       </Typography>
-      <Typography textOverflow="ellipsis" overflow={'hidden'}>
+      <Typography component="span" textOverflow="ellipsis" overflow={'hidden'}>
         {definition}
       </Typography>
     </Box>

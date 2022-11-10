@@ -50,7 +50,7 @@ const WordReveal = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (revealedUsername.length === definitionsToDisplay.length) {
+      if (revealedUsername.length >= definitionsToDisplay.length) {
         return () => clearInterval(interval);
       }
       definitionsRef.current?.[revealedUsername.length]?.scrollIntoView({
