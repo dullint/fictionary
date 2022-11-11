@@ -9,8 +9,6 @@ import {
   SelectedDefinitions,
 } from './types';
 
-const GAMES = new Map<string, Game>();
-
 export class Game {
   round: number;
   entry: DictionnaryEntry | null;
@@ -90,4 +88,4 @@ export class Game {
   };
 }
 
-export default GAMES;
+export default new Map<string, Game>();

@@ -1,6 +1,6 @@
 import { Socket, Server } from 'socket.io';
 import { UpdateUsernamePayload, createRoomPayload } from './types';
-import GAMES, { Game } from '../game/games';
+import GAMES, { Game } from '../game/gameManager';
 import {
   checkIfRoomExists,
   checkIfUsernameTaken,
@@ -91,7 +91,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
 
   socket.on('update_username', updateUsername);
   socket.on('create_room', createRoom);
-  socket.on('join-room', joinRoom);
-  socket.on('leave-room', leaveRoom);
+  socket.on('join_room', joinRoom);
+  socket.on('leave_room', leaveRoom);
   socket.on('players', queryPlayers);
 };

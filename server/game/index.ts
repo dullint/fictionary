@@ -2,7 +2,7 @@ import { Server, Socket } from 'socket.io';
 import { getPlayers, getSocketRoom } from '../room/helpers';
 
 import { get_random_entry } from './helpers';
-import GAMES from './games';
+import GAMES from './gameManager';
 import { GameSettings, GameStep, Scores } from './types';
 
 export const gameHandler = (io: Server, socket: Socket) => {

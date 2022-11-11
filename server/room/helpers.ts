@@ -1,6 +1,6 @@
 import { RemoteSocket, Server, Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
-import GAMES from '../game/games';
+import GAMES from '../game/gameManager';
 import { Player } from './types';
 
 export const getSocketRoom = (socket: Socket) =>

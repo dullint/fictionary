@@ -7,7 +7,7 @@ import { getSocketRoom, onLeavingRoom } from '../room/helpers';
 export default (server: HTTPServer) => {
   const io = new Server(server, {
     cors: {
-      origin: ['http://localhost:3021'],
+      origin: ['http://localhost:3021', 'http://localhost:3020'],
       methods: ['GET', 'POST'],
     },
   });

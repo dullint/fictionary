@@ -1,14 +1,14 @@
 import { Socket } from 'socket.io-client';
 import { GameSettings } from '../../../server/game/types';
 import { Player } from '../../../server/room/types';
-import { Game } from '../../../server/game/games';
+import { Game } from '../../../server/game/gameManager';
 
 export const joinRoom = async (
   socket: Socket,
   roomId: string
 ): Promise<boolean> => {
   return new Promise((rs, rj) => {
-    socket.emit('join-room', { roomId });
+    socket.emit('join_room', { roomId });
     socket.on('room_joined', () => rs(true));
     socket.on('join_room_error', (error) => rj(error));
   });

@@ -3,7 +3,7 @@ import WaitingRoom from '../WaitingRoom';
 import { SocketContext } from '../../App';
 import { Player } from '../../../../server/room/types';
 import { useParams } from 'react-router-dom';
-import { Game } from '../../../../server/game/games';
+import { Game } from '../../../../server/game/gameManager';
 import WordPrompt from '../WordPrompt';
 import Leaderboard from '../Leaderboard';
 import WordGuess from '../WordGuess';

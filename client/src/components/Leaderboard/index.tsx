@@ -15,7 +15,7 @@ const Leaderboard = () => {
   const { roomId } = useParams();
 
   const handleLeaveToMenu = () => {
-    socket.emit('leave-room', { roomId });
+    socket.emit('leave_room', { roomId });
     navigate('/');
   };
 
