@@ -94,7 +94,7 @@ const WordReveal = () => {
             <DefinitionDisplay
               word={entry.word}
               definition={definition}
-              type={entry.type}
+              nature={entry.nature}
             />
             <VoteBanner
               votingPlayers={votingPlayersByDefinitions[username] ?? []}

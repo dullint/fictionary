@@ -5,11 +5,11 @@ import React from 'react';
 interface PropsType {
   word: string;
   definition: string;
-  type: string;
+  nature: string;
 }
 
 const DefinitionDisplay = (props: PropsType) => {
-  const { word, definition, type } = props;
+  const { word, definition, nature } = props;
   return (
     <Box>
       <Typography
@@ -26,7 +26,7 @@ const DefinitionDisplay = (props: PropsType) => {
         fontWeight={100}
         sx={{ marginRight: 1 }}
       >
-        {type}
+        {nature}
       </Typography>
       <Typography component="span" textOverflow="ellipsis" overflow={'hidden'}>
         {definition}

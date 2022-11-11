@@ -80,7 +80,7 @@ const WordPrompt = () => {
           <Box zIndex={2} position="absolute" ref={entryRef} sx={{ m: 2 }}>
             <DefinitionDisplay
               word={entry.word}
-              type={entry.type}
+              nature={entry.nature}
               definition={''}
             ></DefinitionDisplay>
           </Box>

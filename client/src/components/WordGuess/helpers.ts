@@ -1,11 +1,11 @@
 import {
   Definitions,
-  DictionnaryEntry,
   SelectedDefinitions,
 } from '../../../../server/game/types';
 import { shuffle } from 'shuffle-seed';
 
 import { Player } from '../../../../server/room/types';
+import { DictionnaryEntry } from '../../../../server/dictionary/types';
 
 export const getMyPlayer = (players: Player[], socketId: string) => {
   return players.filter((player) => player.socketId === socketId)?.[0];

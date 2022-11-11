@@ -2,8 +2,8 @@ import { Server, Socket } from 'socket.io';
 import { getPlayers, getSocketRoom } from '../room/helpers';
 
 import { get_random_entry } from './helpers';
-import GAMES, { Game } from './games';
-import { DictionnaryEntry, GameSettings, GameStep, Scores } from './types';
+import GAMES from './games';
+import { GameSettings, GameStep, Scores } from './types';
 
 export const gameHandler = (io: Server, socket: Socket) => {
   const submitDefinition = async ({ definition }: { definition: string }) => {

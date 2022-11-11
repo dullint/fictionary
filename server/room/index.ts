@@ -8,7 +8,6 @@ import {
   getSocketRoom,
   onLeavingRoom,
   selectColor,
-  selectNewAdmin,
 } from './helpers';
 
 export const roomHandler = (io: Server, socket: Socket) => {

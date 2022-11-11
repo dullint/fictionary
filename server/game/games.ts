@@ -1,8 +1,8 @@
 import { Server } from 'socket.io';
+import { DictionnaryEntry } from '../dictionary/types';
 import { get_random_entry } from './helpers';
 import {
   Definitions,
-  DictionnaryEntry,
   GameSettings,
   GameStep,
   Scores,
