@@ -18,7 +18,7 @@ export interface PropsType {
 
 const GameSettingsDialog = (props: PropsType) => {
   const { open, setOpen, isAdmin } = props;
-  const [maxPromptTime, setMaxPromptTime] = useState(1);
+  const [maxPromptTime, setMaxPromptTime] = useState(3);
   const [roundNumber, setRoundNumber] = useState(3);
   const socket = useContext(SocketContext);
 
@@ -68,7 +68,7 @@ const GameSettingsDialog = (props: PropsType) => {
             variant="subtitle1"
             sx={{ marginTop: 3, marginBottom: 1 }}
           >
-            Max writing time:
+            Max writing time (Min):
           </Typography>
           <ButtonGroup variant="outlined" disabled={!isAdmin}>
             {promptTimeOptions.map((value) => {
@@ -77,7 +77,9 @@ const GameSettingsDialog = (props: PropsType) => {
                   sx={{ textTransform: 'none' }}
                   onClick={(e) => setMaxPromptTime(value)}
                   variant={value === maxPromptTime ? 'contained' : 'outlined'}
-                >{`${value} min${value > 1 ? 's' : ''}`}</Button>
+                >
+                  {value}
+                </Button>
               );
             })}
           </ButtonGroup>

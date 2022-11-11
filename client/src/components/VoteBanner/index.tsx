@@ -2,13 +2,13 @@ import { AvatarGroup, Box, Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Player } from '../../../../server/room/types';
 import Avatar from '../Avatar';
-import { getAuthorUsernameToDisplay } from './helpers';
+import { getAuthorUsernameToDisplay, getDisplayPoints } from './helpers';
 
 interface PropsType {
   votingPlayers: Player[];
   authorPlayer?: Player;
-  size?: 'big' | 'small';
   revealed: boolean;
+  size?: 'big' | 'small';
 }
 
 const VoteBanner = (props: PropsType) => {
@@ -23,12 +23,13 @@ const VoteBanner = (props: PropsType) => {
   }, [revealed]);
 
   const isTrueDefinition = authorPlayer?.socketId === 'dictionary';
-  const pointsNumber =
-    isTrueDefinition && votingPlayers.length ? 1 : votingPlayers.length;
-  const pointsOrientation = isTrueDefinition ? 'left' : 'right';
-  const pointsMessage = pointsNumber
-    ? `+ ${pointsNumber} POINT${pointsNumber > 1 ? 'S' : ''}`
-    : '';
+  const displayPoints = getDisplayPoints(
+    revealed,
+    isTrueDefinition,
+    votingPlayers,
+    authorPlayer
+  );
+  console.log(displayPoints);
   return (
     <Grid
       container
@@ -43,7 +44,7 @@ const VoteBanner = (props: PropsType) => {
       </AvatarGroup>
       <Typography
         variant="subtitle1"
-        align={pointsOrientation}
+        align={displayPoints.orientation}
         sx={{
           flexGrow: 1,
           textJustify: 'end',
@@ -55,7 +56,7 @@ const VoteBanner = (props: PropsType) => {
           color: 'orange',
         }}
       >
-        {pointsMessage}
+        {displayPoints.message}
       </Typography>
 
       <Box

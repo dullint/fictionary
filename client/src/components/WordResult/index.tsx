@@ -83,7 +83,10 @@ const WordResult = () => {
                 overlap="circular"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                 badgeContent={
-                  <MUIAvatar alt="points">
+                  <MUIAvatar
+                    alt="points"
+                    sx={{ transform: 'translate(-5px, -12px)' }}
+                  >
                     {displayedScores?.[player?.username] ?? 0}
                   </MUIAvatar>
                 }

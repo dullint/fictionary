@@ -4,8 +4,9 @@ export const calculatePlayerRoundScore = (
   username: string,
   selections: SelectedDefinitions
 ) => {
-  const voteForHimPoints = Object.values(selections).reduce(
-    (acc, votedUsername) => acc + Number(votedUsername === username),
+  const voteForHimPoints = Object.entries(selections).reduce(
+    (acc, [voterUsername, votedUsername]) =>
+      acc + Number(votedUsername === username && voterUsername !== username),
     0
   );
   const findRightDefPoint = Number(
