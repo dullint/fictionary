@@ -30,6 +30,7 @@ const WordReveal = () => {
   );
 
   const handleNextStep = () => {
+    console.log(socket);
     socket.emit('show_results');
   };
 

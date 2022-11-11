@@ -1,5 +1,5 @@
 import {
-  Avatar,
+  Avatar as MUIAvatar,
   Badge,
   Button,
   Grid,
@@ -10,6 +10,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import { useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
+import Avatar from '../Avatar';
 import { GameContext, PlayerContext } from '../Room';
 import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { calculatePlayerRoundScore } from './helpers';
@@ -82,19 +83,12 @@ const WordResult = () => {
                 overlap="circular"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                 badgeContent={
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg">
+                  <MUIAvatar alt="points">
                     {displayedScores?.[player?.username] ?? 0}
-                  </Avatar>
+                  </MUIAvatar>
                 }
               >
-                <Avatar
-                  sx={{
-                    width: 80,
-                    height: 80,
-                    m: 1,
-                    bgcolor: player.color,
-                  }}
-                />
+                <Avatar player={player} />
               </Badge>
               <Typography variant="subtitle1" align="center">
                 {player.username}

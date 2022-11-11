@@ -64,9 +64,12 @@ const WordPrompt = () => {
   return (
     <Grid container direction="column">
       <Grid container justifyContent={'space-between'} flexDirection="row">
-        <Typography variant="subtitle1" sx={{ m: 2 }}>
-          Time to write your definition!
-        </Typography>
+        {counter && (
+          <Typography sx={{ m: 1 }} variant="h6">{`${String(minutes).padStart(
+            2,
+            '0'
+          )}:${String(seconds).padStart(2, '0')}`}</Typography>
+        )}
         <Button
           onClick={handleKnowWord}
           endIcon={<FindReplaceIcon />}
@@ -126,26 +129,6 @@ const WordPrompt = () => {
             ? 'Waiting for other player to submit their definition!'
             : null}
         </Typography>
-        <Grid
-          container
-          justifyContent="center"
-          alignItems="center"
-          sx={{
-            borderRadius: 100,
-            height: 70,
-            width: 70,
-            backgroundColor: 'green',
-          }}
-        >
-          {counter && (
-            <Typography sx={{ color: 'white' }} variant="h6">{`${String(
-              minutes
-            ).padStart(2, '0')}:${String(seconds).padStart(
-              2,
-              '0'
-            )}`}</Typography>
-          )}
-        </Grid>
       </Grid>
     </Grid>
   );

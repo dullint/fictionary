@@ -29,11 +29,6 @@ export const checkIfRoomExists = (io: Server, roomId: string) => {
   return serverRooms.includes(roomId);
 };
 
-const generateInviteUsername = () => {
-  const random_number = Math.floor(Math.random() * 10000) + 1;
-  return `Invite-${random_number}`;
-};
-
 export const checkIfUsernameTaken = async (
   io: Server,
   roomId: string,
@@ -46,7 +41,7 @@ export const checkIfUsernameTaken = async (
 
 export const selectColor = (n: number) => {
   const hue = n * 137.508; // use golden angle approximation
-  return `hsl(${hue},100%,75%)`;
+  return `hsl(${hue},100%,80%)`;
 };
 
 export const selectNewAdmin = async (

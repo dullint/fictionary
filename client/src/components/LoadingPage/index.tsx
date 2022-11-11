@@ -12,11 +12,15 @@ const LoadingPage = (props: PropsType) => {
   const navigate = useNavigate();
   const { roomId } = useParams();
   useEffect(() => {
+    const timeout = setTimeout(
+      () => setErrorMessage(timeoutMessage),
+      CONNECT_TIMEOUT
+    );
     if (joinErrorMessage === 'Room do not exist') {
-      setErrorMessage(`The room ${roomId} does not exist`);
+      clearTimeout(timeout);
+      setErrorMessage(`The room ${roomId} does not exist.`);
     }
     const timeoutMessage = `There was an error while trying to connect to the room ${roomId}.`;
-    setTimeout(() => setErrorMessage(timeoutMessage), CONNECT_TIMEOUT);
   }, [joinErrorMessage, roomId]);
   return (
     <Grid container alignItems="center" justifyContent="center" height="100%">

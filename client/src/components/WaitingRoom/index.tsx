@@ -1,11 +1,4 @@
-import {
-  Avatar,
-  Button,
-  Grid,
-  Snackbar,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Button, Grid, Snackbar, Tooltip, Typography } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
@@ -16,6 +9,7 @@ import { getPlayTooltip, isRoomAdmin } from './helpers';
 import GameSettingsDialog from '../GameSettingsDialog';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { getMyPlayer } from '../WordGuess/helpers';
+import Avatar from '../Avatar';
 
 const WaitingRoom = () => {
   const socket = useContext(SocketContext);
@@ -106,14 +100,7 @@ const WaitingRoom = () => {
               alignItems="center"
               sx={{ maxWidth: 130 }}
             >
-              <Avatar
-                sx={{
-                  width: 80,
-                  height: 80,
-                  m: 1,
-                  bgcolor: player.color,
-                }}
-              />
+              <Avatar player={player} />
               <Typography variant="subtitle1" align="center">
                 {player.username}
               </Typography>

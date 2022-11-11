@@ -1,6 +1,7 @@
-import { Avatar, AvatarGroup, Box, Grid, Typography } from '@mui/material';
+import { AvatarGroup, Box, Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Player } from '../../../../server/room/types';
+import Avatar from '../Avatar';
 import { getAuthorUsernameToDisplay } from './helpers';
 
 interface PropsType {
@@ -21,7 +22,6 @@ const VoteBanner = (props: PropsType) => {
     }, 400);
   }, [revealed]);
 
-  const avatarSize = size === 'small' ? 20 : 50;
   const isTrueDefinition = authorPlayer?.socketId === 'dictionary';
   const pointsNumber =
     isTrueDefinition && votingPlayers.length ? 1 : votingPlayers.length;
@@ -38,16 +38,7 @@ const VoteBanner = (props: PropsType) => {
     >
       <AvatarGroup sx={{ marginRight: 2 }}>
         {votingPlayers.map((player) => {
-          return (
-            <Avatar
-              sx={{
-                height: avatarSize,
-                width: avatarSize,
-                bgcolor: player.color,
-              }}
-              className="example-enter"
-            />
-          );
+          return <Avatar player={player} size={size} />;
         })}
       </AvatarGroup>
       <Typography
@@ -86,13 +77,7 @@ const VoteBanner = (props: PropsType) => {
             >
               {getAuthorUsernameToDisplay(isTrueDefinition, authorPlayer)}
             </Typography>
-            <Avatar
-              sx={{
-                height: avatarSize,
-                width: avatarSize,
-                bgcolor: authorPlayer.color,
-              }}
-            />
+            <Avatar player={authorPlayer} size={size} />
           </Grid>
         )}
       </Box>
