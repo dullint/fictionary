@@ -14,12 +14,15 @@ const App = () => {
   const theme = getTheme();
 
   useEffect(() => {
-    const server = 'https://sea-lion-app-w7b99.ondigitalocean.app/';
+    const server =
+      process.env.NODE_ENV === 'development'
+        ? 'http://localhost:3020'
+        : 'https://sea-lion-app-w7b99.ondigitalocean.app/';
     const socket = io(server);
     setSocket(socket);
-
-    socket.emit('game');
-    socket.emit('player');
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   return (
@@ -39,7 +42,7 @@ const App = () => {
         container
         height={1}
         width={1}
-        sx={{ padding: 3, maxWidth: 700, minWidth: 200 }}
+        sx={{ padding: 3, maxWidth: 700, maxHeight: 600 }}
       >
         <SocketContext.Provider value={socket}>
           <ThemeProvider theme={theme}>

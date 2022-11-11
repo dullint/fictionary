@@ -4,22 +4,29 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import { roomHandler } from './room';
 import { gameHandler } from './game';
-import { getPlayers, getSocketRoom, selectNewAdmin } from './room/helpers';
+import {
+  getPlayers,
+  getSocketRoom,
+  onLeavingRoom,
+  selectNewAdmin,
+} from './room/helpers';
 import GAMES from './game/games';
 import path from 'path';
-const app = express();
 
+const app = express();
 app.use(cors());
-app.use(express.static(path.resolve(__dirname, '../client/build')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+if (process.env.NODE_ENV !== 'development') {
+  app.use(express.static(path.resolve(__dirname, '../client/build')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+  });
+}
 const server = http.createServer(app);
 const port = process.env.PORT || 3020;
 
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3020',
+    origin: 'http://localhost:3021',
     methods: ['GET', 'POST'],
   },
 });
@@ -31,18 +38,14 @@ io.on('connection', (socket) => {
 
   socket.on('disconnecting', async () => {
     const roomId = getSocketRoom(socket);
+    console.log(`${socket.id} disconnecting from room ${roomId}`);
     if (roomId) {
-      const playersLeft = (await getPlayers(io, roomId)).filter(
-        (player) => player.socketId != socket.id
-      );
-      if (playersLeft.length === 0) GAMES.delete(roomId);
-      if (socket.data?.isAdmin && playersLeft.length > 0) {
-        selectNewAdmin(io, socket.id, roomId);
-      }
+      const playersLeft = await onLeavingRoom(io, socket, roomId);
       io.to(roomId).emit('players', playersLeft);
     }
   });
-  socket.on('disconnection', async () => {
+
+  socket.on('disconnect', async () => {
     console.log(`${socket.id} disconnected`);
   });
 });

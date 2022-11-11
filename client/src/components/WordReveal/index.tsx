@@ -1,11 +1,5 @@
 import { Grid, Tooltip, Button } from '@mui/material';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { SocketContext } from '../../App';
 import { GameContext, PlayerContext } from '../Room';
 import { useParams } from 'react-router-dom';
@@ -27,8 +21,6 @@ const WordReveal = () => {
   const { roomId } = useParams();
   const socket = useContext(SocketContext);
   const isAdmin = isRoomAdmin(players, socket.id);
-  const [revealedDefPlayers, setRevealedDefPlayers] = useState<string[]>([]);
-  const [numberRevealedDef, setNumberRevealedDef] = useState(0);
   const [revealedUsername, setRevealedUsername] = useState<string[]>([]);
   const definitionsRef = useRef([]);
   const definitionsToDisplay = getDefinitionsToDisplay(
@@ -64,7 +56,6 @@ const WordReveal = () => {
           ]),
         BEFORE_AUTHOR_REVEAL_DELAY
       );
-      console.log(revealedUsername);
     }, BEFORE_NEXT_DEF_DELAY);
     return () => clearInterval(interval);
   });

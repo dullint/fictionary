@@ -6,6 +6,7 @@ import {
   checkIfUsernameTaken,
   getPlayers,
   getSocketRoom,
+  onLeavingRoom,
   selectColor,
   selectNewAdmin,
 } from './helpers';
@@ -44,7 +45,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
     }
     socket.emit('room_joined');
     socket.data.color = selectColor((await getPlayers(io, roomId)).length);
-    console.log(`User ${socket.id} joined room: ${roomId}`);
+    console.log(`User ${socket.id} joined room ${roomId}`);
     updateRoomPlayers(roomId);
   };
 
@@ -53,7 +54,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
     socket.emit('room_created');
     socket.data.color = selectColor((await getPlayers(io, roomId)).length);
     socket.data.isAdmin = true;
-    console.log(`User ${socket.id} created room: ${roomId}`);
+    console.log(`User ${socket.id} created room ${roomId}`);
 
     updateRoomPlayers(roomId);
     GAMES.set(roomId, new Game(gameSettings));
@@ -82,18 +83,11 @@ export const roomHandler = (io: Server, socket: Socket) => {
   };
 
   const leaveRoom = async ({ roomId }: { roomId: string }) => {
-    if (socket.data?.isAdmin) {
-      selectNewAdmin(io, socket.id, roomId);
-    }
+    await onLeavingRoom(io, socket, roomId);
     socket.data = {};
     socket.leave(roomId);
-    console.log(`User ${socket.id} left room: ${roomId}`);
+    console.log(`User ${socket.id} left room ${roomId}`);
     updateRoomPlayers(roomId);
-  };
-
-  const deleteRoom = ({ roomId }: { roomId: string }) => {
-    GAMES.delete(roomId);
-    io.in(roomId).socketsLeave(roomId);
   };
 
   socket.on('update_username', updateUsername);

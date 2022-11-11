@@ -6,13 +6,11 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { Box } from '@mui/system';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import { GameContext, PlayerContext } from '../Room';
-import ScoreBar from '../ScoreBar';
 import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { calculatePlayerRoundScore } from './helpers';
 

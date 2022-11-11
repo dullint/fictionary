@@ -1,4 +1,6 @@
-import { Server, Socket } from 'socket.io';
+import { RemoteSocket, Server, Socket } from 'socket.io';
+import { DefaultEventsMap } from 'socket.io/dist/typed-events';
+import GAMES from '../game/games';
 import { Player } from './types';
 
 export const getSocketRoom = (socket: Socket) =>
@@ -6,17 +8,20 @@ export const getSocketRoom = (socket: Socket) =>
     (roomId) => roomId !== socket.id
   )?.[0];
 
+const getPlayerFromSocket = (
+  socket: RemoteSocket<DefaultEventsMap, any>
+): Player => {
+  return {
+    socketId: socket.id,
+    username: socket.data?.username,
+    color: socket.data?.color,
+    isAdmin: socket.data?.isAdmin,
+  };
+};
+
 export const getPlayers = async (io: Server, roomId: string) => {
   const playerSockets = await io.in(roomId).fetchSockets();
-  return playerSockets.map((socket) => {
-    const player: Player = {
-      socketId: socket.id,
-      username: socket.data?.username,
-      color: socket.data?.color,
-      isAdmin: socket.data?.isAdmin,
-    };
-    return player;
-  });
+  return playerSockets.map((socket) => getPlayerFromSocket(socket));
 };
 
 export const checkIfRoomExists = (io: Server, roomId: string) => {
@@ -51,7 +56,26 @@ export const selectNewAdmin = async (
 ) => {
   const playerSockets = await io.in(roomId).fetchSockets();
   const otherSockets = playerSockets.filter((socket) => socket.id != socketId);
-  if (otherSockets.length > 1) {
-    otherSockets[0].data.isAdmin = true;
+  if (otherSockets.length === 0) return;
+  otherSockets[0].data.isAdmin = true;
+  console.log(`${otherSockets[0].id} is the new admin of the room ${roomId}`);
+  return otherSockets.map((socket) => getPlayerFromSocket(socket));
+};
+
+export const onLeavingRoom = async (
+  io: Server,
+  socket: Socket,
+  roomId: string
+) => {
+  const playersLeft = (await getPlayers(io, roomId)).filter(
+    (player) => player.socketId != socket.id
+  );
+  if (playersLeft.length === 0) {
+    GAMES.delete(roomId);
+    console.log(`Game of room ${roomId} deleted`);
+    return;
   }
+  const updatedPlayersLeft = socket.data?.isAdmin
+    ? await selectNewAdmin(io, socket.id, roomId)
+    : playersLeft;
 };
