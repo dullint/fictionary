@@ -24,6 +24,12 @@ const App = () => {
       socket.disconnect();
     };
   }, []);
+  const documentHeight = () => {
+    const doc = document.documentElement;
+    doc.style.setProperty('--doc-height', `${window.innerHeight}px`);
+  };
+  window.addEventListener('resize', documentHeight);
+  documentHeight();
 
   return (
     <Grid
@@ -32,7 +38,7 @@ const App = () => {
       justifyContent="center"
       margin={0}
       width={'100vw'}
-      height={'100vh'}
+      height={'var(--doc-height)'}
       sx={{
         background: 'radial-gradient(#F5F5F5, #f0f3ff)',
       }}
