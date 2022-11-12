@@ -25,6 +25,7 @@ const Avatar = (props: PropsType) => {
               transition: 'transform 400ms',
               transform: displayBadge ? null : 'scale(30%)',
               backgroundColor: 'orange',
+              scale: '70%',
             }}
           >
             {badgeContent}

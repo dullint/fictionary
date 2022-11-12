@@ -30,7 +30,6 @@ const WordReveal = () => {
   );
 
   const handleNextStep = () => {
-    console.log(socket);
     socket.emit('show_results');
   };
 
@@ -40,6 +39,7 @@ const WordReveal = () => {
       definitionsToDisplay.length
     );
   }, [definitionsToDisplay]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       if (revealedUsername.length >= definitionsToDisplay.length) {
@@ -71,6 +71,7 @@ const WordReveal = () => {
     color: 'black',
     isAdmin: false,
   });
+
   return (
     <Grid container flexDirection="column" height={1} width={1}>
       <Box
