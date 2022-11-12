@@ -1,4 +1,4 @@
 export const defaultGameSettings = {
-  maxPromptTime: 1,
+  maxPromptTime: 3,
   roundNumber: 3,
 };

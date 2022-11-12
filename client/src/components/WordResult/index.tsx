@@ -79,20 +79,12 @@ const WordResult = () => {
               alignItems="center"
               sx={{ maxWidth: 130 }}
             >
-              <Badge
-                overlap="circular"
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                badgeContent={
-                  <MUIAvatar
-                    alt="points"
-                    sx={{ transform: 'translate(-5px, -12px)' }}
-                  >
-                    {displayedScores?.[player?.username] ?? 0}
-                  </MUIAvatar>
-                }
-              >
-                <Avatar player={player} />
-              </Badge>
+              <Avatar
+                player={player}
+                size={'big'}
+                displayBadge={true}
+                badgeContent={displayedScores?.[player?.username] ?? 0}
+              />
               <Typography variant="subtitle1" align="center">
                 {player.username}
               </Typography>

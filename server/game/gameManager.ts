@@ -58,6 +58,7 @@ export class Game {
   }
 
   newRound() {
+    if (this.timer) clearInterval(this.timer);
     this.round++;
     this.gameStep = GameStep.PROMPT;
     this.definitions = {};

@@ -100,7 +100,7 @@ const WaitingRoom = () => {
               alignItems="center"
               sx={{ maxWidth: 130 }}
             >
-              <Avatar player={player} />
+              <Avatar player={player} displayBadge={false} />
               <Typography variant="subtitle1" align="center">
                 {player.username}
               </Typography>

@@ -2,13 +2,13 @@ import { AvatarGroup, Box, Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Player } from '../../../../server/room/types';
 import Avatar from '../Avatar';
-import { getAuthorUsernameToDisplay, getDisplayPoints } from './helpers';
+import { getAuthorUsernameToDisplay } from './helpers';
 
 interface PropsType {
   votingPlayers: Player[];
   authorPlayer?: Player;
   revealed: boolean;
-  size?: 'big' | 'small';
+  size?: 'big' | 'small' | 'medium';
 }
 
 const VoteBanner = (props: PropsType) => {
@@ -23,42 +23,24 @@ const VoteBanner = (props: PropsType) => {
   }, [revealed]);
 
   const isTrueDefinition = authorPlayer?.socketId === 'dictionary';
-  const displayPoints = getDisplayPoints(
-    revealed,
-    isTrueDefinition,
-    votingPlayers,
-    authorPlayer
-  );
-  console.log(displayPoints);
+  const voterPoints = Number(isTrueDefinition);
+  const authorPoints =
+    authorPlayer?.username &&
+    authorPlayer.socketId !== 'dictionary' &&
+    votingPlayers.filter((player) => player.username !== authorPlayer.username)
+      .length;
   return (
-    <Grid
-      container
-      justifyContent={'space-between'}
-      alignItems="center"
-      sx={{ marginTop: 1 }}
-    >
+    <Grid container justifyContent={'space-between'} alignItems="center">
       <AvatarGroup sx={{ marginRight: 2 }}>
-        {votingPlayers.map((player) => {
-          return <Avatar player={player} size={size} />;
-        })}
+        {votingPlayers.map((player) => (
+          <Avatar
+            player={player}
+            size={size}
+            badgeContent={`+${voterPoints}`}
+            displayBadge={showPoints && !!voterPoints}
+          />
+        ))}
       </AvatarGroup>
-      <Typography
-        variant="subtitle1"
-        align={displayPoints.orientation}
-        sx={{
-          flexGrow: 1,
-          textJustify: 'end',
-          opacity: Number(showPoints),
-          transition: 'transform 700ms ease-in-out',
-          transform: showPoints
-            ? null
-            : `translateX(${isTrueDefinition ? '+' : '-'}50px)`,
-          color: 'orange',
-        }}
-      >
-        {displayPoints.message}
-      </Typography>
-
       <Box
         sx={{
           opacity: Number(revealed),
@@ -78,7 +60,12 @@ const VoteBanner = (props: PropsType) => {
             >
               {getAuthorUsernameToDisplay(isTrueDefinition, authorPlayer)}
             </Typography>
-            <Avatar player={authorPlayer} size={size} />
+            <Avatar
+              player={authorPlayer}
+              size={size}
+              badgeContent={`+${authorPoints}`}
+              displayBadge={showPoints && !!authorPoints}
+            />
           </Grid>
         )}
       </Box>

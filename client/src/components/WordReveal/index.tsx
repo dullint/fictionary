@@ -40,7 +40,6 @@ const WordReveal = () => {
       definitionsToDisplay.length
     );
   }, [definitionsToDisplay]);
-
   useEffect(() => {
     const interval = setInterval(() => {
       if (revealedUsername.length >= definitionsToDisplay.length) {
@@ -102,7 +101,7 @@ const WordReveal = () => {
               authorPlayer={extendedPlayers.find(
                 (player) => player.username === username
               )}
-              size={isMobile ? 'small' : 'big'}
+              size={isMobile ? 'small' : 'medium'}
               revealed={revealedUsername.includes(username)}
             />
           </Box>
@@ -117,8 +116,7 @@ const WordReveal = () => {
           <Button
             onClick={handleNextStep}
             disabled={
-              !isAdmin ||
-              revealedUsername.length !== definitionsToDisplay.length
+              !isAdmin || revealedUsername.length < definitionsToDisplay.length
             }
             variant="contained"
             size="large"
