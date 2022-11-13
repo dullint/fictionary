@@ -10,6 +10,8 @@ import {
 } from './types';
 
 export class Game {
+  io: Server;
+  roomId: string;
   round: number;
   entry: DictionnaryEntry | null;
   definitions: Definitions;
@@ -19,7 +21,9 @@ export class Game {
   scores: Scores;
   timer: NodeJS.Timer | null;
 
-  constructor(gameSettings: GameSettings) {
+  constructor(io: Server, roomId: string, gameSettings: GameSettings) {
+    this.io = io;
+    this.roomId = roomId;
     this.round = 0;
     this.entry = null;
     this.definitions = {};
@@ -57,14 +61,20 @@ export class Game {
     }
   }
 
-  newRound() {
+  newWord() {
     if (this.timer) clearInterval(this.timer);
-    this.round++;
-    this.gameStep = GameStep.PROMPT;
     this.definitions = {};
-    this.selections = {};
     const entry = get_random_entry();
     this.entry = entry;
+    this.runTimer(this.gameSettings.maxPromptTime);
+  }
+
+  newRound() {
+    this.round++;
+    this.gameStep = GameStep.PROMPT;
+    this.selections = {};
+    this.definitions = {};
+    this.newWord();
   }
 
   reset() {
@@ -75,18 +85,30 @@ export class Game {
     this.scores = {};
   }
 
-  runTimer = (io: Server, roomId: string, time: number) => {
+  runTimer(time: number) {
     var counter = time * 60;
     this.timer = setInterval(() => {
-      io.emit('timer', counter);
+      this.io.to(this.roomId).emit('timer', counter);
       if (counter === 0 && this.timer) {
         clearInterval(this.timer);
         this.goToNextStep();
-        io.to(roomId).emit('game', this);
+        this.io.to(this.roomId).emit('game', this.info());
       }
       counter--;
     }, 1000);
-  };
+  }
+
+  info() {
+    return {
+      round: this.round,
+      entry: this.entry,
+      definitions: this.definitions,
+      selections: this.selections,
+      gameSettings: this.gameSettings,
+      gameStep: this.gameStep,
+      scores: this.scores,
+    };
+  }
 }
 
 export default new Map<string, Game>();

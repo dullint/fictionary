@@ -15,7 +15,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const numberOfDefinitions = Object.keys(game.definitions).length;
     if (numberOfDefinitions == numberOfPlayers) {
       game.goToNextStep();
-      io.to(roomId).emit('game', game);
+      io.to(roomId).emit('game', game.info());
     }
   };
 
@@ -30,7 +30,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const roomId = getSocketRoom(socket);
     const game = GAMES.get(roomId);
     if (!game) return;
-    io.to(roomId).emit('game', game);
+    io.to(roomId).emit('game', game.info());
   };
 
   const selectDefinition = async ({ username }: { username: string }) => {
@@ -43,7 +43,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     if (numberOfSelectedDefinitions == numberOfPlayers) {
       game.goToNextStep();
     }
-    io.to(roomId).emit('game', game);
+    io.to(roomId).emit('game', game.info());
   };
 
   const updateScores = ({ scores }: { scores: Scores }) => {
@@ -51,7 +51,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const game = GAMES.get(roomId);
     if (!game) return;
     game.scores = scores;
-    io.to(roomId).emit('game', game);
+    io.to(roomId).emit('game', game.info());
   };
 
   const resetGame = () => {
@@ -59,7 +59,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const game = GAMES.get(roomId);
     if (!game) return;
     game.reset();
-    io.to(roomId).emit('game', game);
+    io.to(roomId).emit('game', game.info());
   };
 
   const launchNewRound = () => {
@@ -68,22 +68,19 @@ export const gameHandler = (io: Server, socket: Socket) => {
     if (!game) return;
     if (game.round >= game.gameSettings.roundNumber) {
       game.gameStep = GameStep.FINISHED;
-      io.to(roomId).emit('game', game);
+      io.to(roomId).emit('game', game.info());
       return;
     }
     game.newRound();
-    io.to(roomId).emit('game', game);
-    game.runTimer(io, roomId, game.gameSettings.maxPromptTime);
+    io.to(roomId).emit('game', game.info());
   };
 
   const getNewWord = () => {
     const roomId = getSocketRoom(socket);
     const game = GAMES.get(roomId);
     if (!game) return;
-    const entry = get_random_entry();
-    game.entry = entry;
-    io.to(roomId).emit('game', game);
-    game.runTimer(io, roomId, game.gameSettings.maxPromptTime);
+    game.newWord();
+    io.to(roomId).emit('game', game.info());
   };
 
   const showResults = () => {
@@ -91,7 +88,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const game = GAMES.get(roomId);
     if (!game) return;
     game.goToNextStep();
-    io.to(roomId).emit('game', game);
+    io.to(roomId).emit('game', game.info());
   };
 
   const changeSettings = ({ gameSettings }: { gameSettings: GameSettings }) => {
@@ -99,6 +96,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const game = GAMES.get(roomId);
     if (!game) return;
     game.gameSettings = gameSettings;
+    io.to(roomId).emit('game', game.info());
   };
 
   socket.on('reset_game', resetGame);

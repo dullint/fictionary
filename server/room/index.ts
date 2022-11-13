@@ -56,8 +56,8 @@ export const roomHandler = (io: Server, socket: Socket) => {
     console.log(`User ${socket.id} created room ${roomId}`);
 
     updateRoomPlayers(roomId);
-    GAMES.set(roomId, new Game(gameSettings));
-    io.to(roomId).emit('game', GAMES.get(roomId));
+    GAMES.set(roomId, new Game(io, roomId, gameSettings));
+    io.to(roomId).emit('game', GAMES.get(roomId)?.info());
   };
 
   const updateUsername = async ({

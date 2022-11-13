@@ -33,6 +33,7 @@ const WordPrompt = () => {
   useEffect(() => {
     setEntryWidth(entryRef.current.clientWidth);
   }, [entryRef]);
+
   const handleKnowWord = () => {
     socket.emit('get_new_word');
   };
@@ -40,12 +41,14 @@ const WordPrompt = () => {
     if (hasSubmited) return;
     setDefinition(event.target.value);
   };
+
   const handleSubmit = () => {
     if (definition) {
       setHasSubmited(true);
       socket.emit('submit_definition', { roomId, definition });
     }
   };
+
   const handleModify = () => {
     setHasSubmited(false);
     socket.emit('remove_definition', { roomId, word: entry.word });
