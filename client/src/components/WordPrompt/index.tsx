@@ -36,7 +36,6 @@ const WordPrompt = () => {
   }, [entryRef, entry]);
 
   useEffect(() => {
-    console.log('ATTENTION', entry.word);
     setHasSubmited(false);
     setDefinition('');
   }, [entry.word]);
@@ -52,7 +51,6 @@ const WordPrompt = () => {
   const handleSubmit = () => {
     if (definition) {
       setHasSubmited(true);
-      console.log('SUBMIT', entry);
       socket.emit('submit_definition', { roomId, definition });
     }
   };
@@ -74,8 +72,6 @@ const WordPrompt = () => {
       handleSubmit();
     }
   };
-
-  console.log(game.definitions);
 
   const remainingPlayers =
     players.length - Object.values(game?.definitions).length;
