@@ -43,6 +43,7 @@ const Room = () => {
       });
       socket.on('players', (players: Player[]) => setPlayers(players));
       socket.on('game', (game: Game) => setGame(game));
+      return () => socket.emit('leave_room', { roomId });
     }
   }, [socket, roomId]);
 

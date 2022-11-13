@@ -9,6 +9,12 @@ import { Grid } from '@mui/material';
 
 export const SocketContext = createContext(null);
 
+declare module 'socket.io-client' {
+  interface Socket {
+    userId: string;
+  }
+}
+
 const App = () => {
   const [socket, setSocket] = useState<Socket>(null);
   const theme = getTheme();
@@ -18,7 +24,17 @@ const App = () => {
       process.env.NODE_ENV === 'development'
         ? 'http://localhost:3020'
         : 'https://sea-lion-app-w7b99.ondigitalocean.app/';
-    const socket = io(server);
+    const socket = io(server, { autoConnect: false });
+    const sessionId = localStorage.getItem('fictionarySessionId');
+    console.log(sessionId);
+    socket.auth = { sessionId };
+    socket.connect();
+    socket.on('session', ({ sessionId, userId }) => {
+      console.log('session update', { sessionId });
+      socket.auth = { sessionId };
+      localStorage.setItem('fictionarySessionId', sessionId);
+      socket.userId = userId;
+    });
     setSocket(socket);
     return () => {
       socket.disconnect();

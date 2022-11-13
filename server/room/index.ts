@@ -9,6 +9,7 @@ import {
   onLeavingRoom,
   selectColor,
 } from './helpers';
+import { GameStep } from '../game/types';
 
 export const roomHandler = (io: Server, socket: Socket) => {
   const updateRoomPlayers = async (roomId: string) => {
@@ -42,8 +43,17 @@ export const roomHandler = (io: Server, socket: Socket) => {
     if (!Array.from(socket.rooms.values()).includes(roomId)) {
       await socket.join(roomId);
     }
+    const game = GAMES.get(roomId);
+    if (!game) return;
+    if (game && game.gameStep !== GameStep.WAIT && !socket.data.username) {
+      socket.emit('join_room_error', {
+        message: 'Game already in play',
+      });
+      return;
+    }
     socket.emit('room_joined');
-    socket.data.color = selectColor((await getPlayers(io, roomId)).length);
+    socket.data.color =
+      socket?.data?.color ?? selectColor((await getPlayers(io, roomId)).length);
     console.log(`User ${socket.id} joined room ${roomId}`);
     updateRoomPlayers(roomId);
   };
@@ -83,7 +93,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
 
   const leaveRoom = async ({ roomId }: { roomId: string }) => {
     await onLeavingRoom(io, socket, roomId);
-    socket.data = {};
+    socket.data.isAdmin = false;
     socket.leave(roomId);
     console.log(`User ${socket.id} left room ${roomId}`);
     updateRoomPlayers(roomId);
