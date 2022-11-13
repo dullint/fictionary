@@ -84,7 +84,7 @@ export const palette: PaletteOptions = {
     darker: '#619B8A',
   },
   yellow: {
-    main: '#F5F0CE',
+    main: '#F2E7D5',
     darker: '#dbd6b4',
   },
   pink: {
