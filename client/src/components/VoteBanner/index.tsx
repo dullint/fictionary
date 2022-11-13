@@ -36,7 +36,7 @@ const VoteBanner = (props: PropsType) => {
       alignItems="center"
       sx={{ marginTop: 1 }}
     >
-      <AvatarGroup sx={{ marginRight: 2, border: null }}>
+      <AvatarGroup sx={{ marginRight: 1 }} max={6}>
         {votingPlayers.map((player) => (
           <Avatar
             player={player}
@@ -61,7 +61,7 @@ const VoteBanner = (props: PropsType) => {
                 transition: 'transform 400ms',
                 transform: revealed ? null : 'translateX(30%)',
               }}
-              variant="subtitle1"
+              variant="subtitle2"
             >
               {getAuthorUsernameToDisplay(isTrueDefinition, authorPlayer)}
             </Typography>

@@ -56,12 +56,7 @@ const UsernameDialog = (props: Propstype) => {
           justifyContent="center"
         >
           <Box justifyContent={'left'} width={1}>
-            <Typography
-              fontSize={20}
-              fontWeight={700}
-              sx={{ marginBottom: 1 }}
-              align="left"
-            >
+            <Typography variant="h6" sx={{ marginBottom: 1 }} align="left">
               Choose your username:
             </Typography>
           </Box>
@@ -72,7 +67,12 @@ const UsernameDialog = (props: Propstype) => {
             onChange={handleTextFieldChange}
             inputProps={{
               maxLength: 15,
-              style: { fontSize: 23, textAlign: 'center', fontWeight: 900 },
+              style: {
+                fontSize: 30,
+                textAlign: 'center',
+                fontWeight: 900,
+                fontFamily: 'bespoke-medium',
+              },
             }}
             sx={{ height: 60 }}
           />

@@ -1,13 +1,13 @@
 export enum WordNature {
-  VERB = 'verbe',
-  NOUN = 'nom',
+  VERB = 'verb',
+  NOUN = 'noun',
   ADJ = 'adj',
 }
 
 export enum WordGenre {
-  MASCULIN = 'mas',
-  FEMININ = 'fem',
-  PROPE = 'propre',
+  MAS = 'mas',
+  FEM = 'fem',
+  PROPRE = 'propre',
 }
 export interface DictionnaryEntry {
   word: string;

@@ -12,6 +12,7 @@ import {
 import VoteBanner from '../VoteBanner';
 import GameHeader from '../GameHeader';
 import { BOTTOM_MAIN_BUTTON_WIDTH } from '../Room/constants';
+import { theme } from '../../theme';
 
 const WordGuess = () => {
   const game = useContext(GameContext);
@@ -44,26 +45,28 @@ const WordGuess = () => {
         container
         width={1}
         direction="column"
-        sx={{ overflowY: 'auto', flex: 1, padding: 0.5 }}
+        sx={{ overflowY: 'auto', flex: 1, padding: 1 }}
+        spacing={1}
       >
         {definitionsToDisplay.map(([username, definition]) => (
           <Box
             onClick={() => handleSelectDefinition(username)}
             sx={{
-              boxShadow:
-                username === selectedUsernameDef
-                  ? `0px 0px 7px ${playerColor}`
-                  : '',
               boxSizing: 'border-box',
+              border: `2px solid`,
+              borderColor:
+                username === selectedUsernameDef
+                  ? theme.palette.primary.main
+                  : 'transparent',
               borderRadius: 2,
               '&:hover': {
-                boxShadow:
+                border: '2px solid',
+                borderColor:
                   username === selectedUsernameDef
-                    ? `0px 0px 7px ${playerColor}`
-                    : `0px 0px 10px -5px black`,
+                    ? theme.palette.primary.main
+                    : theme.palette.secondary.main,
               },
-              paddingTop: 1,
-              paddingBottom: 1,
+              padding: 1,
             }}
           >
             <DefinitionDisplay entry={{ ...entry, definition: definition }} />

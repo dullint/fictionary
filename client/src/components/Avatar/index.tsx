@@ -25,7 +25,7 @@ const Avatar = (props: PropsType) => {
           <MUIAvatar
             alt="points"
             sx={{
-              translate: '-10% -25%',
+              translate: '0 -25%',
               transition: 'transform 400ms',
               transform: displayBadge ? null : 'scale(30%)',
               backgroundColor: theme.palette.secondary.main,

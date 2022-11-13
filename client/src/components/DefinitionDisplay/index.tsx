@@ -2,6 +2,7 @@ import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
 import { DictionnaryEntry } from '../../../../server/dictionary/types';
+import { getNatureGenre } from './helpers';
 
 interface PropsType {
   entry: DictionnaryEntry;
@@ -13,33 +14,24 @@ const DefinitionDisplay = (props: PropsType) => {
     <Box>
       <Typography
         component="span"
-        variant="h6"
+        fontFamily="bespoke-extrabold-italic"
         sx={{ marginRight: 0.5 }}
-        fontSize={18}
+        fontSize={17}
       >
         {word}
       </Typography>
       <Typography
         component="span"
         fontStyle={'italic'}
-        fontSize={18}
+        fontSize={15}
         fontFamily="bespoke-light-italic"
-        sx={{ marginRight: 0.5 }}
+        sx={{ marginRight: 1 }}
       >
-        {nature}
+        {getNatureGenre(nature, genre)}
       </Typography>
       <Typography
         component="span"
-        fontStyle={'italic'}
-        fontSize={18}
-        fontFamily="bespoke-light-italic"
-        sx={{ marginRight: 0.5 }}
-      >
-        {genre}.
-      </Typography>
-      <Typography
-        component="span"
-        fontSize={18}
+        fontSize={15}
         textOverflow="ellipsis"
         overflow={'hidden'}
         variant="body1"

@@ -15,8 +15,8 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const numberOfDefinitions = Object.keys(game.definitions).length;
     if (numberOfDefinitions == numberOfPlayers) {
       game.goToNextStep();
-      io.to(roomId).emit('game', game.info());
     }
+    io.to(roomId).emit('game', game.info());
   };
 
   const removeDefinition = () => {
@@ -24,6 +24,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const game = GAMES.get(roomId);
     if (!game) return;
     delete game.definitions[socket.data.username];
+    io.to(roomId).emit('game', game.info());
   };
 
   const queryGame = () => {

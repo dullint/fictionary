@@ -12,7 +12,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import DefinitionDisplay from '../DefinitionDisplay';
-import { GameContext } from '../Room';
+import { GameContext, PlayerContext } from '../Room';
 import { CHARACTER_LIMIT } from './constants';
 import { isMobile } from 'react-device-detect';
 import { theme } from '../../theme';
@@ -21,6 +21,7 @@ import { BOTTOM_MAIN_BUTTON_WIDTH } from '../Room/constants';
 
 const WordPrompt = () => {
   const game = useContext(GameContext);
+  const players = useContext(PlayerContext);
   const entryRef = useRef(null);
   const [entryWidth, setEntryWidth] = useState(0);
   const socket = useContext(SocketContext);
@@ -32,7 +33,13 @@ const WordPrompt = () => {
 
   useEffect(() => {
     setEntryWidth(entryRef.current.clientWidth);
-  }, [entryRef]);
+  }, [entryRef, entry]);
+
+  useEffect(() => {
+    console.log('ATTENTION', entry.word);
+    setHasSubmited(false);
+    setDefinition('');
+  }, [entry.word]);
 
   const handleKnowWord = () => {
     socket.emit('get_new_word');
@@ -45,6 +52,7 @@ const WordPrompt = () => {
   const handleSubmit = () => {
     if (definition) {
       setHasSubmited(true);
+      console.log('SUBMIT', entry);
       socket.emit('submit_definition', { roomId, definition });
     }
   };
@@ -67,21 +75,15 @@ const WordPrompt = () => {
     }
   };
 
-  useEffect(() => {
-    if (game?.entry) {
-      setDefinition('');
-    }
-  }, [game?.entry]);
+  console.log(game.definitions);
+
+  const remainingPlayers =
+    players.length - Object.values(game?.definitions).length;
 
   const minutes = counter && Math.floor(counter / 60);
   const seconds = counter && counter - minutes * 60;
   return (
-    <Grid
-      container
-      alignItems="center"
-      // justifyContent="center"
-      direction="column"
-    >
+    <Grid container alignItems="center" direction="column">
       <GameHeader />
       <Grid
         container
@@ -109,7 +111,7 @@ const WordPrompt = () => {
           </IconButton>
         </Tooltip>
       </Grid>
-      <Grid container direction="column">
+      <Grid container direction="column" flex={1}>
         <Box zIndex={2} position="absolute" ref={entryRef} sx={{ m: 2 }}>
           <DefinitionDisplay
             entry={{ ...entry, definition: '' }}
@@ -121,7 +123,7 @@ const WordPrompt = () => {
           onKeyPress={handlePressKey}
           value={definition}
           multiline
-          rows={isMobile ? 10 : 6}
+          rows={isMobile ? 8 : 5}
           fullWidth
           helperText={`${definition.length}/${CHARACTER_LIMIT}`}
           onChange={handleTextFieldChange}
@@ -134,10 +136,20 @@ const WordPrompt = () => {
             marginBottom: '14px',
             '& .MuiOutlinedInput-input': {
               lineHeight: '22px',
-              textIndent: entryWidth,
+              textIndent: entryWidth + 1,
             },
           }}
         />
+        <Typography
+          display="flex"
+          alignItems={'center'}
+          variant="subtitle1"
+          color="primary"
+        >
+          {hasSubmited
+            ? `Waiting for ${remainingPlayers} more players to finish their definition`
+            : null}
+        </Typography>
       </Grid>
       <Button
         onClick={() => (hasSubmited ? handleModify() : handleSubmit())}
@@ -146,13 +158,7 @@ const WordPrompt = () => {
       >
         {hasSubmited ? 'Modify' : 'Submit'}
       </Button>
-      <Grid container direction="row" justifyContent="space-between">
-        <Typography display="flex" alignItems={'center'} variant="body1">
-          {hasSubmited
-            ? 'Waiting for other player to submit their definition!'
-            : null}
-        </Typography>
-      </Grid>
+      <Grid container direction="row" justifyContent="space-between"></Grid>
     </Grid>
   );
 };

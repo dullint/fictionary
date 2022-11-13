@@ -10,7 +10,6 @@ import { getDefinitionsToDisplay } from '../WordGuess/helpers';
 import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { Box } from '@mui/system';
 import { BEFORE_AUTHOR_REVEAL_DELAY, BEFORE_NEXT_DEF_DELAY } from './constants';
-import { isMobile } from 'react-device-detect';
 import GameHeader from '../GameHeader';
 import { BOTTOM_MAIN_BUTTON_WIDTH } from '../Room/constants';
 
@@ -101,7 +100,7 @@ const WordReveal = () => {
               authorPlayer={extendedPlayers.find(
                 (player) => player.username === username
               )}
-              size={isMobile ? 'small' : 'medium'}
+              size={'small'}
               revealed={revealedUsername.includes(username)}
             />
           </Box>

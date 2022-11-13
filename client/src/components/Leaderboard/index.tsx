@@ -4,8 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import Avatar from '../Avatar';
 import { GameContext, PlayerContext } from '../Room';
-import ScoreBar from '../ScoreBar';
-import { getPlayTooltip, isRoomAdmin } from '../WaitingRoom/helpers';
+import { isRoomAdmin } from '../WaitingRoom/helpers';
 
 const Leaderboard = () => {
   const game = useContext(GameContext);
@@ -34,7 +33,7 @@ const Leaderboard = () => {
       height={1}
     >
       <Typography variant="h4" sx={{ marginTop: 2 }}>
-        Scores:
+        Leaderboard:
       </Typography>
       <Grid
         container
@@ -44,25 +43,30 @@ const Leaderboard = () => {
         maxWidth={500}
       >
         {players &&
-          players.map((player) => (
-            <Grid
-              container
-              direction="column"
-              justifyContent="center"
-              alignItems="center"
-              sx={{ maxWidth: 130 }}
-            >
-              <Avatar
-                player={player}
-                size={'big'}
-                displayBadge={true}
-                badgeContent={scores?.[player?.username] ?? 0}
-              />
-              <Typography variant="subtitle1" align="center">
-                {player.username}
-              </Typography>
-            </Grid>
-          ))}
+          players
+            .sort(
+              (player1, player2) =>
+                scores?.[player1.username] - scores?.[player1.username]
+            )
+            .map((player) => (
+              <Grid
+                container
+                direction="column"
+                justifyContent="center"
+                alignItems="center"
+                sx={{ maxWidth: 130 }}
+              >
+                <Avatar
+                  player={player}
+                  size={'big'}
+                  displayBadge={true}
+                  badgeContent={scores?.[player?.username] ?? 0}
+                />
+                <Typography variant="subtitle1" align="center">
+                  {player.username}
+                </Typography>
+              </Grid>
+            ))}
       </Grid>
       <Tooltip
         title={

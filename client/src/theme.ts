@@ -101,10 +101,10 @@ export const palette: PaletteOptions = {
 const components = {
   MuiButton: {
     styleOverrides: {
-      contained: {
+      contained: ({ ownerState }) => ({
         borderRadius: 10,
         boxShadow: '5px 5px black',
-        border: '2px solid black',
+        border: `2px solid ${ownerState.disabled ? 'grey' : 'black'}`,
         '&:hover': {
           backgroundColor: palette.primary.main,
         },
@@ -112,7 +112,7 @@ const components = {
           boxShadow: '5px 5px black',
         },
         color: palette.black.main,
-      },
+      }),
       outlined: {
         borderRadius: 10,
         border: '2px solid black',
