@@ -3,3 +3,15 @@ body {
   paddding: 0;
   margin: 0;
 }
+
+@font-face {
+  font-family: 'bespoke-extrabold-italic';
+  src: local('bespoke'),
+    url('./fonts/bespoke/BespokeSerif-ExtraboldItalic.woff') format('truetype');
+}
+
+@font-face {
+  font-family: 'bespoke-medium';
+  src: local('bespoke'),
+    url('./fonts/bespoke/BespokeSerif-Medium.woff') format('truetype');
+}

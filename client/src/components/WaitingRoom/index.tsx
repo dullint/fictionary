@@ -10,6 +10,7 @@ import GameSettingsDialog from '../GameSettingsDialog';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { getMyPlayer } from '../WordGuess/helpers';
 import Avatar from '../Avatar';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 const WaitingRoom = () => {
   const socket = useContext(SocketContext);
@@ -53,6 +54,14 @@ const WaitingRoom = () => {
       direction="column"
       height={1}
     >
+      <Grid
+        alignItems="center"
+        container
+        justifyContent="start"
+        direction="column"
+      >
+        <Button startIcon={<ArrowBackIosIcon />}>Back</Button>
+      </Grid>
       <Typography variant="h6" align="center">
         Room code:
       </Typography>

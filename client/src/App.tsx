@@ -4,7 +4,7 @@ import Home from './components/Home';
 import Room from './components/Room';
 import { io, Socket } from 'socket.io-client';
 import { ThemeProvider } from '@mui/material/styles';
-import { getTheme } from './theme';
+import { getTheme, palette } from './theme';
 import { Grid } from '@mui/material';
 
 export const SocketContext = createContext(null);
@@ -40,7 +40,7 @@ const App = () => {
       width={'100vw'}
       height={'var(--doc-height)'}
       sx={{
-        background: 'radial-gradient(#F5F5F5, #f0f3ff)',
+        background: palette.yellow.main,
       }}
       overflow={'hidden'}
     >

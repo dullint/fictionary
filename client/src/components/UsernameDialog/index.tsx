@@ -6,7 +6,8 @@ import DialogContent from '@mui/material/DialogContent';
 import { SocketContext } from '../../App';
 import { useParams } from 'react-router';
 import { updateUsername } from '../../services/room';
-import { Grid, Typography } from '@mui/material';
+import { Grid, Input, Typography } from '@mui/material';
+import { theme } from '../../theme';
 
 export interface Propstype {
   open: boolean;
@@ -41,7 +42,12 @@ const UsernameDialog = (props: Propstype) => {
 
   return (
     <Dialog open={open}>
-      <DialogContent>
+      <DialogContent
+        sx={{
+          backgroundColor: theme.palette.pink.main,
+          border: '4px solid black',
+        }}
+      >
         <Grid
           container
           direction="column"
@@ -56,12 +62,10 @@ const UsernameDialog = (props: Propstype) => {
           >
             Choose your username
           </Typography>
-          <TextField
+          <Input
             onKeyPress={handlePressKey}
-            hiddenLabel
             autoFocus
             fullWidth
-            variant="outlined"
             onChange={handleTextFieldChange}
             inputProps={{
               maxLength: 15,

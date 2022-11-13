@@ -1,5 +1,6 @@
 declare module '*.module.css';
 declare module '*.module.scss';
+declare module '*.module.woff';
 declare module '*.png' {
   const value: any;
   export = value;

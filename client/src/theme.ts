@@ -1,89 +1,118 @@
-import { createTheme, Theme } from '@mui/material/styles';
+import {
+  createTheme,
+  PaletteOptions,
+  responsiveFontSizes,
+  Theme,
+} from '@mui/material/styles';
 import { TypographyOptions } from '@mui/material/styles/createTypography';
 
 const typography: TypographyOptions = {
-  body1: {
-    fontSize: 16,
-    lineHeight: '22px',
-  },
-  body2: {
-    fontSize: 14,
-    lineHeight: '20px',
+  h1: {
+    fontFamily: 'bespoke-extrabold-italic',
   },
   button: {
-    fontSize: 14,
-    fontWeight: 600,
-    lineHeight: '17px',
+    fontFamily: 'bespoke-medium',
+    textTransform: 'none',
+    fontSize: 25,
   },
-  caption: {
-    fontSize: 12,
-    lineHeight: '14px',
-  },
-  captionBold: {
-    fontWeight: 600,
-  },
-  h1: {
-    fontSize: 96,
-    fontWeight: 600,
-    lineHeight: '115px',
-  },
-  h2: {
-    fontSize: 60,
-    fontWeight: 600,
-    lineHeight: '72px',
-  },
-  h3: {
-    fontSize: 48,
-    fontWeight: 600,
-    lineHeight: '58px',
-  },
-  h4: {
-    fontSize: 34,
-    fontWeight: 600,
-    lineHeight: '41px',
-  },
-  h5: {
-    fontSize: 24,
-    fontWeight: 600,
-    lineHeight: '29px',
-  },
-  h6: {
-    fontSize: 20,
-    fontWeight: 500,
-    lineHeight: '23px',
-  },
-  h6Bold: {
-    fontSize: 20,
-    fontWeight: 600,
-    lineHeight: '23px',
-  },
-  menu: {
-    fontSize: 13,
-    fontWeight: 600,
-    lineHeight: '16px',
-  },
-  smallText: {
-    fontSize: '0.75rem',
-  },
-  subtitle1: {
-    fontSize: 16,
-    fontWeight: 600,
-    lineHeight: '19px',
-  },
-  subtitle2: {
-    fontSize: 14,
-    fontWeight: 600,
-    lineHeight: '17px',
-  },
-  useNextVariants: true,
 } as TypographyOptions;
+
+declare module '@mui/material/styles' {
+  interface Palette {
+    green: Palette['primary'];
+    yellow: Palette['primary'];
+    black: Palette['primary'];
+    pink: Palette['primary'];
+    blue: Palette['primary'];
+  }
+  interface PaletteOptions {
+    green: PaletteOptions['primary'];
+    yellow: PaletteOptions['primary'];
+    black: PaletteOptions['primary'];
+    pink: PaletteOptions['primary'];
+    blue: PaletteOptions['primary'];
+  }
+
+  interface PaletteColor {
+    darker?: string;
+  }
+  interface SimplePaletteColorOptions {
+    darker?: string;
+  }
+  interface PaletteColorOptions {
+    darker?: string;
+    main: string;
+  }
+}
+
+export const palette: PaletteOptions = {
+  primary: {
+    main: '#90C8AC',
+  },
+  secondary: {
+    main: '#86BAFE',
+  },
+  green: {
+    main: '#90C8AC',
+    darker: '#619B8A',
+  },
+  yellow: {
+    main: '#F5F0CE',
+    darker: '#dbd6b4',
+  },
+  pink: {
+    main: '#D89A9E',
+  },
+  blue: {
+    main: '#86BAFE',
+  },
+  black: {
+    main: '#222222',
+  },
+};
+
+const components = {
+  MuiButton: {
+    styleOverrides: {
+      contained: {
+        borderRadius: 10,
+        boxShadow: '5px 5px black',
+        border: '2px solid black',
+        '&:hover': {
+          backgroundColor: palette.primary.main,
+        },
+        color: palette.black.main,
+      },
+    },
+  },
+  MuiInput: {
+    defaultProps: {
+      disableUnderline: true,
+    },
+    styleOverrides: {
+      root: {
+        border: '2px solid black',
+        borderRadius: 10,
+      },
+    },
+  },
+  MuiPaper: {
+    styleOverrides: {
+      root: {
+        borderRadius: 4,
+      },
+    },
+  },
+};
 
 export const themeParameters = {
   typography,
+  palette,
+  components,
 };
 
 export const theme = createTheme(themeParameters);
 
 export const getTheme = (): Theme => {
-  return theme;
+  return responsiveFontSizes(theme);
 };

@@ -12,6 +12,7 @@ interface PropsType {
 const Avatar = (props: PropsType) => {
   const { player, size = 'big', badgeContent, displayBadge } = props;
   const avatarSize = size === 'small' ? 40 : size === 'medium' ? 60 : 80;
+  const badgeSize = size === 'small' ? 15 : size === 'medium' ? 30 : 40;
   return (
     <Badge
       overlap="circular"
@@ -25,7 +26,8 @@ const Avatar = (props: PropsType) => {
               transition: 'transform 400ms',
               transform: displayBadge ? null : 'scale(30%)',
               backgroundColor: 'orange',
-              scale: '70%',
+              height: badgeSize,
+              width: badgeSize,
             }}
           >
             {badgeContent}
