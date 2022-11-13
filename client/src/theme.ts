@@ -10,6 +10,33 @@ const typography: TypographyOptions = {
   h1: {
     fontFamily: 'bespoke-extrabold-italic',
   },
+  h2: {
+    fontFamily: 'bespoke-extrabold-italic',
+  },
+  h3: {
+    fontFamily: 'bespoke-extrabold-italic',
+  },
+  h4: {
+    fontFamily: 'bespoke-extrabold-italic',
+  },
+  h5: {
+    fontFamily: 'bespoke-extrabold-italic',
+  },
+  h6: {
+    fontFamily: 'bespoke-extrabold-italic',
+  },
+  subtitle1: {
+    fontFamily: 'bespoke-medium',
+  },
+  subtitle2: {
+    fontFamily: 'bespoke-medium',
+  },
+  body1: {
+    fontFamily: 'bespoke-regular',
+  },
+  body2: {
+    fontFamily: 'bespoke-regular',
+  },
   button: {
     fontFamily: 'bespoke-medium',
     textTransform: 'none',
@@ -50,7 +77,7 @@ export const palette: PaletteOptions = {
     main: '#90C8AC',
   },
   secondary: {
-    main: '#86BAFE',
+    main: '#D89A9E',
   },
   green: {
     main: '#90C8AC',
@@ -81,7 +108,18 @@ const components = {
         '&:hover': {
           backgroundColor: palette.primary.main,
         },
+        '&:active': {
+          boxShadow: '5px 5px black',
+        },
         color: palette.black.main,
+      },
+      outlined: {
+        borderRadius: 10,
+        border: '2px solid black',
+        color: palette.black.main,
+        '&:hover': {
+          border: '2px solid',
+        },
       },
     },
   },
@@ -100,6 +138,22 @@ const components = {
     styleOverrides: {
       root: {
         borderRadius: 4,
+      },
+    },
+  },
+  MuiTooltip: {
+    styleOverrides: {
+      tooltip: {
+        backgroundColor: palette.secondary.main,
+        fontSize: 20,
+        align: 'center',
+        border: '2px solid black',
+      },
+      arrow: {
+        color: palette.secondary.main,
+        '&:before': {
+          border: '2px solid black',
+        },
       },
     },
   },

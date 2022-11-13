@@ -1,10 +1,11 @@
-import { Button, Grid } from '@mui/material';
+import { Button, Grid, Tooltip, Typography } from '@mui/material';
 import React, { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
+import Avatar from '../Avatar';
 import { GameContext, PlayerContext } from '../Room';
 import ScoreBar from '../ScoreBar';
-import { isRoomAdmin } from '../WaitingRoom/helpers';
+import { getPlayTooltip, isRoomAdmin } from '../WaitingRoom/helpers';
 
 const Leaderboard = () => {
   const game = useContext(GameContext);
@@ -25,29 +26,67 @@ const Leaderboard = () => {
   const isAdmin = isRoomAdmin(players, socket.id);
 
   return (
-    <Grid alignItems="center" container justifyContent="center" height={300}>
-      <h1>Leaderboard</h1>
-      <ScoreBar
-        players={players}
-        scores={scores}
-        layout="vertical"
-        number={3}
-      />
+    <Grid
+      alignItems="center"
+      container
+      justifyContent="center"
+      direction="column"
+      height={1}
+    >
+      <Typography variant="h4" sx={{ marginTop: 2 }}>
+        Scores:
+      </Typography>
       <Grid
-        alignItems="center"
         container
         justifyContent="center"
-        flexDirection={'column'}
+        alignItems={'center'}
+        sx={{ marginTop: 2, marginBottom: 2, overflowY: 'auto', flex: 1 }}
+        maxWidth={500}
       >
-        <Button onClick={handleLeaveToMenu} sx={{ m: 2 }}>
-          Leave to menu
-        </Button>
-        {isAdmin && (
-          <Button onClick={handleGoToWaitingRoom}>
-            Send Everyone to Waiting Room
-          </Button>
-        )}
+        {players &&
+          players.map((player) => (
+            <Grid
+              container
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+              sx={{ maxWidth: 130 }}
+            >
+              <Avatar
+                player={player}
+                size={'big'}
+                displayBadge={true}
+                badgeContent={scores?.[player?.username] ?? 0}
+              />
+              <Typography variant="subtitle1" align="center">
+                {player.username}
+              </Typography>
+            </Grid>
+          ))}
       </Grid>
+      <Tooltip
+        title={
+          isAdmin
+            ? null
+            : 'Only the admin can send everyone to the waiting room'
+        }
+        placement="top"
+        arrow
+      >
+        <span>
+          <Button
+            onClick={handleGoToWaitingRoom}
+            variant="contained"
+            disabled={!isAdmin}
+            sx={{ m: 2 }}
+          >
+            Back to waiting room
+          </Button>
+        </span>
+      </Tooltip>
+      <Button onClick={handleLeaveToMenu} sx={{ m: 1 }} variant="outlined">
+        Leave to menu
+      </Button>
     </Grid>
   );
 };

@@ -44,12 +44,7 @@ const App = () => {
       }}
       overflow={'hidden'}
     >
-      <Grid
-        container
-        height={1}
-        width={1}
-        sx={{ padding: 3, maxWidth: 700, maxHeight: 600 }}
-      >
+      <Grid container height={1} width={1} sx={{ padding: 3, maxWidth: 700 }}>
         <SocketContext.Provider value={socket}>
           <ThemeProvider theme={theme}>
             <Routes>

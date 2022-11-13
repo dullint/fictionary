@@ -30,8 +30,13 @@ const VoteBanner = (props: PropsType) => {
     votingPlayers.filter((player) => player.username !== authorPlayer.username)
       .length;
   return (
-    <Grid container justifyContent={'space-between'} alignItems="center">
-      <AvatarGroup sx={{ marginRight: 2 }}>
+    <Grid
+      container
+      justifyContent={'space-between'}
+      alignItems="center"
+      sx={{ marginTop: 1 }}
+    >
+      <AvatarGroup sx={{ marginRight: 2, border: null }}>
         {votingPlayers.map((player) => (
           <Avatar
             player={player}

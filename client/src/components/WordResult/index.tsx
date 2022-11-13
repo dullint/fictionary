@@ -94,6 +94,7 @@ const WordResult = () => {
       <Tooltip
         title={isAdmin ? null : 'Waiting for the admin to continue'}
         placement="top"
+        arrow
       >
         <span>
           <Button

@@ -8,6 +8,7 @@ import { useParams } from 'react-router';
 import { updateUsername } from '../../services/room';
 import { Grid, Input, Typography } from '@mui/material';
 import { theme } from '../../theme';
+import { Box } from '@mui/system';
 
 export interface Propstype {
   open: boolean;
@@ -54,14 +55,16 @@ const UsernameDialog = (props: Propstype) => {
           alignItems={'center'}
           justifyContent="center"
         >
-          <Typography
-            fontSize={22}
-            fontWeight={700}
-            sx={{ marginBottom: 2 }}
-            align="left"
-          >
-            Choose your username
-          </Typography>
+          <Box justifyContent={'left'} width={1}>
+            <Typography
+              fontSize={20}
+              fontWeight={700}
+              sx={{ marginBottom: 1 }}
+              align="left"
+            >
+              Choose your username:
+            </Typography>
+          </Box>
           <Input
             onKeyPress={handlePressKey}
             autoFocus
@@ -69,8 +72,9 @@ const UsernameDialog = (props: Propstype) => {
             onChange={handleTextFieldChange}
             inputProps={{
               maxLength: 15,
-              style: { fontSize: 20, fontWeight: 900 },
+              style: { fontSize: 23, textAlign: 'center', fontWeight: 900 },
             }}
+            sx={{ height: 60 }}
           />
           {usernameErrorMessage && (
             <Typography sx={{ color: 'red' }}>

@@ -15,3 +15,15 @@ body {
   src: local('bespoke'),
     url('./fonts/bespoke/BespokeSerif-Medium.woff') format('truetype');
 }
+
+@font-face {
+  font-family: 'bespoke-regular';
+  src: local('bespoke'),
+    url('./fonts/bespoke/BespokeSerif-Regular.woff') format('truetype');
+}
+
+@font-face {
+  font-family: 'bespoke-light-italic';
+  src: local('bespoke'),
+    url('./fonts/bespoke/BespokeSerif-LightItalic.woff') format('truetype');
+}

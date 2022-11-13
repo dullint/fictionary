@@ -11,6 +11,8 @@ import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { Box } from '@mui/system';
 import { BEFORE_AUTHOR_REVEAL_DELAY, BEFORE_NEXT_DEF_DELAY } from './constants';
 import { isMobile } from 'react-device-detect';
+import GameHeader from '../GameHeader';
+import { BOTTOM_MAIN_BUTTON_WIDTH } from '../Room/constants';
 
 const WordReveal = () => {
   const game = useContext(GameContext);
@@ -74,11 +76,12 @@ const WordReveal = () => {
 
   return (
     <Grid container flexDirection="column" height={1} width={1}>
+      <GameHeader />
       <Box
         display="flex"
         width={1}
         flexDirection="column"
-        sx={{ overflowY: 'auto', flex: 1, padding: 1 }}
+        sx={{ overflowY: 'auto', flex: 1, padding: 0.5 }}
       >
         {definitionsToDisplay.map(([username, definition], index) => (
           <Box
@@ -88,15 +91,11 @@ const WordReveal = () => {
             ref={(el) => (definitionsRef.current[index] = el)}
             sx={{
               boxSizing: 'border-box',
-              borderRadius: 2,
+              borderRadius: 4,
               padding: 1,
             }}
           >
-            <DefinitionDisplay
-              word={entry.word}
-              definition={definition}
-              nature={entry.nature}
-            />
+            <DefinitionDisplay entry={{ ...entry, definition }} />
             <VoteBanner
               votingPlayers={votingPlayersByDefinitions[username] ?? []}
               authorPlayer={extendedPlayers.find(
@@ -121,6 +120,7 @@ const WordReveal = () => {
             }
             variant="contained"
             size="large"
+            sx={{ m: 1, width: BOTTOM_MAIN_BUTTON_WIDTH }}
           >
             Continue
           </Button>

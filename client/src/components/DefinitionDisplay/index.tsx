@@ -1,34 +1,49 @@
 import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
+import { DictionnaryEntry } from '../../../../server/dictionary/types';
 
 interface PropsType {
-  word: string;
-  definition: string;
-  nature: string;
+  entry: DictionnaryEntry;
 }
 
 const DefinitionDisplay = (props: PropsType) => {
-  const { word, definition, nature } = props;
+  const { word, definition, nature, genre } = props.entry;
   return (
     <Box>
       <Typography
         component="span"
-        fontWeight={900}
-        fontSize={20}
+        variant="h6"
         sx={{ marginRight: 0.5 }}
+        fontSize={18}
       >
         {word}
       </Typography>
       <Typography
         component="span"
         fontStyle={'italic'}
-        fontWeight={100}
-        sx={{ marginRight: 1 }}
+        fontSize={18}
+        fontFamily="bespoke-light-italic"
+        sx={{ marginRight: 0.5 }}
       >
         {nature}
       </Typography>
-      <Typography component="span" textOverflow="ellipsis" overflow={'hidden'}>
+      <Typography
+        component="span"
+        fontStyle={'italic'}
+        fontSize={18}
+        fontFamily="bespoke-light-italic"
+        sx={{ marginRight: 0.5 }}
+      >
+        {genre}.
+      </Typography>
+      <Typography
+        component="span"
+        fontSize={18}
+        textOverflow="ellipsis"
+        overflow={'hidden'}
+        variant="body1"
+      >
         {definition}
       </Typography>
     </Box>

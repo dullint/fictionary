@@ -9,6 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import { GameSettings } from '../../../../server/game/types';
+import { theme } from '../../theme';
 
 export interface PropsType {
   open: boolean;
@@ -28,12 +29,17 @@ const GameSettingsDialog = (props: PropsType) => {
     socket.emit('change_game_settings', { gameSettings: newGameSettings });
   };
 
-  const promptTimeOptions = [1, 2, 3, 4, 5];
-  const roundNumberOptions = [2, 3, 4, 5];
+  const promptTimeOptions = [1, 2, 3, 4, 60];
+  const roundNumberOptions = [2, 3, 4, 5, 6];
 
   return (
     <Dialog open={open} onClose={() => setOpen(false)}>
-      <DialogContent>
+      <DialogContent
+        sx={{
+          backgroundColor: theme.palette.pink.main,
+          border: '4px solid black',
+        }}
+      >
         <Grid
           container
           direction="column"
@@ -55,7 +61,11 @@ const GameSettingsDialog = (props: PropsType) => {
             {roundNumberOptions.map((value) => {
               return (
                 <Button
-                  sx={{ minWidth: 100 }}
+                  sx={{
+                    '&:hover': {
+                      boxShadow: value === roundNumber ? '5px 5px black' : null,
+                    },
+                  }}
                   onClick={(e) => setRoundNumber(value)}
                   variant={value === roundNumber ? 'contained' : 'outlined'}
                 >
@@ -74,7 +84,13 @@ const GameSettingsDialog = (props: PropsType) => {
             {promptTimeOptions.map((value) => {
               return (
                 <Button
-                  sx={{ textTransform: 'none' }}
+                  sx={{
+                    textTransform: 'none',
+                    '&:hover': {
+                      boxShadow:
+                        value === maxPromptTime ? '5px 5px black' : null,
+                    },
+                  }}
                   onClick={(e) => setMaxPromptTime(value)}
                   variant={value === maxPromptTime ? 'contained' : 'outlined'}
                 >
@@ -86,7 +102,7 @@ const GameSettingsDialog = (props: PropsType) => {
           <Button
             onClick={isAdmin ? handleSubmit : () => setOpen(false)}
             variant="contained"
-            sx={{ marginTop: 3 }}
+            sx={{ marginTop: 5 }}
           >
             {isAdmin ? 'Save settings' : 'Close'}
           </Button>

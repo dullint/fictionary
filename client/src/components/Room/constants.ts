@@ -1,0 +1,1 @@
+export const BOTTOM_MAIN_BUTTON_WIDTH = 200;

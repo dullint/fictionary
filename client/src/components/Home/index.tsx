@@ -3,6 +3,7 @@ import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import { createRoom, joinRoom } from '../../services/room';
+import { generateRandomRoomId } from '../GameSettingsDialog/helpers';
 import { defaultGameSettings } from './constants';
 
 const Home = () => {
@@ -49,7 +50,7 @@ const Home = () => {
           sx={{
             alignSelf: 'center',
             width: 300,
-            height: 40,
+            height: 60,
             marginBottom: 4,
           }}
         >
@@ -69,20 +70,20 @@ const Home = () => {
               setJoinRoomErrorMessage(null);
             }}
             sx={{
-              height: 40,
+              height: 60,
               flex: 1,
             }}
             // disableUnderline
             value={roomId}
             inputProps={{
               maxLength: 5,
-              style: { textAlign: 'center', fontWeight: 900 },
+              style: { textAlign: 'center', fontWeight: 900, fontSize: 24 },
             }}
           />
           <Button
             onClick={handleJoinGame}
             variant="contained"
-            sx={{ marginLeft: 2, width: 'auto', height: 40 }}
+            sx={{ marginLeft: 2, width: 'auto', height: 60 }}
           >
             Join game
           </Button>

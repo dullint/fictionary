@@ -10,6 +10,8 @@ import {
   getVotingPlayersByDefinitions,
 } from './helpers';
 import VoteBanner from '../VoteBanner';
+import GameHeader from '../GameHeader';
+import { BOTTOM_MAIN_BUTTON_WIDTH } from '../Room/constants';
 
 const WordGuess = () => {
   const game = useContext(GameContext);
@@ -37,14 +39,12 @@ const WordGuess = () => {
   const playerColor = getMyPlayer(players, socket.id).color;
   return (
     <Grid container direction="column" height={1} width={1}>
-      <Typography variant="subtitle1" sx={{ m: 2 }}>
-        Guess the Right Word!
-      </Typography>
-      <Box
-        display="flex"
+      <GameHeader />
+      <Grid
+        container
         width={1}
-        flexDirection="column"
-        sx={{ overflowY: 'auto', flex: 1, padding: 1 }}
+        direction="column"
+        sx={{ overflowY: 'auto', flex: 1, padding: 0.5 }}
       >
         {definitionsToDisplay.map(([username, definition]) => (
           <Box
@@ -62,26 +62,26 @@ const WordGuess = () => {
                     ? `0px 0px 7px ${playerColor}`
                     : `0px 0px 10px -5px black`,
               },
-              padding: 1,
+              paddingTop: 1,
+              paddingBottom: 1,
             }}
           >
-            <DefinitionDisplay
-              word={entry.word}
-              definition={definition}
-              nature={entry.nature}
-            />
+            <DefinitionDisplay entry={{ ...entry, definition: definition }} />
             <VoteBanner
               votingPlayers={votingPlayersByDefinitions[username] ?? []}
               revealed={false}
             />
           </Box>
         ))}
-        <Typography variant="body1" sx={{ m: 1 }}>
+        <Typography
+          variant="body1"
+          sx={{ m: 1, width: BOTTOM_MAIN_BUTTON_WIDTH }}
+        >
           {selectedUsernameDef
             ? 'Waiting for other players to pick a definition'
             : null}
         </Typography>
-      </Box>
+      </Grid>
     </Grid>
   );
 };

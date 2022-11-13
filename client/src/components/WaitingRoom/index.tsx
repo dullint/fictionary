@@ -11,6 +11,8 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { getMyPlayer } from '../WordGuess/helpers';
 import Avatar from '../Avatar';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { theme } from '../../theme';
+import { BOTTOM_MAIN_BUTTON_WIDTH } from '../Room/constants';
 
 const WaitingRoom = () => {
   const socket = useContext(SocketContext);
@@ -57,25 +59,40 @@ const WaitingRoom = () => {
       <Grid
         alignItems="center"
         container
-        justifyContent="start"
-        direction="column"
+        justifyContent="space-between"
+        direction="row"
       >
-        <Button startIcon={<ArrowBackIosIcon />}>Back</Button>
+        <Button
+          startIcon={<ArrowBackIosIcon />}
+          variant="outlined"
+          onClick={handleLeaveRoom}
+          size="small"
+        >
+          Back
+        </Button>
+        <Button
+          color="primary"
+          onClick={handleChangeGameSettings}
+          size="small"
+          variant="outlined"
+          endIcon={<SettingsIcon />}
+        >
+          Game settings
+        </Button>
       </Grid>
-      <Typography variant="h6" align="center">
-        Room code:
+      <Typography variant="body1" align="center" sx={{ marginTop: 4 }}>
+        Your room code is
       </Typography>
-      <Typography variant="h3">{roomId}</Typography>
+      <Typography variant="h1" color={theme.palette.pink.main}>
+        {roomId}
+      </Typography>
       <Grid container alignContent={'center'} justifyContent="center">
-        <Typography display="flex" alignItems={'center'}>
-          Send the link to your friends:{' '}
-        </Typography>
         <Button
           onClick={handleCopyToClipboard}
           sx={{ m: 0 }}
           endIcon={<ContentCopyIcon />}
         >
-          <Typography>{`/room/${roomId}`}</Typography>
+          <Typography>Click to copy the link</Typography>
         </Button>
       </Grid>
       <Snackbar
@@ -84,15 +101,6 @@ const WaitingRoom = () => {
         autoHideDuration={2000}
         message="Copied to clipboard"
       />
-      <Button
-        color="primary"
-        onClick={handleChangeGameSettings}
-        size="large"
-        variant="outlined"
-        endIcon={<SettingsIcon />}
-      >
-        Game settings
-      </Button>
       <Grid
         container
         justifyContent="center"
@@ -110,7 +118,7 @@ const WaitingRoom = () => {
               sx={{ maxWidth: 130 }}
             >
               <Avatar player={player} displayBadge={false} />
-              <Typography variant="subtitle1" align="center">
+              <Typography variant="h6" align="center">
                 {player.username}
               </Typography>
             </Grid>
@@ -119,23 +127,19 @@ const WaitingRoom = () => {
       <Tooltip
         title={getPlayTooltip(isAdmin, allPlayersHaveAUsername)}
         placement="top"
+        arrow
       >
         <span>
           <Button
             onClick={handlePlay}
             variant="contained"
-            size="large"
-            sx={{ m: 1 }}
+            sx={{ m: 1, width: BOTTOM_MAIN_BUTTON_WIDTH }}
             disabled={!isAdmin || !allPlayersHaveAUsername}
           >
             Play
           </Button>
         </span>
       </Tooltip>
-
-      <Button onClick={handleLeaveRoom} size="large">
-        Leave Room
-      </Button>
       <UsernameDialog
         open={openUsernameDialog}
         setOpen={setOpenUsernameDialog}
