@@ -16,3 +16,4 @@ export const getAvatarString = (player: Player) => {
     ? dictionaryImage
     : `data:image/svg+xml;utf8,${encodeURIComponent(stringSVG)}`;
 };
+//
