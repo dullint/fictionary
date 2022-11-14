@@ -12,9 +12,9 @@ interface PropsType {
 }
 const Avatar = (props: PropsType) => {
   const { player, size = 'big', badgeContent, displayBadge } = props;
-  const avatarSize = size === 'small' ? 40 : size === 'medium' ? 60 : 80;
-  const badgeSize = size === 'small' ? 20 : size === 'medium' ? 30 : 40;
-  const borderSize = size === 'small' ? 1 : size === 'medium' ? 2 : 3;
+  const avatarSize = size === 'small' ? 35 : size === 'medium' ? 60 : 80;
+  const badgeSize = size === 'small' ? 18 : size === 'medium' ? 30 : 40;
+  const borderSize = size === 'small' ? 1 : size === 'medium' ? 2 : 2;
   const fontSize = size === 'small' ? 12 : size === 'medium' ? 20 : 25;
   return (
     <Badge
@@ -32,7 +32,7 @@ const Avatar = (props: PropsType) => {
               height: badgeSize,
               width: badgeSize,
               fontSize: fontSize,
-              border: `${borderSize}px solid black`,
+              border: `1px solid black`,
             }}
           >
             {badgeContent}

@@ -17,7 +17,7 @@ import { CHARACTER_LIMIT } from './constants';
 import { isMobile } from 'react-device-detect';
 import { theme } from '../../theme';
 import GameHeader from '../GameHeader';
-import { BOTTOM_MAIN_BUTTON_WIDTH } from '../Room/constants';
+import { bottomPageButtonSx } from '../../constants/style';
 
 const WordPrompt = () => {
   const game = useContext(GameContext);
@@ -150,7 +150,7 @@ const WordPrompt = () => {
       <Button
         onClick={() => (hasSubmited ? handleModify() : handleSubmit())}
         variant="contained"
-        sx={{ width: BOTTOM_MAIN_BUTTON_WIDTH }}
+        sx={bottomPageButtonSx}
       >
         {hasSubmited ? 'Modify' : 'Submit'}
       </Button>

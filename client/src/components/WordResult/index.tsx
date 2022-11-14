@@ -101,6 +101,7 @@ const WordResult = () => {
             onClick={handleNextStep}
             disabled={!isAdmin}
             variant="contained"
+            sx={{ marginTop: 1 }}
           >
             Continue
           </Button>

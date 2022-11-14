@@ -11,7 +11,7 @@ import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { Box } from '@mui/system';
 import { BEFORE_AUTHOR_REVEAL_DELAY, BEFORE_NEXT_DEF_DELAY } from './constants';
 import GameHeader from '../GameHeader';
-import { BOTTOM_MAIN_BUTTON_WIDTH } from '../Room/constants';
+import { bottomPageButtonSx } from '../../constants/style';
 
 const WordReveal = () => {
   const game = useContext(GameContext);
@@ -119,7 +119,7 @@ const WordReveal = () => {
             }
             variant="contained"
             size="large"
-            sx={{ m: 1, width: BOTTOM_MAIN_BUTTON_WIDTH }}
+            sx={bottomPageButtonSx}
           >
             Continue
           </Button>

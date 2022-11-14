@@ -35,7 +35,7 @@ const VoteBanner = (props: PropsType) => {
       container
       justifyContent={'space-between'}
       alignItems="center"
-      sx={{ marginTop: 1 }}
+      sx={{ paddingRight: 1, paddingLeft: 1, marginTop: 0.5 }}
     >
       <AvatarGroup sx={{ marginRight: 1 }} max={6}>
         {votingPlayers.map((player) => (

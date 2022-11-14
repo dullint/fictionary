@@ -10,8 +10,8 @@ import {
 } from './helpers';
 import VoteBanner from '../VoteBanner';
 import GameHeader from '../GameHeader';
-import { BOTTOM_MAIN_BUTTON_WIDTH } from '../Room/constants';
 import { theme } from '../../theme';
+import { bottomPageButtonSx } from '../../constants/style';
 
 const WordGuess = () => {
   const game = useContext(GameContext);
@@ -43,7 +43,7 @@ const WordGuess = () => {
         container
         width={1}
         direction="column"
-        sx={{ overflowY: 'auto', flex: 1, padding: 1 }}
+        sx={{ overflowY: 'auto', flex: 1 }}
         spacing={1}
       >
         {definitionsToDisplay.map(([username, definition]) => (
@@ -74,10 +74,7 @@ const WordGuess = () => {
             />
           </Box>
         ))}
-        <Typography
-          variant="body1"
-          sx={{ m: 1, width: BOTTOM_MAIN_BUTTON_WIDTH }}
-        >
+        <Typography variant="body1" sx={bottomPageButtonSx}>
           {selectedUsernameDef
             ? 'Waiting for other players to pick a definition'
             : null}

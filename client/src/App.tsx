@@ -6,6 +6,7 @@ import { io, Socket } from 'socket.io-client';
 import { ThemeProvider } from '@mui/material/styles';
 import { getTheme, palette } from './theme';
 import { Grid } from '@mui/material';
+import Div100vh from 'react-div-100vh';
 
 export const SocketContext = createContext(null);
 
@@ -38,25 +39,17 @@ const App = () => {
       socket.disconnect();
     };
   }, []);
-  const documentHeight = () => {
-    const doc = document.documentElement;
-    doc.style.setProperty('--doc-height', `${window.innerHeight}px`);
-  };
-  window.addEventListener('resize', documentHeight);
-  documentHeight();
 
   return (
-    <Grid
-      container
-      alignItems="start"
-      justifyContent="center"
-      margin={0}
-      width={'100vw'}
-      height={'var(--doc-height)'}
-      sx={{
+    <Div100vh
+      style={{
         background: palette.yellow.main,
+        overflow: 'hidden',
+        display: 'flex',
+        alignItems: 'start',
+        justifyContent: 'center',
+        width: '100vw',
       }}
-      overflow={'hidden'}
     >
       <Grid container height={1} width={1} sx={{ padding: 3, maxWidth: 700 }}>
         <SocketContext.Provider value={socket}>
@@ -68,7 +61,7 @@ const App = () => {
           </ThemeProvider>
         </SocketContext.Provider>
       </Grid>
-    </Grid>
+    </Div100vh>
   );
 };
 

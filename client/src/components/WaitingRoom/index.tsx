@@ -12,7 +12,7 @@ import { getMyPlayer } from '../WordGuess/helpers';
 import Avatar from '../Avatar';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { theme } from '../../theme';
-import { BOTTOM_MAIN_BUTTON_WIDTH } from '../Room/constants';
+import { bottomPageButtonSx } from '../../constants/style';
 
 const WaitingRoom = () => {
   const socket = useContext(SocketContext);
@@ -80,10 +80,10 @@ const WaitingRoom = () => {
           Game settings
         </Button>
       </Grid>
-      <Typography variant="body1" align="center" sx={{ marginTop: 4 }}>
+      <Typography variant="body1" align="center" sx={{ marginTop: 2 }}>
         Your room code is
       </Typography>
-      <Typography variant="h1" color={theme.palette.pink.main}>
+      <Typography variant="h2" color={theme.palette.pink.main}>
         {roomId}
       </Typography>
       <Grid container alignContent={'center'} justifyContent="center">
@@ -117,8 +117,8 @@ const WaitingRoom = () => {
               alignItems="center"
               sx={{ maxWidth: 130 }}
             >
-              <Avatar player={player} displayBadge={false} />
-              <Typography variant="h6" align="center">
+              <Avatar player={player} displayBadge={false} size="medium" />
+              <Typography variant="subtitle1" align="center">
                 {player?.username}
               </Typography>
             </Grid>
@@ -133,7 +133,7 @@ const WaitingRoom = () => {
           <Button
             onClick={handlePlay}
             variant="contained"
-            sx={{ m: 1, width: BOTTOM_MAIN_BUTTON_WIDTH }}
+            sx={bottomPageButtonSx}
             disabled={!isAdmin || !allPlayersHaveAUsername}
           >
             Play

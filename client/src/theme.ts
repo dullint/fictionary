@@ -40,7 +40,7 @@ const typography: TypographyOptions = {
   button: {
     fontFamily: 'bespoke-medium',
     textTransform: 'none',
-    fontSize: 25,
+    fontSize: 20,
   },
 } as TypographyOptions;
 
