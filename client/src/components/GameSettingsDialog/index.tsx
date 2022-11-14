@@ -36,7 +36,7 @@ const GameSettingsDialog = (props: PropsType) => {
     <Dialog open={open} onClose={() => setOpen(false)}>
       <DialogContent
         sx={{
-          backgroundColor: theme.palette.pink.main,
+          backgroundColor: theme.palette.yellow.main,
           border: '4px solid black',
         }}
       >

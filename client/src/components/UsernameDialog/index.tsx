@@ -7,7 +7,7 @@ import { SocketContext } from '../../App';
 import { useParams } from 'react-router';
 import { updateUsername } from '../../services/room';
 import { Grid, Input, Typography } from '@mui/material';
-import { theme } from '../../theme';
+import { palette, theme } from '../../theme';
 import { Box } from '@mui/system';
 
 export interface Propstype {
@@ -45,7 +45,7 @@ const UsernameDialog = (props: Propstype) => {
     <Dialog open={open}>
       <DialogContent
         sx={{
-          backgroundColor: theme.palette.pink.main,
+          backgroundColor: theme.palette.yellow.main,
           border: '4px solid black',
         }}
       >
@@ -74,10 +74,10 @@ const UsernameDialog = (props: Propstype) => {
                 fontFamily: 'bespoke-medium',
               },
             }}
-            sx={{ height: 60 }}
+            sx={{ height: 60, backgroundColor: palette.primary.main }}
           />
           {usernameErrorMessage && (
-            <Typography sx={{ color: 'red' }}>
+            <Typography sx={{ color: palette.secondary.main }}>
               {usernameErrorMessage}
             </Typography>
           )}

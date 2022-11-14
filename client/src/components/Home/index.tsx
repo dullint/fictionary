@@ -3,6 +3,7 @@ import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import { createRoom, joinRoom } from '../../services/room';
+import { theme } from '../../theme';
 import { generateRandomRoomId } from '../GameSettingsDialog/helpers';
 import { defaultGameSettings } from './constants';
 
@@ -88,7 +89,7 @@ const Home = () => {
             Join game
           </Button>
           {joinRoomErrorMessage && (
-            <Typography sx={{ color: 'red' }}>
+            <Typography sx={{ color: theme.palette.secondary.main }}>
               {joinRoomErrorMessage}
             </Typography>
           )}
