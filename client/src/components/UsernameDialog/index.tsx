@@ -74,7 +74,7 @@ const UsernameDialog = (props: Propstype) => {
                 fontFamily: 'bespoke-medium',
               },
             }}
-            sx={{ height: 60, backgroundColor: palette.primary.main }}
+            sx={{ height: 60 }}
           />
           {usernameErrorMessage && (
             <Typography sx={{ color: palette.secondary.main }}>

@@ -70,7 +70,7 @@ export const onLeavingRoom = async (
     console.log(`Game of room ${roomId} deleted`);
     return;
   }
-  const updatedPlayersLeft = socket.data?.isAdmin
+  return socket.data?.isAdmin
     ? await selectNewAdmin(io, socket.id, roomId)
     : playersLeft;
 };

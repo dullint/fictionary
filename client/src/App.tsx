@@ -26,7 +26,6 @@ const App = () => {
         : 'https://sea-lion-app-w7b99.ondigitalocean.app/';
     const socket = io(server, { autoConnect: false });
     const sessionId = localStorage.getItem('fictionarySessionId');
-    console.log('APP', socket?.id, sessionId);
     socket.auth = { sessionId };
     socket.connect();
     socket.on('session', ({ sessionId, userId }) => {

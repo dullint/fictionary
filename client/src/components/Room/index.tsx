@@ -51,8 +51,6 @@ const Room = () => {
     console.log({ players });
   }, [players]);
 
-  console.log('ROOM', socket?.id, game?.gameStep, players);
-
   const renderComponent = (gameStep: GameStep) => {
     if (game && players) {
       switch (gameStep) {
