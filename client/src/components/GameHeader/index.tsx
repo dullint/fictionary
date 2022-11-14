@@ -23,7 +23,7 @@ const GameHeader = () => {
       <Typography variant="h6">{`Round ${currentRound} / ${roundNumber}`}</Typography>
       <Box display="flex" alignItems={'center'}>
         <Typography sx={{ marginRight: 1 }} variant="h6">
-          {player.username}
+          {player?.username}
         </Typography>
         <Avatar player={player} displayBadge={false} size={'small'}></Avatar>
       </Box>

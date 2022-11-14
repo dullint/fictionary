@@ -44,15 +44,15 @@ const Avatar = (props: PropsType) => {
         sx={{
           width: avatarSize,
           height: avatarSize,
-          bgcolor: player.color,
+          bgcolor: player?.color,
           border: `${borderSize}px solid black`,
         }}
       >
-        {player.username ? (
+        {player?.username ? (
           <img
             src={getAvatarString(player)}
             style={{ width: '140%', height: '140%' }}
-            alt={player.username}
+            alt={player?.username}
           />
         ) : (
           <CircularProgress />

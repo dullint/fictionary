@@ -98,7 +98,7 @@ const WordReveal = () => {
             <VoteBanner
               votingPlayers={votingPlayersByDefinitions[username] ?? []}
               authorPlayer={extendedPlayers.find(
-                (player) => player.username === username
+                (player) => player?.username === username
               )}
               size={'small'}
               revealed={revealedUsername.includes(username)}

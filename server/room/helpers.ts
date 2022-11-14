@@ -35,7 +35,7 @@ export const checkIfUsernameTaken = async (
   username: string
 ) => {
   const players = await getPlayers(io, roomId);
-  const roomUsernames = players.map((player) => player.username);
+  const roomUsernames = players.map((player) => player?.username);
   return roomUsernames.includes(username);
 };
 
@@ -63,7 +63,7 @@ export const onLeavingRoom = async (
   roomId: string
 ) => {
   const playersLeft = (await getPlayers(io, roomId)).filter(
-    (player) => player.socketId != socket.id
+    (player) => player?.socketId != socket.id
   );
   if (playersLeft.length === 0) {
     GAMES.delete(roomId);

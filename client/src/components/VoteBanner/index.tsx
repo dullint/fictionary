@@ -26,9 +26,10 @@ const VoteBanner = (props: PropsType) => {
   const voterPoints = Number(isTrueDefinition);
   const authorPoints =
     authorPlayer?.username &&
-    authorPlayer.socketId !== 'dictionary' &&
-    votingPlayers.filter((player) => player.username !== authorPlayer.username)
-      .length;
+    authorplayer?.socketId !== 'dictionary' &&
+    votingPlayers.filter(
+      (player) => player?.username !== authorplayer?.username
+    ).length;
   return (
     <Grid
       container

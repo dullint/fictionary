@@ -8,7 +8,7 @@ import { Player } from '../../../../server/room/types';
 import { DictionnaryEntry } from '../../../../server/dictionary/types';
 
 export const getMyPlayer = (players: Player[], socketId: string) => {
-  return players.filter((player) => player.socketId === socketId)?.[0];
+  return players.filter((player) => player?.socketId === socketId)?.[0];
 };
 
 export const getVotingPlayersByDefinitions = (
@@ -17,12 +17,12 @@ export const getVotingPlayersByDefinitions = (
 ) => {
   const votingPlayersByDefinitions = players.reduce((acc, { username }) => {
     acc[username] = players.filter(
-      (player) => selections[player.username] === username
+      (player) => selections[player?.username] === username
     );
     return acc;
   }, {});
   votingPlayersByDefinitions['REAL_DEFINITION'] = players.filter(
-    (player) => selections[player.username] === 'REAL_DEFINITION'
+    (player) => selections[player?.username] === 'REAL_DEFINITION'
   );
   return votingPlayersByDefinitions;
 };

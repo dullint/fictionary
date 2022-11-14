@@ -63,7 +63,7 @@ const Leaderboard = () => {
                   badgeContent={scores?.[player?.username] ?? 0}
                 />
                 <Typography variant="subtitle1" align="center">
-                  {player.username}
+                  {player?.username}
                 </Typography>
               </Grid>
             ))}

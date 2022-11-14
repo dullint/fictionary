@@ -7,7 +7,7 @@ export const getAvatarString = (player: Player) => {
   const isDictionary = player?.socketId === 'dictionary';
   const stringSVG = createAvatar(style, {
     seed: player?.username,
-    backgroundColor: player.color,
+    backgroundColor: player?.color,
     size: 120,
     topColor: ['black'],
   });

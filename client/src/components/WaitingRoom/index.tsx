@@ -119,7 +119,7 @@ const WaitingRoom = () => {
             >
               <Avatar player={player} displayBadge={false} />
               <Typography variant="h6" align="center">
-                {player.username}
+                {player?.username}
               </Typography>
             </Grid>
           ))}
