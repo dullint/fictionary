@@ -33,6 +33,7 @@ const App = () => {
       localStorage.setItem('fictionarySessionId', sessionId);
       socket.userId = userId;
     });
+    console.log('APP', socket?.id, sessionId);
     setSocket(socket);
     return () => {
       socket.disconnect();

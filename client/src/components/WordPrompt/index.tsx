@@ -78,6 +78,7 @@ const WordPrompt = () => {
 
   const minutes = counter && Math.floor(counter / 60);
   const seconds = counter && counter - minutes * 60;
+  console.log('PROMPT', socket?.id, game?.gameStep, players);
   return (
     <Grid container alignItems="center" direction="column">
       <GameHeader />

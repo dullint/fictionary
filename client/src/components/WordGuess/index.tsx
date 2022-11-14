@@ -6,7 +6,6 @@ import { useParams } from 'react-router-dom';
 import DefinitionDisplay from '../DefinitionDisplay';
 import {
   getDefinitionsToDisplay,
-  getMyPlayer,
   getVotingPlayersByDefinitions,
 } from './helpers';
 import VoteBanner from '../VoteBanner';
@@ -37,7 +36,6 @@ const WordGuess = () => {
     players,
     selections
   );
-  const playerColor = getMyPlayer(players, socket.id).color;
   return (
     <Grid container direction="column" height={1} width={1}>
       <GameHeader />

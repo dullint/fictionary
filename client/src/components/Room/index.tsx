@@ -51,23 +51,28 @@ const Room = () => {
     console.log({ players });
   }, [players]);
 
+  console.log('ROOM', socket?.id, game?.gameStep, players);
+
   const renderComponent = (gameStep: GameStep) => {
-    switch (gameStep) {
-      case GameStep.WAIT:
-        return <WaitingRoom />;
-      case GameStep.PROMPT:
-        return <WordPrompt />;
-      case GameStep.GUESS:
-        return <WordGuess />;
-      case GameStep.REVEAL:
-        return <WordReveal />;
-      case GameStep.RESULTS:
-        return <WordResult />;
-      case GameStep.FINISHED:
-        return <Leaderboard />;
-      default:
-        return <LoadingPage joinErrorMessage={joinErrorMessage} />;
+    if (game && players) {
+      switch (gameStep) {
+        case GameStep.WAIT:
+          return <WaitingRoom />;
+        case GameStep.PROMPT:
+          return <WordPrompt />;
+        case GameStep.GUESS:
+          return <WordGuess />;
+        case GameStep.REVEAL:
+          return <WordReveal />;
+        case GameStep.RESULTS:
+          return <WordResult />;
+        case GameStep.FINISHED:
+          return <Leaderboard />;
+        default:
+          return <LoadingPage joinErrorMessage={joinErrorMessage} />;
+      }
     }
+    return <LoadingPage joinErrorMessage={joinErrorMessage} />;
   };
 
   return (
