@@ -11,7 +11,6 @@ import {
 import VoteBanner from '../VoteBanner';
 import GameHeader from '../GameHeader';
 import { theme } from '../../theme';
-import { bottomPageButtonSx } from '../../constants/style';
 
 const WordGuess = () => {
   const game = useContext(GameContext);
@@ -39,15 +38,10 @@ const WordGuess = () => {
   return (
     <Grid container direction="column" height={1} width={1}>
       <GameHeader />
-      <Grid
-        container
-        width={1}
-        direction="column"
-        sx={{ overflowY: 'auto', flex: 1 }}
-        spacing={1}
-      >
+      <Grid direction="column" sx={{ overflowY: 'auto', flex: 1 }}>
         {definitionsToDisplay.map(([username, definition]) => (
-          <Box
+          <Grid
+            item
             onClick={() => handleSelectDefinition(username)}
             sx={{
               boxSizing: 'border-box',
@@ -72,13 +66,8 @@ const WordGuess = () => {
               votingPlayers={votingPlayersByDefinitions[username] ?? []}
               revealed={false}
             />
-          </Box>
+          </Grid>
         ))}
-        <Typography variant="body1" sx={bottomPageButtonSx}>
-          {selectedUsernameDef
-            ? 'Waiting for other players to pick a definition'
-            : null}
-        </Typography>
       </Grid>
     </Grid>
   );

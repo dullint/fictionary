@@ -37,7 +37,7 @@ const VoteBanner = (props: PropsType) => {
       alignItems="center"
       sx={{ paddingRight: 1, paddingLeft: 1, marginTop: 0.5 }}
     >
-      <AvatarGroup sx={{ marginRight: 1 }} max={6}>
+      <AvatarGroup sx={{ marginRight: 1 }} max={5}>
         {votingPlayers.map((player) => (
           <Avatar
             player={player}
@@ -61,6 +61,9 @@ const VoteBanner = (props: PropsType) => {
                 marginLeft: 2,
                 transition: 'transform 400ms',
                 transform: revealed ? null : 'translateX(30%)',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                maxWidth: '70px',
               }}
               variant="subtitle2"
             >

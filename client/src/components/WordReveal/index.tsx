@@ -80,7 +80,10 @@ const WordReveal = () => {
         display="flex"
         width={1}
         flexDirection="column"
-        sx={{ overflowY: 'auto', flex: 1, padding: 0.5 }}
+        sx={{
+          overflowY: 'auto',
+          flex: 1,
+        }}
       >
         {definitionsToDisplay.map(([username, definition], index) => (
           <Box

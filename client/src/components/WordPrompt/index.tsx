@@ -79,7 +79,7 @@ const WordPrompt = () => {
   const minutes = counter && Math.floor(counter / 60);
   const seconds = counter && counter - minutes * 60;
   return (
-    <Grid container alignItems="center" direction="column">
+    <Grid container alignItems="center" direction="column" height={1} width={1}>
       <GameHeader />
       <Grid
         container

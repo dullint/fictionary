@@ -59,15 +59,16 @@ const WordResult = () => {
       justifyContent="center"
       direction="column"
       height={1}
+      width={1}
     >
-      <Typography variant="h4" sx={{ marginTop: 2 }}>
+      <Typography variant="h4" sx={{ margin: 2 }}>
         Scores:
       </Typography>
       <Grid
         container
         justifyContent="center"
         alignItems={'center'}
-        sx={{ marginTop: 2, marginBottom: 2, overflowY: 'auto', flex: 1 }}
+        sx={{ overflowY: 'auto', flex: 1 }}
         maxWidth={500}
       >
         {players &&
@@ -81,7 +82,7 @@ const WordResult = () => {
             >
               <Avatar
                 player={player}
-                size={'big'}
+                size={'medium'}
                 displayBadge={true}
                 badgeContent={displayedScores?.[player?.username] ?? 0}
               />
