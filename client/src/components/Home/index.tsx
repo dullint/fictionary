@@ -35,7 +35,7 @@ const Home = () => {
       <Typography
         variant={'h1'}
         align={'center'}
-        sx={{ marginTop: isMobile ? 1 : 5, marginBottom: isMobile ? 3 : 8 }}
+        sx={{ marginTop: isMobile ? 0 : 5, marginBottom: isMobile ? 3 : 8 }}
       >
         Fictionary
       </Typography>

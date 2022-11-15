@@ -73,8 +73,6 @@ const WordPrompt = () => {
     }
   };
 
-  console.log(window.screen.orientation.angle);
-
   const remainingPlayers =
     players.length - Object.values(game?.definitions).length;
 
@@ -134,7 +132,7 @@ const WordPrompt = () => {
             onKeyPress={handlePressKey}
             value={definition}
             multiline
-            rows={isMobile && window.screen.orientation.angle === 0 ? 8 : 4}
+            rows={isMobile && window?.screen?.orientation?.angle ? 8 : 4}
             fullWidth
             helperText={`${definition.length}/${CHARACTER_LIMIT}`}
             onChange={handleTextFieldChange}
