@@ -1,5 +1,6 @@
 import { Button, Grid, Input, Typography } from '@mui/material';
 import React, { useContext, useState } from 'react';
+import { isMobile } from 'react-device-detect';
 import { useNavigate } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import { createRoom, joinRoom } from '../../services/room';
@@ -34,7 +35,7 @@ const Home = () => {
       <Typography
         variant={'h1'}
         align={'center'}
-        sx={{ marginTop: 5, marginBottom: 8 }}
+        sx={{ marginTop: isMobile ? 1 : 5, marginBottom: isMobile ? 3 : 8 }}
       >
         Fictionary
       </Typography>

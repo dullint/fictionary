@@ -73,6 +73,8 @@ const WordPrompt = () => {
     }
   };
 
+  console.log(window.screen.orientation.angle);
+
   const remainingPlayers =
     players.length - Object.values(game?.definitions).length;
 
@@ -80,81 +82,96 @@ const WordPrompt = () => {
   const seconds = counter && counter - minutes * 60;
   return (
     <Grid container alignItems="center" direction="column" height={1} width={1}>
-      <GameHeader />
-      <Grid
-        container
-        justifyContent={'space-between'}
-        flexDirection="row"
-        alignItems={'center'}
-      >
-        {counter && (
-          <Typography sx={{ m: 1 }} variant="h4" color="secondary">{`${String(
-            minutes
-          ).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`}</Typography>
-        )}
-        <Tooltip title="I know this word" arrow>
-          <IconButton
-            onClick={handleKnowWord}
-            sx={{
-              border: `2px solid ${theme.palette.primary.main}`,
-              width: 40,
-              height: 40,
-              borderRadius: 4,
-              color: theme.palette.primary.main,
-            }}
-          >
-            <FindReplaceIcon />
-          </IconButton>
-        </Tooltip>
+      <Grid item width={1}>
+        <GameHeader />
       </Grid>
-      <Grid container direction="column" flex={1}>
-        <Box zIndex={2} position="absolute" ref={entryRef} sx={{ m: 2 }}>
-          <DefinitionDisplay
-            entry={{ ...entry, definition: '' }}
-          ></DefinitionDisplay>
-        </Box>
-        <TextField
-          autoFocus
-          disabled={hasSubmited}
-          onKeyPress={handlePressKey}
-          value={definition}
-          multiline
-          rows={isMobile ? 8 : 5}
-          fullWidth
-          helperText={`${definition.length}/${CHARACTER_LIMIT}`}
-          onChange={handleTextFieldChange}
-          inputProps={{
-            maxLength: CHARACTER_LIMIT,
-            lineHeight: '22px',
-          }}
-          sx={{
-            marginTop: 0.5,
-            marginBottom: '14px',
-            '& .MuiOutlinedInput-input': {
-              lineHeight: '22px',
-              textIndent: entryWidth + 1,
-            },
-          }}
-        />
-        <Typography
-          display="flex"
+      <Grid item width={1}>
+        <Grid
+          container
+          justifyContent={'space-between'}
+          flexDirection="row"
           alignItems={'center'}
-          variant="subtitle1"
-          color="primary"
         >
-          {hasSubmited
-            ? `Waiting for ${remainingPlayers} more players to finish their definition`
-            : null}
-        </Typography>
+          {counter && (
+            <Typography sx={{ m: 1 }} variant="h4" color="secondary">{`${String(
+              minutes
+            ).padStart(2, '0')}:${String(seconds).padStart(
+              2,
+              '0'
+            )}`}</Typography>
+          )}
+          <Tooltip title="I know this word" arrow>
+            <IconButton
+              onClick={handleKnowWord}
+              sx={{
+                border: `2px solid ${theme.palette.primary.main}`,
+                width: 40,
+                height: 40,
+                borderRadius: 4,
+                color: theme.palette.primary.main,
+              }}
+            >
+              <FindReplaceIcon />
+            </IconButton>
+          </Tooltip>
+        </Grid>
       </Grid>
-      <Button
-        onClick={() => (hasSubmited ? handleModify() : handleSubmit())}
-        variant="contained"
-        sx={bottomPageButtonSx}
-      >
-        {hasSubmited ? 'Modify' : 'Submit'}
-      </Button>
-      <Grid container direction="row" justifyContent="space-between"></Grid>
+      <Grid item width={1}>
+        <Grid direction="column" flex={1}>
+          <Box
+            zIndex={2}
+            position="absolute"
+            ref={entryRef}
+            sx={{ m: 2.25, marginLeft: 2 }}
+          >
+            <DefinitionDisplay
+              entry={{ ...entry, definition: '' }}
+            ></DefinitionDisplay>
+          </Box>
+          <TextField
+            autoFocus
+            disabled={hasSubmited}
+            onKeyPress={handlePressKey}
+            value={definition}
+            multiline
+            rows={isMobile && window.screen.orientation.angle === 0 ? 8 : 4}
+            fullWidth
+            helperText={`${definition.length}/${CHARACTER_LIMIT}`}
+            onChange={handleTextFieldChange}
+            inputProps={{
+              maxLength: CHARACTER_LIMIT,
+              lineHeight: '22px',
+            }}
+            sx={{
+              marginTop: 0.5,
+              marginBottom: '14px',
+              '& .MuiOutlinedInput-input': {
+                lineHeight: '22px',
+                textIndent: entryWidth + 1,
+              },
+            }}
+          />
+          <Typography
+            display="flex"
+            alignItems={'center'}
+            variant="subtitle1"
+            color="primary"
+          >
+            {hasSubmited
+              ? `Waiting for ${remainingPlayers} more players to finish their definition`
+              : null}
+          </Typography>
+        </Grid>
+      </Grid>
+      <Grid item>
+        <Button
+          onClick={() => (hasSubmited ? handleModify() : handleSubmit())}
+          variant="contained"
+          sx={bottomPageButtonSx}
+        >
+          {hasSubmited ? 'Modify' : 'Submit'}
+        </Button>
+      </Grid>
     </Grid>
   );
 };
