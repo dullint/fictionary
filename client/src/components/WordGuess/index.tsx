@@ -1,11 +1,11 @@
-import { Typography, Grid, Box } from '@mui/material';
+import { Grid } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { SocketContext } from '../../App';
 import { GameContext, PlayerContext } from '../Room';
 import { useParams } from 'react-router-dom';
 import DefinitionDisplay from '../DefinitionDisplay';
 import {
-  getDefinitionsToDisplay,
+  getEntriesWithUsernameToDisplay,
   getVotingPlayersByDefinitions,
 } from './helpers';
 import VoteBanner from '../VoteBanner';
@@ -15,22 +15,24 @@ import { theme } from '../../theme';
 const WordGuess = () => {
   const game = useContext(GameContext);
   const players = useContext(PlayerContext);
-  const definitions = game?.definitions;
+  const inputEntries = game?.inputEntries;
   const entry = game?.entry;
   const selections = game.selections;
   const [selectedUsernameDef, setSelectedUsernameDef] = useState(null);
   const { roomId } = useParams();
   const socket = useContext(SocketContext);
+  const isUsingExample = game.gameSettings.useExample;
 
   const handleSelectDefinition = (username) => {
     setSelectedUsernameDef(username);
     socket.emit('select_definition', { username });
   };
-  const definitionsToDisplay = getDefinitionsToDisplay(
-    definitions,
+  const inputEntriesToDisplay = getEntriesWithUsernameToDisplay(
+    inputEntries,
     entry,
     roomId
   );
+  console.log(inputEntriesToDisplay);
   const votingPlayersByDefinitions = getVotingPlayersByDefinitions(
     players,
     selections
@@ -39,7 +41,7 @@ const WordGuess = () => {
     <Grid container direction="column" height={1} width={1}>
       <GameHeader />
       <Grid direction="column" sx={{ overflowY: 'auto', flex: 1 }}>
-        {definitionsToDisplay.map(([username, definition]) => (
+        {inputEntriesToDisplay.map(([username, inputEntry]) => (
           <Grid
             item
             onClick={() => handleSelectDefinition(username)}
@@ -61,7 +63,13 @@ const WordGuess = () => {
               padding: 1,
             }}
           >
-            <DefinitionDisplay entry={{ ...entry, definition: definition }} />
+            <DefinitionDisplay
+              entry={{
+                ...entry,
+                definition: inputEntry.definition,
+                example: isUsingExample ? inputEntry.example : '',
+              }}
+            />
             <VoteBanner
               votingPlayers={votingPlayersByDefinitions[username] ?? []}
               revealed={false}

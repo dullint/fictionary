@@ -10,6 +10,12 @@ import {
 } from '@mui/material';
 import { GameSettings } from '../../../../server/game/types';
 import { theme } from '../../theme';
+import {
+  DEFAULT_GAME_SETTINGS,
+  promptTimeOptions,
+  roundNumberOptions,
+  useExampleOptions,
+} from './constants';
 
 export interface PropsType {
   open: boolean;
@@ -19,18 +25,26 @@ export interface PropsType {
 
 const GameSettingsDialog = (props: PropsType) => {
   const { open, setOpen, isAdmin } = props;
-  const [maxPromptTime, setMaxPromptTime] = useState(3);
-  const [roundNumber, setRoundNumber] = useState(3);
+  const [maxPromptTime, setMaxPromptTime] = useState(
+    DEFAULT_GAME_SETTINGS.maxPromptTime
+  );
+  const [useExample, setUseExample] = useState(
+    DEFAULT_GAME_SETTINGS.useExample
+  );
+  const [roundNumber, setRoundNumber] = useState(
+    DEFAULT_GAME_SETTINGS.roundNumber
+  );
   const socket = useContext(SocketContext);
 
   const handleSubmit = () => {
     setOpen(false);
-    const newGameSettings: GameSettings = { maxPromptTime, roundNumber };
+    const newGameSettings: GameSettings = {
+      maxPromptTime,
+      roundNumber,
+      useExample,
+    };
     socket.emit('change_game_settings', { gameSettings: newGameSettings });
   };
-
-  const promptTimeOptions = [1, 2, 3, 4, 60];
-  const roundNumberOptions = [2, 3, 4, 5, 6];
 
   return (
     <Dialog open={open} onClose={() => setOpen(false)}>
@@ -95,6 +109,29 @@ const GameSettingsDialog = (props: PropsType) => {
                   variant={value === maxPromptTime ? 'contained' : 'outlined'}
                 >
                   {value}
+                </Button>
+              );
+            })}
+          </ButtonGroup>
+          <Typography
+            variant="subtitle1"
+            sx={{ marginTop: 3, marginBottom: 1 }}
+          >
+            Play with example in definition:
+          </Typography>
+          <ButtonGroup variant="outlined" disabled={!isAdmin}>
+            {useExampleOptions.map((value) => {
+              return (
+                <Button
+                  sx={{
+                    '&:hover': {
+                      boxShadow: value === useExample ? '5px 5px black' : null,
+                    },
+                  }}
+                  onClick={(e) => setUseExample(value)}
+                  variant={value === useExample ? 'contained' : 'outlined'}
+                >
+                  {value ? 'Yes' : 'No'}
                 </Button>
               );
             })}

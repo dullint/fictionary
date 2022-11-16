@@ -2,9 +2,9 @@ import { Server } from 'socket.io';
 import { DictionnaryEntry } from '../dictionary/types';
 import { get_random_entry } from './helpers';
 import {
-  Definitions,
   GameSettings,
   GameStep,
+  InputDictionaryEntries,
   Scores,
   SelectedDefinitions,
 } from './types';
@@ -14,7 +14,7 @@ export class Game {
   roomId: string;
   round: number;
   entry: DictionnaryEntry | null;
-  definitions: Definitions;
+  inputEntries: InputDictionaryEntries;
   selections: SelectedDefinitions;
   gameSettings: GameSettings;
   gameStep: GameStep;
@@ -26,7 +26,7 @@ export class Game {
     this.roomId = roomId;
     this.round = 0;
     this.entry = null;
-    this.definitions = {};
+    this.inputEntries = {};
     this.selections = {};
     this.gameSettings = gameSettings;
     this.gameStep = GameStep.WAIT;
@@ -34,14 +34,14 @@ export class Game {
     this.timer = null;
   }
 
-  removeDefinition(socketId: string) {
-    delete this.definitions?.[socketId];
+  removeDefinition(username: string) {
+    delete this.inputEntries?.[username];
   }
 
-  selectDefinition(choosingSocketId: string, definitionSocketId: string) {
+  selectDefinition(choosingUsername: string, definitionUsername: string) {
     this.selections = {
       ...this.selections,
-      [choosingSocketId]: definitionSocketId,
+      [choosingUsername]: definitionUsername,
     };
   }
 
@@ -63,7 +63,7 @@ export class Game {
 
   newWord() {
     if (this.timer) clearInterval(this.timer);
-    this.definitions = {};
+    this.inputEntries = {};
     const entry = get_random_entry();
     this.entry = entry;
     this.runTimer(this.gameSettings.maxPromptTime);
@@ -73,14 +73,14 @@ export class Game {
     this.round++;
     this.gameStep = GameStep.PROMPT;
     this.selections = {};
-    this.definitions = {};
+    this.inputEntries = {};
     this.newWord();
   }
 
   reset() {
     this.round = 0;
     this.gameStep = GameStep.WAIT;
-    this.definitions = {};
+    this.inputEntries = {};
     this.selections = {};
     this.scores = {};
   }
@@ -102,7 +102,7 @@ export class Game {
     return {
       round: this.round,
       entry: this.entry,
-      definitions: this.definitions,
+      inputEntries: this.inputEntries,
       selections: this.selections,
       gameSettings: this.gameSettings,
       gameStep: this.gameStep,

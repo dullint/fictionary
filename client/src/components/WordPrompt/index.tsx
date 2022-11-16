@@ -13,7 +13,10 @@ import { useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import DefinitionDisplay from '../DefinitionDisplay';
 import { GameContext, PlayerContext } from '../Room';
-import { CHARACTER_LIMIT } from './constants';
+import {
+  DEFINITION_CHARACTER_LIMIT,
+  EXAMPLE_CHARACTER_LIMIT,
+} from './constants';
 import { isMobile } from 'react-device-detect';
 import { theme } from '../../theme';
 import GameHeader from '../GameHeader';
@@ -22,36 +25,51 @@ import { bottomPageButtonSx } from '../../constants/style';
 const WordPrompt = () => {
   const game = useContext(GameContext);
   const players = useContext(PlayerContext);
-  const entryRef = useRef(null);
-  const [entryWidth, setEntryWidth] = useState(0);
+  const wordRef = useRef(null);
+  const ExRef = useRef(null);
+  const [wordWidth, setWordWidth] = useState(0);
+  const [ExWidth, setExWidth] = useState(0);
   const socket = useContext(SocketContext);
   const [definition, setDefinition] = useState('');
+  const [example, setExample] = useState('');
   const [hasSubmited, setHasSubmited] = useState(false);
   const [counter, setCounter] = useState(game.gameSettings.maxPromptTime * 60);
   const { roomId } = useParams();
   const entry = game?.entry;
+  const isUsingExample = game.gameSettings.useExample ?? false;
 
   useEffect(() => {
-    setEntryWidth(entryRef.current.clientWidth);
-  }, [entryRef, entry]);
+    setWordWidth(wordRef.current.clientWidth);
+  }, [wordRef, entry]);
+
+  useEffect(() => {
+    setExWidth(ExRef.current.clientWidth);
+  }, [ExRef, entry]);
 
   useEffect(() => {
     setHasSubmited(false);
     setDefinition('');
+    setExample('');
   }, [entry.word]);
 
   const handleKnowWord = () => {
     socket.emit('get_new_word');
   };
-  const handleTextFieldChange = (event) => {
+
+  const handleDefinitionChange = (event) => {
     if (hasSubmited) return;
     setDefinition(event.target.value);
+  };
+
+  const handleExampleChange = (event) => {
+    if (hasSubmited) return;
+    setExample(event.target.value);
   };
 
   const handleSubmit = () => {
     if (definition) {
       setHasSubmited(true);
-      socket.emit('submit_definition', { roomId, definition });
+      socket.emit('submit_definition', { roomId, definition, example });
     }
   };
 
@@ -74,7 +92,7 @@ const WordPrompt = () => {
   };
 
   const remainingPlayers =
-    players.length - Object.values(game?.definitions).length;
+    players.length - Object.values(game?.inputEntries ?? {}).length;
 
   const minutes = counter && Math.floor(counter / 60);
   const seconds = counter && counter - minutes * 60;
@@ -119,11 +137,11 @@ const WordPrompt = () => {
           <Box
             zIndex={2}
             position="absolute"
-            ref={entryRef}
+            ref={wordRef}
             sx={{ m: 2.25, marginLeft: 2 }}
           >
             <DefinitionDisplay
-              entry={{ ...entry, definition: '' }}
+              entry={{ ...entry, definition: '', example: '' }}
             ></DefinitionDisplay>
           </Box>
           <TextField
@@ -134,10 +152,10 @@ const WordPrompt = () => {
             multiline
             rows={isMobile && window?.screen?.orientation?.angle ? 8 : 4}
             fullWidth
-            helperText={`${definition.length}/${CHARACTER_LIMIT}`}
-            onChange={handleTextFieldChange}
+            helperText={`${definition.length}/${DEFINITION_CHARACTER_LIMIT}`}
+            onChange={handleDefinitionChange}
             inputProps={{
-              maxLength: CHARACTER_LIMIT,
+              maxLength: DEFINITION_CHARACTER_LIMIT,
               lineHeight: '22px',
             }}
             sx={{
@@ -145,10 +163,52 @@ const WordPrompt = () => {
               marginBottom: '14px',
               '& .MuiOutlinedInput-input': {
                 lineHeight: '22px',
-                textIndent: entryWidth + 1,
+                textIndent: wordWidth + 1,
               },
             }}
           />
+          {isUsingExample && (
+            <Box>
+              <Box
+                zIndex={2}
+                position="absolute"
+                ref={ExRef}
+                sx={{ m: 2.25, marginLeft: 2 }}
+              >
+                <Typography
+                  component="span"
+                  fontFamily="bespoke-medium"
+                  sx={{ marginRight: 0.5 }}
+                  fontSize={17}
+                >
+                  Ex.
+                </Typography>
+              </Box>
+              <TextField
+                autoFocus
+                disabled={hasSubmited}
+                onKeyPress={handlePressKey}
+                value={example}
+                multiline
+                rows={isMobile && window?.screen?.orientation?.angle ? 8 : 4}
+                fullWidth
+                helperText={`${example.length}/${EXAMPLE_CHARACTER_LIMIT}`}
+                onChange={handleExampleChange}
+                inputProps={{
+                  maxLength: EXAMPLE_CHARACTER_LIMIT,
+                  lineHeight: '22px',
+                }}
+                sx={{
+                  marginTop: 0.5,
+                  marginBottom: '14px',
+                  '& .MuiOutlinedInput-input': {
+                    lineHeight: '22px',
+                    textIndent: ExWidth + 1,
+                  },
+                }}
+              />
+            </Box>
+          )}
           <Typography
             display="flex"
             alignItems={'center'}

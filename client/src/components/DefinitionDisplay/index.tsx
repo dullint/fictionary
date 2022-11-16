@@ -9,7 +9,7 @@ interface PropsType {
 }
 
 const DefinitionDisplay = (props: PropsType) => {
-  const { word, definition, nature, genre } = props.entry;
+  const { word, definition, nature, genre, example } = props.entry;
   return (
     <Box>
       <Typography
@@ -35,8 +35,23 @@ const DefinitionDisplay = (props: PropsType) => {
         textOverflow="ellipsis"
         overflow={'hidden'}
         variant="body1"
+        sx={{ marginRight: 0.5 }}
       >
         {definition}
+      </Typography>
+
+      <Typography
+        component="span"
+        fontStyle={'italic'}
+        fontSize={16}
+        fontWeight={900}
+        fontFamily="bespoke-medium"
+        sx={{ marginRight: 0.5 }}
+      >
+        {example ? 'Ex.' : ''}
+      </Typography>
+      <Typography component="span" fontSize={15} sx={{ marginRight: 1 }}>
+        {example}
       </Typography>
     </Box>
   );

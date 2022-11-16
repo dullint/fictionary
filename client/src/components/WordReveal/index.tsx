@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import DefinitionDisplay from '../DefinitionDisplay';
 import { getVotingPlayersByDefinitions } from '../WordGuess/helpers';
 import VoteBanner from '../VoteBanner';
-import { getDefinitionsToDisplay } from '../WordGuess/helpers';
+import { getEntriesWithUsernameToDisplay } from '../WordGuess/helpers';
 import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { Box } from '@mui/system';
 import { BEFORE_AUTHOR_REVEAL_DELAY, BEFORE_NEXT_DEF_DELAY } from './constants';
@@ -16,7 +16,7 @@ import { bottomPageButtonSx } from '../../constants/style';
 const WordReveal = () => {
   const game = useContext(GameContext);
   const players = useContext(PlayerContext);
-  const definitions = game?.definitions;
+  const inputEntries = game?.inputEntries;
   const entry = game?.entry;
   const selections = game.selections;
   const { roomId } = useParams();
@@ -24,8 +24,10 @@ const WordReveal = () => {
   const isAdmin = isRoomAdmin(players, socket.id);
   const [revealedUsername, setRevealedUsername] = useState<string[]>([]);
   const definitionsRef = useRef([]);
-  const definitionsToDisplay = getDefinitionsToDisplay(
-    definitions,
+  const isUsingExample = game.gameSettings.useExample;
+
+  const inputEntriesToDisplay = getEntriesWithUsernameToDisplay(
+    inputEntries,
     entry,
     roomId
   );
@@ -37,13 +39,13 @@ const WordReveal = () => {
   useEffect(() => {
     definitionsRef.current = definitionsRef.current.slice(
       0,
-      definitionsToDisplay.length
+      inputEntriesToDisplay.length
     );
-  }, [definitionsToDisplay]);
+  }, [inputEntriesToDisplay]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (revealedUsername.length >= definitionsToDisplay.length) {
+      if (revealedUsername.length >= inputEntriesToDisplay.length) {
         return () => clearInterval(interval);
       }
       definitionsRef.current?.[revealedUsername.length]?.scrollIntoView({
@@ -53,7 +55,7 @@ const WordReveal = () => {
         () =>
           setRevealedUsername((revealedUsername) => [
             ...revealedUsername,
-            definitionsToDisplay?.[revealedUsername.length]?.[0],
+            inputEntriesToDisplay?.[revealedUsername.length]?.[0],
           ]),
         BEFORE_AUTHOR_REVEAL_DELAY
       );
@@ -85,7 +87,7 @@ const WordReveal = () => {
           flex: 1,
         }}
       >
-        {definitionsToDisplay.map(([username, definition], index) => (
+        {inputEntriesToDisplay.map(([username, inputEntry], index) => (
           <Box
             display="flex"
             flexDirection={'column'}
@@ -97,7 +99,13 @@ const WordReveal = () => {
               padding: 1,
             }}
           >
-            <DefinitionDisplay entry={{ ...entry, definition }} />
+            <DefinitionDisplay
+              entry={{
+                ...entry,
+                definition: inputEntry.definition,
+                example: isUsingExample ? inputEntry.example : '',
+              }}
+            />
             <VoteBanner
               votingPlayers={votingPlayersByDefinitions[username] ?? []}
               authorPlayer={extendedPlayers.find(
@@ -118,7 +126,7 @@ const WordReveal = () => {
           <Button
             onClick={handleNextStep}
             disabled={
-              !isAdmin || revealedUsername.length < definitionsToDisplay.length
+              !isAdmin || revealedUsername.length < inputEntriesToDisplay.length
             }
             variant="contained"
             size="large"

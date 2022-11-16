@@ -10,6 +10,7 @@ export enum GameStep {
 export interface GameSettings {
   maxPromptTime: number;
   roundNumber: number;
+  useExample: boolean;
 }
 
 export interface SelectedDefinitions {
@@ -20,6 +21,10 @@ export interface Scores {
   [username: string]: number;
 }
 
-export interface Definitions {
-  [username: string]: string;
+export interface InputDictionaryEntry {
+  definition: string;
+  example: string;
+}
+export interface InputDictionaryEntries {
+  [username: string]: InputDictionaryEntry;
 }

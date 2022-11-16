@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import { createRoom, joinRoom } from '../../services/room';
 import { theme } from '../../theme';
+import { DEFAULT_GAME_SETTINGS } from '../GameSettingsDialog/constants';
 import { generateRandomRoomId } from '../GameSettingsDialog/helpers';
-import { defaultGameSettings } from './constants';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const Home = () => {
   const handleCreateGame = async (event) => {
     event.preventDefault();
     const newRoomId = generateRandomRoomId();
-    const created = await createRoom(socket, newRoomId, defaultGameSettings);
+    const created = await createRoom(socket, newRoomId, DEFAULT_GAME_SETTINGS);
     if (created) navigate(`/room/${newRoomId}`);
   };
 

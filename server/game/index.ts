@@ -1,18 +1,23 @@
 import { Server, Socket } from 'socket.io';
 import { getPlayers, getSocketRoom } from '../room/helpers';
 
-import { get_random_entry } from './helpers';
 import GAMES from './gameManager';
 import { GameSettings, GameStep, Scores } from './types';
 
 export const gameHandler = (io: Server, socket: Socket) => {
-  const submitDefinition = async ({ definition }: { definition: string }) => {
+  const submitDefinition = async ({
+    definition,
+    example,
+  }: {
+    definition: string;
+    example: string;
+  }) => {
     const roomId = getSocketRoom(socket);
     const game = GAMES.get(roomId);
     if (!game) return;
-    game.definitions[socket.data.username] = definition;
+    game.inputEntries[socket.data.username] = { definition, example };
     const numberOfPlayers = (await getPlayers(io, roomId)).length;
-    const numberOfDefinitions = Object.keys(game.definitions).length;
+    const numberOfDefinitions = Object.keys(game.inputEntries).length;
     if (numberOfDefinitions == numberOfPlayers) {
       game.goToNextStep();
     }
@@ -23,7 +28,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const roomId = getSocketRoom(socket);
     const game = GAMES.get(roomId);
     if (!game) return;
-    delete game.definitions[socket.data.username];
+    game.removeDefinition(socket.data.username);
     io.to(roomId).emit('game', game.info());
   };
 

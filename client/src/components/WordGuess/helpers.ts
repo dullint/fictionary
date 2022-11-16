@@ -1,5 +1,6 @@
 import {
-  Definitions,
+  InputDictionaryEntries,
+  InputDictionaryEntry,
   SelectedDefinitions,
 } from '../../../../server/game/types';
 import { shuffle } from 'shuffle-seed';
@@ -27,14 +28,22 @@ export const getVotingPlayersByDefinitions = (
   return votingPlayersByDefinitions;
 };
 
-export const getDefinitionsToDisplay = (
-  definitions: Definitions,
+export const getEntriesWithUsernameToDisplay = (
+  inputEntries: InputDictionaryEntries,
   entry: DictionnaryEntry,
   roomId: string
-): [string, string][] => {
-  const definitionToDisplay = Object.entries(definitions).concat([
-    ['REAL_DEFINITION', entry.definition],
-  ]);
+): [string, InputDictionaryEntry][] => {
+  const inputEntriesWithUsernameToDisplay = Object.entries(inputEntries).concat(
+    [
+      [
+        'REAL_DEFINITION',
+        {
+          definition: entry.definition,
+          example: entry.example,
+        },
+      ],
+    ]
+  );
   const seed = `${entry.word}-${roomId}`;
-  return shuffle(definitionToDisplay, seed);
+  return shuffle(inputEntriesWithUsernameToDisplay, seed);
 };
