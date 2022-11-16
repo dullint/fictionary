@@ -8,11 +8,11 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { getPlayTooltip, isRoomAdmin } from './helpers';
 import GameSettingsDialog from '../GameSettingsDialog';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { getMyPlayer } from '../WordGuess/helpers';
 import Avatar from '../Avatar';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { theme } from '../../theme';
 import { bottomPageButtonSx } from '../../constants/style';
+import { getMyPlayer } from '../DefinitionList/helpers';
 
 const WaitingRoom = () => {
   const socket = useContext(SocketContext);

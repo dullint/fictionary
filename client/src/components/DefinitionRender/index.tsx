@@ -8,7 +8,7 @@ interface PropsType {
   entry: DictionnaryEntry;
 }
 
-const DefinitionDisplay = (props: PropsType) => {
+const DefinitionRender = (props: PropsType) => {
   const { word, definition, nature, genre, example } = props.entry;
   return (
     <Box>
@@ -57,4 +57,4 @@ const DefinitionDisplay = (props: PropsType) => {
   );
 };
 
-export default DefinitionDisplay;
+export default DefinitionRender;

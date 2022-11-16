@@ -3,28 +3,24 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { SocketContext } from '../../App';
 import { GameContext, PlayerContext } from '../Room';
 import { useParams } from 'react-router-dom';
-import DefinitionDisplay from '../DefinitionDisplay';
-import { getVotingPlayersByDefinitions } from '../WordGuess/helpers';
-import VoteBanner from '../VoteBanner';
-import { getEntriesWithUsernameToDisplay } from '../WordGuess/helpers';
+import { getEntriesWithUsernameToDisplay } from '../DefinitionList/helpers';
 import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { Box } from '@mui/system';
 import { BEFORE_AUTHOR_REVEAL_DELAY, BEFORE_NEXT_DEF_DELAY } from './constants';
 import GameHeader from '../GameHeader';
 import { bottomPageButtonSx } from '../../constants/style';
+import DefinitionList from '../DefinitionList';
 
 const WordReveal = () => {
   const game = useContext(GameContext);
   const players = useContext(PlayerContext);
   const inputEntries = game?.inputEntries;
   const entry = game?.entry;
-  const selections = game.selections;
   const { roomId } = useParams();
   const socket = useContext(SocketContext);
   const isAdmin = isRoomAdmin(players, socket.id);
   const [revealedUsername, setRevealedUsername] = useState<string[]>([]);
   const definitionsRef = useRef([]);
-  const isUsingExample = game.gameSettings.useExample;
 
   const inputEntriesToDisplay = getEntriesWithUsernameToDisplay(
     inputEntries,
@@ -63,60 +59,15 @@ const WordReveal = () => {
     return () => clearInterval(interval);
   });
 
-  const votingPlayersByDefinitions = getVotingPlayersByDefinitions(
-    players,
-    selections
-  );
-
-  const extendedPlayers = players.concat({
-    username: 'REAL_DEFINITION',
-    socketId: 'dictionary',
-    color: 'black',
-    isAdmin: false,
-  });
-
   return (
     <Grid container flexDirection="column" height={1} width={1}>
       <GameHeader />
-      <Box
-        display="flex"
-        width={1}
-        flexDirection="column"
-        sx={{
-          overflowY: 'auto',
-          flex: 1,
-        }}
-      >
-        {inputEntriesToDisplay.map(([username, inputEntry], index) => (
-          <Box
-            display="flex"
-            flexDirection={'column'}
-            key={`definition-${username}`}
-            ref={(el) => (definitionsRef.current[index] = el)}
-            sx={{
-              boxSizing: 'border-box',
-              borderRadius: 4,
-              padding: 1,
-            }}
-          >
-            <DefinitionDisplay
-              entry={{
-                ...entry,
-                definition: inputEntry.definition,
-                example: isUsingExample ? inputEntry.example : '',
-              }}
-            />
-            <VoteBanner
-              votingPlayers={votingPlayersByDefinitions[username] ?? []}
-              authorPlayer={extendedPlayers.find(
-                (player) => player?.username === username
-              )}
-              size={'small'}
-              revealed={revealedUsername.includes(username)}
-            />
-          </Box>
-        ))}
-      </Box>
+      <DefinitionList
+        handleSelectDefinition={() => {}}
+        revealedUsername={revealedUsername}
+        selectedUsernameDef={null}
+        definitionHover={false}
+      />
       <Tooltip
         title={isAdmin ? null : 'Waiting for the admin to continue'}
         placement="top"

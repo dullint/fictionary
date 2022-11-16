@@ -4,7 +4,7 @@ import React, { useContext } from 'react';
 import { SocketContext } from '../../App';
 import Avatar from '../Avatar';
 import { GameContext, PlayerContext } from '../Room';
-import { getMyPlayer } from '../WordGuess/helpers';
+import { getMyPlayer } from '../DefinitionList/helpers';
 
 const GameHeader = () => {
   const players = useContext(PlayerContext);

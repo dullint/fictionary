@@ -53,7 +53,7 @@ const VoteBanner = (props: PropsType) => {
           transition: 'opacity 400ms',
         }}
       >
-        {authorPlayer && (
+        {revealed && authorPlayer && (
           <Grid container alignItems={'center'}>
             <Typography
               sx={{

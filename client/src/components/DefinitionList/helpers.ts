@@ -7,6 +7,7 @@ import { shuffle } from 'shuffle-seed';
 
 import { Player } from '../../../../server/room/types';
 import { DictionnaryEntry } from '../../../../server/dictionary/types';
+import { DICTIONARY_PLAYER } from './constants';
 
 export const getMyPlayer = (players: Player[], socketId: string) => {
   return players.filter((player) => player?.socketId === socketId)?.[0];
@@ -36,7 +37,7 @@ export const getEntriesWithUsernameToDisplay = (
   const inputEntriesWithUsernameToDisplay = Object.entries(inputEntries).concat(
     [
       [
-        'REAL_DEFINITION',
+        DICTIONARY_PLAYER.username,
         {
           definition: entry.definition,
           example: entry.example,

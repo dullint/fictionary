@@ -11,7 +11,6 @@ import FindReplaceIcon from '@mui/icons-material/FindReplace';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
-import DefinitionDisplay from '../DefinitionDisplay';
 import { GameContext, PlayerContext } from '../Room';
 import {
   DEFINITION_CHARACTER_LIMIT,
@@ -21,6 +20,7 @@ import { isMobile } from 'react-device-detect';
 import { theme } from '../../theme';
 import GameHeader from '../GameHeader';
 import { bottomPageButtonSx } from '../../constants/style';
+import DefinitionRender from '../DefinitionRender';
 
 const WordPrompt = () => {
   const game = useContext(GameContext);
@@ -39,11 +39,11 @@ const WordPrompt = () => {
   const isUsingExample = game.gameSettings.useExample ?? false;
 
   useEffect(() => {
-    setWordWidth(wordRef.current.clientWidth);
+    setWordWidth(wordRef?.current?.clientWidth);
   }, [wordRef, entry]);
 
   useEffect(() => {
-    setExWidth(ExRef.current.clientWidth);
+    setExWidth(ExRef?.current?.clientWidth);
   }, [ExRef, entry]);
 
   useEffect(() => {
@@ -140,9 +140,9 @@ const WordPrompt = () => {
             ref={wordRef}
             sx={{ m: 2.25, marginLeft: 2 }}
           >
-            <DefinitionDisplay
+            <DefinitionRender
               entry={{ ...entry, definition: '', example: '' }}
-            ></DefinitionDisplay>
+            ></DefinitionRender>
           </Box>
           <TextField
             autoFocus
