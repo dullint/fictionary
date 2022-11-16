@@ -67,7 +67,7 @@ const WordPrompt = () => {
   };
 
   const handleSubmit = () => {
-    if (definition) {
+    if (definition && example) {
       setHasSubmited(true);
       socket.emit('submit_definition', { roomId, definition, example });
     }
@@ -185,7 +185,6 @@ const WordPrompt = () => {
                 </Typography>
               </Box>
               <TextField
-                autoFocus
                 disabled={hasSubmited}
                 onKeyPress={handlePressKey}
                 value={example}
