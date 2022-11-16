@@ -25,7 +25,7 @@ const DefinitionRender = (props: PropsType) => {
         fontStyle={'italic'}
         fontSize={15}
         fontFamily="bespoke-light-italic"
-        sx={{ marginRight: 1 }}
+        sx={{ marginRight: 0.5 }}
       >
         {getNatureGenre(nature, genre)}
       </Typography>
@@ -39,18 +39,21 @@ const DefinitionRender = (props: PropsType) => {
       >
         {definition}
       </Typography>
-
       <Typography
         component="span"
         fontStyle={'italic'}
         fontSize={16}
         fontWeight={900}
         fontFamily="bespoke-medium"
-        sx={{ marginRight: 0.5 }}
+        sx={{ marginRight: example ? 0.5 : 0 }}
       >
         {example ? 'Ex.' : ''}
       </Typography>
-      <Typography component="span" fontSize={15} sx={{ marginRight: 1 }}>
+      <Typography
+        component="span"
+        fontSize={15}
+        sx={{ marginRight: example ? 0.5 : 0 }}
+      >
         {example}
       </Typography>
     </Box>
