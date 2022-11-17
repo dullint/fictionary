@@ -67,10 +67,9 @@ const WordPrompt = () => {
   };
 
   const handleSubmit = () => {
-    if (definition && example) {
-      setHasSubmited(true);
-      socket.emit('submit_definition', { roomId, definition, example });
-    }
+    if (!definition || (isUsingExample && !example)) return;
+    setHasSubmited(true);
+    socket.emit('submit_definition', { roomId, definition, example });
   };
 
   const handleModify = () => {

@@ -1,5 +1,4 @@
-import { Grid } from '@mui/material';
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { MutableRefObject, useContext } from 'react';
 import { GameContext, PlayerContext } from '../Room';
 import { useParams } from 'react-router-dom';
 import { getVotingPlayersByDefinitions } from './helpers';
@@ -12,17 +11,19 @@ import { theme } from '../../theme';
 
 interface PropsType {
   handleSelectDefinition: (string) => void;
-  revealedUsername: string[];
+  revealedUsernames: string[];
   selectedUsernameDef: string | null;
   definitionHover: boolean;
+  definitionsRef: MutableRefObject<unknown[]>;
 }
 
 const DefinitionList = (props: PropsType) => {
   const {
     handleSelectDefinition,
-    revealedUsername,
+    revealedUsernames,
     selectedUsernameDef,
     definitionHover,
+    definitionsRef,
   } = props;
   const game = useContext(GameContext);
   const players = useContext(PlayerContext);
@@ -30,7 +31,6 @@ const DefinitionList = (props: PropsType) => {
   const entry = game?.entry;
   const selections = game.selections;
   const { roomId } = useParams();
-  const definitionsRef = useRef([]);
   const isUsingExample = game.gameSettings.useExample;
 
   const inputEntriesToDisplay = getEntriesWithUsernameToDisplay(
@@ -38,13 +38,6 @@ const DefinitionList = (props: PropsType) => {
     entry,
     roomId
   );
-
-  useEffect(() => {
-    definitionsRef.current = definitionsRef.current.slice(
-      0,
-      inputEntriesToDisplay.length
-    );
-  }, [inputEntriesToDisplay]);
 
   const votingPlayersByDefinitions = getVotingPlayersByDefinitions(
     players,
@@ -102,7 +95,7 @@ const DefinitionList = (props: PropsType) => {
               (player) => player?.username === username
             )}
             size={'small'}
-            revealed={revealedUsername.includes(username)}
+            revealed={revealedUsernames.includes(username)}
           />
         </Box>
       ))}

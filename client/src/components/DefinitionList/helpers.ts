@@ -8,6 +8,7 @@ import { shuffle } from 'shuffle-seed';
 import { Player } from '../../../../server/room/types';
 import { DictionnaryEntry } from '../../../../server/dictionary/types';
 import { DICTIONARY_PLAYER } from './constants';
+import { Game } from '../../../../server/game/gameManager';
 
 export const getMyPlayer = (players: Player[], socketId: string) => {
   return players.filter((player) => player?.socketId === socketId)?.[0];
@@ -28,6 +29,9 @@ export const getVotingPlayersByDefinitions = (
   );
   return votingPlayersByDefinitions;
 };
+
+export const getNumberOfDefinitionToDisplay = (game: Game) =>
+  Object.values(game?.inputEntries)?.length + 1;
 
 export const getEntriesWithUsernameToDisplay = (
   inputEntries: InputDictionaryEntries,
