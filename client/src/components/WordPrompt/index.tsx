@@ -149,7 +149,7 @@ const WordPrompt = () => {
             onKeyPress={handlePressKey}
             value={definition}
             multiline
-            rows={isMobile ? 8 : 4}
+            rows={isMobile ? 7 : 4}
             fullWidth
             helperText={`${definition.length}/${DEFINITION_CHARACTER_LIMIT}`}
             onChange={handleDefinitionChange}
@@ -188,7 +188,7 @@ const WordPrompt = () => {
                 onKeyPress={handlePressKey}
                 value={example}
                 multiline
-                rows={isMobile && window?.screen?.orientation?.angle ? 8 : 4}
+                rows={isMobile ? 5 : 3}
                 fullWidth
                 helperText={`${example.length}/${EXAMPLE_CHARACTER_LIMIT}`}
                 onChange={handleExampleChange}
