@@ -32,7 +32,7 @@ const WordReveal = () => {
     return await new Promise<void>((resolve) => {
       return setTimeout(() => {
         definitionsRef.current?.[index]?.scrollIntoView({
-          block: 'end',
+          block: 'center',
           inline: 'nearest',
           behavior: 'smooth',
         });
