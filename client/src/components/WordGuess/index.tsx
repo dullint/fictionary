@@ -27,7 +27,7 @@ const WordGuess = () => {
       <GameHeader />
       <DefinitionList
         handleSelectDefinition={handleSelectDefinition}
-        revealedUsernames={[]}
+        revealedIndexes={[]}
         selectedUsernameDef={selectedUsernameDef}
         definitionHover={true}
         definitionsRef={definitionsRef}

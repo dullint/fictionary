@@ -11,7 +11,7 @@ import { theme } from '../../theme';
 
 interface PropsType {
   handleSelectDefinition: (string) => void;
-  revealedUsernames: string[];
+  revealedIndexes: number[];
   selectedUsernameDef: string | null;
   definitionHover: boolean;
   definitionsRef: MutableRefObject<unknown[]>;
@@ -20,7 +20,7 @@ interface PropsType {
 const DefinitionList = (props: PropsType) => {
   const {
     handleSelectDefinition,
-    revealedUsernames,
+    revealedIndexes,
     selectedUsernameDef,
     definitionHover,
     definitionsRef,
@@ -95,7 +95,7 @@ const DefinitionList = (props: PropsType) => {
               (player) => player?.username === username
             )}
             size={'small'}
-            revealed={revealedUsernames.includes(username)}
+            revealed={revealedIndexes.includes(index)}
           />
         </Box>
       ))}

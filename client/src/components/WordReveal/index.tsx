@@ -8,29 +8,21 @@ import { BEFORE_AUTHOR_REVEAL_DELAY, BEFORE_NEXT_DEF_DELAY } from './constants';
 import GameHeader from '../GameHeader';
 import { bottomPageButtonSx } from '../../constants/style';
 import DefinitionList from '../DefinitionList';
-import { useParams } from 'react-router-dom';
-import {
-  getEntriesWithUsernameToDisplay,
-  getNumberOfDefinitionToDisplay,
-} from '../DefinitionList/helpers';
+import { getPlayerIndexGenerator } from './helpers';
+import { getNumberOfDefinitionToDisplay } from '../DefinitionList/helpers';
 
 const WordReveal = () => {
   const game = useContext(GameContext);
   const players = useContext(PlayerContext);
   const socket = useContext(SocketContext);
-  const inputEntries = game?.inputEntries;
-  const entry = game?.entry;
-  const { roomId } = useParams();
   const isAdmin = isRoomAdmin(players, socket.id);
-  const [revealedUsernames, setRevealedUsernames] = useState<string[]>([]);
+  const [revealedIndexes, setRevealedIndexes] = useState<number[]>([]);
   const definitionsRef = useRef([]);
   const definitionsNumber = getNumberOfDefinitionToDisplay(game);
 
-  const inputEntriesToDisplay = getEntriesWithUsernameToDisplay(
-    inputEntries,
-    entry,
-    roomId
-  );
+  useEffect(() => {
+    definitionsRef.current = definitionsRef.current.slice(0, definitionsNumber);
+  }, [definitionsNumber]);
 
   useEffect(() => {
     definitionsRef.current = definitionsRef.current.slice(0, definitionsNumber);
@@ -40,35 +32,37 @@ const WordReveal = () => {
     socket.emit('show_results');
   };
 
-  useEffect(() => {
-    definitionsRef.current = definitionsRef.current.slice(0, definitionsNumber);
-  }, [definitionsNumber]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (revealedUsernames.length >= definitionsNumber) {
-        return () => clearInterval(interval);
-      }
-      definitionsRef.current?.[revealedUsernames.length]?.scrollIntoView({
+  const scrollToDefinitionAndWait = (index: number) => {
+    const timeout = setTimeout(() => {
+      definitionsRef.current?.[index]?.scrollIntoView({
         behavior: 'smooth',
       });
-      setTimeout(
-        () =>
-          setRevealedUsernames((revealedUsernames) => [
-            ...revealedUsernames,
-            inputEntriesToDisplay?.[revealedUsernames.length]?.[0],
-          ]),
-        BEFORE_AUTHOR_REVEAL_DELAY
-      );
+      return () => clearTimeout(timeout);
+    }, BEFORE_AUTHOR_REVEAL_DELAY);
+    return timeout;
+  };
+
+  useEffect(() => {
+    const playerIndexGenerator = getPlayerIndexGenerator(players?.length ?? 0);
+    const interval = setInterval(() => {
+      const { value, done } = playerIndexGenerator.next();
+      if (done || !value) {
+        return () => clearInterval(interval);
+      }
+      console.log('scrolling to element', value);
+      scrollToDefinitionAndWait(value);
+      console.log('revealing element', value);
+      setRevealedIndexes((revealedIndexes) => [...revealedIndexes, value]);
+      return () => clearInterval(interval);
     }, BEFORE_NEXT_DEF_DELAY);
-    return () => clearInterval(interval);
-  });
+  }, [players?.length]);
+
   return (
     <Grid container flexDirection="column" height={1} width={1}>
       <GameHeader />
       <DefinitionList
         handleSelectDefinition={() => {}}
-        revealedUsernames={revealedUsernames}
+        revealedIndexes={revealedIndexes}
         selectedUsernameDef={null}
         definitionHover={false}
         definitionsRef={definitionsRef}
@@ -81,7 +75,7 @@ const WordReveal = () => {
         <Box display="flex" justifyContent={'center'}>
           <Button
             onClick={handleNextStep}
-            disabled={!isAdmin || revealedUsernames.length < definitionsNumber}
+            disabled={!isAdmin || revealedIndexes.length < definitionsNumber}
             variant="contained"
             size="large"
             sx={bottomPageButtonSx}
