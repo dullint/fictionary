@@ -1,3 +1,2 @@
 export const BEFORE_AUTHOR_REVEAL_DELAY = 3 * 1000;
-export const BEFORE_NEXT_DEF_DELAY = 3 * 1000;
-export const ANIMATION_POINTS_DELAY = 500;
+export const BEFORE_NEXT_DEF_DELAY = 1.5 * 1000;

@@ -5,6 +5,7 @@ import GameHeader from '../GameHeader';
 import DefinitionList from '../DefinitionList';
 import { getNumberOfDefinitionToDisplay } from '../DefinitionList/helpers';
 import { GameContext } from '../Room';
+import { Box } from '@mui/system';
 
 const WordGuess = () => {
   const [selectedUsernameDef, setSelectedUsernameDef] = useState(null);
@@ -25,13 +26,15 @@ const WordGuess = () => {
   return (
     <Grid container direction="column" height={1} width={1}>
       <GameHeader />
-      <DefinitionList
-        handleSelectDefinition={handleSelectDefinition}
-        revealedIndexes={[]}
-        selectedUsernameDef={selectedUsernameDef}
-        definitionHover={true}
-        definitionsRef={definitionsRef}
-      />
+      <Box sx={{ overflowY: 'auto', flex: 1 }}>
+        <DefinitionList
+          handleSelectDefinition={handleSelectDefinition}
+          revealedIndexes={[]}
+          selectedUsernameDef={selectedUsernameDef}
+          definitionHover={true}
+          definitionsRef={definitionsRef}
+        />
+      </Box>
     </Grid>
   );
 };

@@ -1,5 +1,11 @@
 import { Grid, Tooltip, Button } from '@mui/material';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { SocketContext } from '../../App';
 import { GameContext, PlayerContext } from '../Room';
 import { isRoomAdmin } from '../WaitingRoom/helpers';
@@ -30,46 +36,56 @@ const WordReveal = () => {
 
   const scrollToDefinitionAndWait = async (index: number) => {
     return await new Promise<void>((resolve) => {
+      console.log('scrolling to element', index);
+      definitionsRef.current?.[index]?.scrollIntoView({
+        block: 'center',
+        inline: 'nearest',
+        behavior: 'smooth',
+      });
       return setTimeout(() => {
-        definitionsRef.current?.[index]?.scrollIntoView({
-          block: 'center',
-          inline: 'nearest',
-          behavior: 'smooth',
-        });
         resolve();
       }, BEFORE_AUTHOR_REVEAL_DELAY);
     });
   };
 
+  const revealNextDefinition = useCallback(
+    async (playerIndexGenerator: Generator, interval: NodeJS.Timer | null) => {
+      const result = playerIndexGenerator.next();
+      const done = result?.done;
+      if (done && !!interval) {
+        return () => clearInterval(interval);
+      }
+      const index = result.value as number;
+      await scrollToDefinitionAndWait(index);
+      console.log('revealing element', index);
+      setRevealedIndexes((revealedIndexes) => [...revealedIndexes, index]);
+    },
+    []
+  );
+
   useEffect(() => {
     const playerIndexGenerator = getPlayerIndexGenerator(
       definitionsNumber ?? 0
     );
-    const interval = setInterval(() => {
-      const result = playerIndexGenerator.next();
-      const done = result?.done;
-      if (done) {
-        return () => clearInterval(interval);
-      }
-      const index = result.value as number;
-      console.log('scrolling to element', index);
-      scrollToDefinitionAndWait(index);
-      console.log('revealing element', index);
-      setRevealedIndexes((revealedIndexes) => [...revealedIndexes, index]);
+    revealNextDefinition(playerIndexGenerator, null);
+    const interval = setInterval(async () => {
+      revealNextDefinition(playerIndexGenerator, interval);
       return () => clearInterval(interval);
-    }, BEFORE_NEXT_DEF_DELAY + 1000);
-  }, [definitionsNumber]);
+    }, BEFORE_NEXT_DEF_DELAY + BEFORE_AUTHOR_REVEAL_DELAY);
+  }, [definitionsNumber, revealNextDefinition]);
 
   return (
     <Grid container flexDirection="column" height={1} width={1}>
       <GameHeader />
-      <DefinitionList
-        handleSelectDefinition={() => {}}
-        revealedIndexes={revealedIndexes}
-        selectedUsernameDef={null}
-        definitionHover={false}
-        definitionsRef={definitionsRef}
-      />
+      <Box sx={{ overflowY: 'auto', flex: 1 }}>
+        <DefinitionList
+          handleSelectDefinition={() => {}}
+          revealedIndexes={revealedIndexes}
+          selectedUsernameDef={null}
+          definitionHover={false}
+          definitionsRef={definitionsRef}
+        />
+      </Box>
       <Tooltip
         title={isAdmin ? null : 'Waiting for the admin to continue'}
         placement="top"

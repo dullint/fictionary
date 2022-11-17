@@ -47,15 +47,7 @@ const DefinitionList = (props: PropsType) => {
   const extendedPlayers = players.concat(DICTIONARY_PLAYER);
 
   return (
-    <Box
-      display="flex"
-      width={1}
-      flexDirection="column"
-      sx={{
-        overflowY: 'auto',
-        flex: 1,
-      }}
-    >
+    <Box display="flex" flexDirection="column">
       {inputEntriesToDisplay.map(([username, inputEntry], index) => (
         <Box
           display="flex"
