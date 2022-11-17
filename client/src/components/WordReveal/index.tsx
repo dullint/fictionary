@@ -24,38 +24,39 @@ const WordReveal = () => {
     definitionsRef.current = definitionsRef.current.slice(0, definitionsNumber);
   }, [definitionsNumber]);
 
-  useEffect(() => {
-    definitionsRef.current = definitionsRef.current.slice(0, definitionsNumber);
-  }, [definitionsNumber]);
-
   const handleNextStep = () => {
     socket.emit('show_results');
   };
 
-  const scrollToDefinitionAndWait = (index: number) => {
-    const timeout = setTimeout(() => {
-      definitionsRef.current?.[index]?.scrollIntoView({
-        behavior: 'smooth',
-      });
-      return () => clearTimeout(timeout);
-    }, BEFORE_AUTHOR_REVEAL_DELAY);
-    return timeout;
+  const scrollToDefinitionAndWait = async (index: number) => {
+    return await new Promise<void>((resolve) => {
+      return setTimeout(() => {
+        definitionsRef.current?.[index]?.scrollIntoView({
+          behavior: 'smooth',
+        });
+        resolve();
+      }, BEFORE_AUTHOR_REVEAL_DELAY);
+    });
   };
 
   useEffect(() => {
-    const playerIndexGenerator = getPlayerIndexGenerator(players?.length ?? 0);
+    const playerIndexGenerator = getPlayerIndexGenerator(
+      definitionsNumber ?? 0
+    );
     const interval = setInterval(() => {
-      const { value, done } = playerIndexGenerator.next();
-      if (done || !value) {
+      const result = playerIndexGenerator.next();
+      const done = result?.done;
+      if (done) {
         return () => clearInterval(interval);
       }
-      console.log('scrolling to element', value);
-      scrollToDefinitionAndWait(value);
-      console.log('revealing element', value);
-      setRevealedIndexes((revealedIndexes) => [...revealedIndexes, value]);
+      const index = result.value as number;
+      console.log('scrolling to element', index);
+      scrollToDefinitionAndWait(index);
+      console.log('revealing element', index);
+      setRevealedIndexes((revealedIndexes) => [...revealedIndexes, index]);
       return () => clearInterval(interval);
-    }, BEFORE_NEXT_DEF_DELAY);
-  }, [players?.length]);
+    }, BEFORE_NEXT_DEF_DELAY + 1000);
+  }, [definitionsNumber]);
 
   return (
     <Grid container flexDirection="column" height={1} width={1}>
