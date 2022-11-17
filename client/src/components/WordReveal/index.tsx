@@ -25,6 +25,8 @@ const WordReveal = () => {
   const [revealedIndexes, setRevealedIndexes] = useState<number[]>([]);
   const definitionsRef = useRef([]);
   const definitionsNumber = getNumberOfDefinitionToDisplay(game);
+  const allDefinitionsAreRevealed =
+    revealedIndexes?.length ?? 0 >= definitionsNumber;
 
   useEffect(() => {
     definitionsRef.current = definitionsRef.current.slice(0, definitionsNumber);
@@ -75,7 +77,13 @@ const WordReveal = () => {
   return (
     <Grid container flexDirection="column" height={1} width={1}>
       <GameHeader />
-      <Box sx={{ overflowY: 'auto', flex: 1 }} width={1}>
+      <Box
+        sx={{
+          overflowY: 'auto',
+          flex: 1,
+        }}
+        width={1}
+      >
         <DefinitionList
           handleSelectDefinition={() => {}}
           revealedIndexes={revealedIndexes}
@@ -92,7 +100,7 @@ const WordReveal = () => {
         <Box display="flex" justifyContent={'center'}>
           <Button
             onClick={handleNextStep}
-            disabled={!isAdmin || revealedIndexes.length < definitionsNumber}
+            disabled={!isAdmin || !allDefinitionsAreRevealed}
             variant="contained"
             size="large"
             sx={bottomPageButtonSx}
