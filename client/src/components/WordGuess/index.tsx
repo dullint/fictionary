@@ -26,7 +26,7 @@ const WordGuess = () => {
   return (
     <Grid container direction="column" height={1} width={1}>
       <GameHeader />
-      <Box sx={{ overflowY: 'auto', flex: 1 }}>
+      <Box sx={{ overflowY: 'auto', flex: 1 }} width={1}>
         <DefinitionList
           handleSelectDefinition={handleSelectDefinition}
           revealedIndexes={[]}
