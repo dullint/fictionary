@@ -131,92 +131,94 @@ const WordPrompt = () => {
           </Tooltip>
         </Grid>
       </Grid>
-      <Grid item width={1}>
-        <Grid direction="column" flex={1}>
-          <Box
-            zIndex={2}
-            position="absolute"
-            ref={wordRef}
-            sx={{ m: 2.25, marginLeft: 2 }}
-          >
-            <DefinitionRender
-              entry={{ ...entry, definition: '', example: '' }}
-            ></DefinitionRender>
-          </Box>
-          <TextField
-            autoFocus
-            disabled={hasSubmited}
-            onKeyPress={handlePressKey}
-            value={definition}
-            multiline
-            rows={isMobile ? 7 : 4}
-            fullWidth
-            helperText={`${definition.length}/${DEFINITION_CHARACTER_LIMIT}`}
-            onChange={handleDefinitionChange}
-            inputProps={{
-              maxLength: DEFINITION_CHARACTER_LIMIT,
-              lineHeight: '22px',
-            }}
-            sx={{
-              marginTop: 0.5,
-              marginBottom: '14px',
-              '& .MuiOutlinedInput-input': {
-                lineHeight: '22px',
-                textIndent: wordWidth + 1,
-              },
-            }}
-          />
-          {isUsingExample && (
-            <Box>
-              <Box
-                zIndex={2}
-                position="absolute"
-                ref={ExRef}
-                sx={{ m: 2.25, marginLeft: 2 }}
-              >
-                <Typography
-                  component="span"
-                  fontFamily="bespoke-medium"
-                  sx={{ marginRight: 0.5 }}
-                  fontSize={17}
-                >
-                  Ex.
-                </Typography>
-              </Box>
-              <TextField
-                disabled={hasSubmited}
-                onKeyPress={handlePressKey}
-                value={example}
-                multiline
-                rows={isMobile ? 5 : 3}
-                fullWidth
-                helperText={`${example.length}/${EXAMPLE_CHARACTER_LIMIT}`}
-                onChange={handleExampleChange}
-                inputProps={{
-                  maxLength: EXAMPLE_CHARACTER_LIMIT,
-                  lineHeight: '22px',
-                }}
-                sx={{
-                  marginTop: 0.5,
-                  marginBottom: '14px',
-                  '& .MuiOutlinedInput-input': {
-                    lineHeight: '22px',
-                    textIndent: ExWidth + 1,
-                  },
-                }}
-              />
+      <Grid container sx={{ overflowY: 'auto', flex: 1, position: 'relative' }}>
+        <Grid item width={1}>
+          <Grid direction="column" flex={1}>
+            <Box
+              zIndex={2}
+              position="absolute"
+              ref={wordRef}
+              sx={{ m: 2.25, marginLeft: 2 }}
+            >
+              <DefinitionRender
+                entry={{ ...entry, definition: '', example: '' }}
+              ></DefinitionRender>
             </Box>
-          )}
-          <Typography
-            display="flex"
-            alignItems={'center'}
-            variant="subtitle1"
-            color="primary"
-          >
-            {hasSubmited
-              ? `Waiting for ${remainingPlayers} more players to finish their definition`
-              : null}
-          </Typography>
+            <TextField
+              autoFocus
+              disabled={hasSubmited}
+              onKeyPress={handlePressKey}
+              value={definition}
+              multiline
+              rows={isMobile ? 7 : 4}
+              fullWidth
+              helperText={`${definition.length}/${DEFINITION_CHARACTER_LIMIT}`}
+              onChange={handleDefinitionChange}
+              inputProps={{
+                maxLength: DEFINITION_CHARACTER_LIMIT,
+                lineHeight: '22px',
+              }}
+              sx={{
+                marginTop: 0.5,
+                marginBottom: '14px',
+                '& .MuiOutlinedInput-input': {
+                  lineHeight: '22px',
+                  textIndent: wordWidth + 1,
+                },
+              }}
+            />
+            {isUsingExample && (
+              <Box>
+                <Box
+                  zIndex={2}
+                  position="absolute"
+                  ref={ExRef}
+                  sx={{ m: 2.25, marginLeft: 2 }}
+                >
+                  <Typography
+                    component="span"
+                    fontFamily="bespoke-medium"
+                    sx={{ marginRight: 0.5 }}
+                    fontSize={17}
+                  >
+                    Ex.
+                  </Typography>
+                </Box>
+                <TextField
+                  disabled={hasSubmited}
+                  onKeyPress={handlePressKey}
+                  value={example}
+                  multiline
+                  rows={isMobile ? 5 : 3}
+                  fullWidth
+                  helperText={`${example.length}/${EXAMPLE_CHARACTER_LIMIT}`}
+                  onChange={handleExampleChange}
+                  inputProps={{
+                    maxLength: EXAMPLE_CHARACTER_LIMIT,
+                    lineHeight: '22px',
+                  }}
+                  sx={{
+                    marginTop: 0.5,
+                    marginBottom: '14px',
+                    '& .MuiOutlinedInput-input': {
+                      lineHeight: '22px',
+                      textIndent: ExWidth + 1,
+                    },
+                  }}
+                />
+              </Box>
+            )}
+            <Typography
+              display="flex"
+              alignItems={'center'}
+              variant="subtitle1"
+              color="primary"
+            >
+              {hasSubmited
+                ? `Waiting for ${remainingPlayers} more players to finish their definition`
+                : null}
+            </Typography>
+          </Grid>
         </Grid>
       </Grid>
       <Grid item>
