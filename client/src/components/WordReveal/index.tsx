@@ -34,21 +34,20 @@ const WordReveal = () => {
     socket.emit('show_results');
   };
 
-  const scrollToDefinitionAndWait = async (index: number) => {
-    return await new Promise<void>((resolve) => {
-      console.log('scrolling to element', index);
-      definitionsRef.current?.[index]?.scrollIntoView({
-        block: 'center',
-        inline: 'nearest',
-        behavior: 'smooth',
-      });
+  const scrollToDefinitionAndWait = (index: number) => {
+    definitionsRef.current?.[index]?.scrollIntoView({
+      block: 'center',
+      inline: 'nearest',
+      behavior: 'smooth',
+    });
+    return new Promise<void>((resolve) => {
       return setTimeout(() => {
         resolve();
       }, BEFORE_AUTHOR_REVEAL_DELAY);
     });
   };
 
-  const revealNextDefinition = useCallback(
+  const scrollAndRevealNextDefinition = useCallback(
     async (playerIndexGenerator: Generator, interval: NodeJS.Timer | null) => {
       const result = playerIndexGenerator.next();
       const done = result?.done;
@@ -57,7 +56,6 @@ const WordReveal = () => {
       }
       const index = result.value as number;
       await scrollToDefinitionAndWait(index);
-      console.log('revealing element', index);
       setRevealedIndexes((revealedIndexes) => [...revealedIndexes, index]);
     },
     []
@@ -67,17 +65,17 @@ const WordReveal = () => {
     const playerIndexGenerator = getPlayerIndexGenerator(
       definitionsNumber ?? 0
     );
-    revealNextDefinition(playerIndexGenerator, null);
+    scrollAndRevealNextDefinition(playerIndexGenerator, null);
     const interval = setInterval(async () => {
-      revealNextDefinition(playerIndexGenerator, interval);
+      scrollAndRevealNextDefinition(playerIndexGenerator, interval);
       return () => clearInterval(interval);
     }, BEFORE_NEXT_DEF_DELAY + BEFORE_AUTHOR_REVEAL_DELAY);
-  }, [definitionsNumber, revealNextDefinition]);
+  }, [definitionsNumber, scrollAndRevealNextDefinition]);
 
   return (
     <Grid container flexDirection="column" height={1} width={1}>
       <GameHeader />
-      <Box sx={{ overflowY: 'auto', flex: 1 }}>
+      <Box sx={{ overflowY: 'auto', flex: 1 }} width={1}>
         <DefinitionList
           handleSelectDefinition={() => {}}
           revealedIndexes={revealedIndexes}
