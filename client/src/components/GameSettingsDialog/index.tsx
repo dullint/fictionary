@@ -14,6 +14,7 @@ import {
   DEFAULT_GAME_SETTINGS,
   promptTimeOptions,
   roundNumberOptions,
+  showGuessVoteOptions,
   useExampleOptions,
 } from './constants';
 
@@ -34,6 +35,9 @@ const GameSettingsDialog = (props: PropsType) => {
   const [roundNumber, setRoundNumber] = useState(
     DEFAULT_GAME_SETTINGS.roundNumber
   );
+  const [showGuessVote, setShowGuessVote] = useState(
+    DEFAULT_GAME_SETTINGS.showGuessVote
+  );
   const socket = useContext(SocketContext);
 
   const handleSubmit = () => {
@@ -42,6 +46,7 @@ const GameSettingsDialog = (props: PropsType) => {
       maxPromptTime,
       roundNumber,
       useExample,
+      showGuessVote,
     };
     socket.emit('change_game_settings', { gameSettings: newGameSettings });
   };
@@ -130,6 +135,30 @@ const GameSettingsDialog = (props: PropsType) => {
                   }}
                   onClick={(e) => setUseExample(value)}
                   variant={value === useExample ? 'contained' : 'outlined'}
+                >
+                  {value ? 'Yes' : 'No'}
+                </Button>
+              );
+            })}
+          </ButtonGroup>
+          <Typography
+            variant="subtitle1"
+            sx={{ marginTop: 3, marginBottom: 1 }}
+          >
+            Show players vote during the selection
+          </Typography>
+          <ButtonGroup variant="outlined" disabled={!isAdmin}>
+            {showGuessVoteOptions.map((value) => {
+              return (
+                <Button
+                  sx={{
+                    '&:hover': {
+                      boxShadow:
+                        value === showGuessVote ? '5px 5px black' : null,
+                    },
+                  }}
+                  onClick={(e) => setShowGuessVote(value)}
+                  variant={value === showGuessVote ? 'contained' : 'outlined'}
                 >
                   {value ? 'Yes' : 'No'}
                 </Button>

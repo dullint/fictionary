@@ -13,6 +13,7 @@ const WordGuess = () => {
   const game = useContext(GameContext);
   const definitionsRef = useRef([]);
   const definitionsNumber = getNumberOfDefinitionToDisplay(game);
+  const showGuessVote = game?.gameSettings?.showGuessVote;
 
   useEffect(() => {
     definitionsRef.current = definitionsRef.current.slice(0, definitionsNumber);
@@ -28,6 +29,7 @@ const WordGuess = () => {
       <GameHeader />
       <Box sx={{ overflowY: 'auto', flex: 1 }} width={1}>
         <DefinitionList
+          showVoteBanner={showGuessVote}
           handleSelectDefinition={handleSelectDefinition}
           revealedIndexes={[]}
           selectedUsernameDef={selectedUsernameDef}

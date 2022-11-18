@@ -26,7 +26,7 @@ const WordReveal = () => {
   const definitionsRef = useRef([]);
   const definitionsNumber = getNumberOfDefinitionToDisplay(game);
   const allDefinitionsAreRevealed =
-    revealedIndexes?.length ?? 0 >= definitionsNumber;
+    revealedIndexes?.length >= definitionsNumber;
 
   useEffect(() => {
     definitionsRef.current = definitionsRef.current.slice(0, definitionsNumber);
@@ -85,6 +85,7 @@ const WordReveal = () => {
         width={1}
       >
         <DefinitionList
+          showVoteBanner={true}
           handleSelectDefinition={() => {}}
           revealedIndexes={revealedIndexes}
           selectedUsernameDef={null}

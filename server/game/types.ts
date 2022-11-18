@@ -11,6 +11,7 @@ export interface GameSettings {
   maxPromptTime: number;
   roundNumber: number;
   useExample: boolean;
+  showGuessVote: boolean;
 }
 
 export interface SelectedDefinitions {

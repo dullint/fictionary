@@ -15,6 +15,7 @@ interface PropsType {
   selectedUsernameDef: string | null;
   definitionHover: boolean;
   definitionsRef: MutableRefObject<unknown[]>;
+  showVoteBanner: boolean;
 }
 
 const DefinitionList = (props: PropsType) => {
@@ -24,6 +25,7 @@ const DefinitionList = (props: PropsType) => {
     selectedUsernameDef,
     definitionHover,
     definitionsRef,
+    showVoteBanner,
   } = props;
   const game = useContext(GameContext);
   const players = useContext(PlayerContext);
@@ -81,14 +83,16 @@ const DefinitionList = (props: PropsType) => {
               example: isUsingExample ? inputEntry.example : '',
             }}
           />
-          <VoteBanner
-            votingPlayers={votingPlayersByDefinitions[username] ?? []}
-            authorPlayer={extendedPlayers.find(
-              (player) => player?.username === username
-            )}
-            size={'small'}
-            revealed={revealedIndexes.includes(index)}
-          />
+          {showVoteBanner && (
+            <VoteBanner
+              votingPlayers={votingPlayersByDefinitions[username] ?? []}
+              authorPlayer={extendedPlayers.find(
+                (player) => player?.username === username
+              )}
+              size={'small'}
+              revealed={revealedIndexes.includes(index)}
+            />
+          )}
         </Box>
       ))}
     </Box>
