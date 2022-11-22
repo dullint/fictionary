@@ -21,6 +21,7 @@ import { theme } from '../../theme';
 import GameHeader from '../GameHeader';
 import { bottomPageButtonSx } from '../../constants/style';
 import DefinitionRender from '../DefinitionRender';
+import { cleanSentence } from './helpers';
 
 const WordPrompt = () => {
   const game = useContext(GameContext);
@@ -68,8 +69,14 @@ const WordPrompt = () => {
 
   const handleSubmit = () => {
     if (!definition || (isUsingExample && !example)) return;
+    setDefinition(cleanSentence(definition));
+    setExample(cleanSentence(example));
     setHasSubmited(true);
-    socket.emit('submit_definition', { roomId, definition, example });
+    socket.emit('submit_definition', {
+      roomId,
+      definition: cleanSentence(definition),
+      example: cleanSentence(example),
+    });
   };
 
   const handleModify = () => {

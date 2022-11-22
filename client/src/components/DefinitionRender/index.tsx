@@ -2,6 +2,7 @@ import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
 import { DictionnaryEntry } from '../../../../server/dictionary/types';
+import { cleanSentence } from '../WordPrompt/helpers';
 import { getNatureGenre } from './helpers';
 
 interface PropsType {
@@ -37,7 +38,7 @@ const DefinitionRender = (props: PropsType) => {
         variant="body1"
         sx={{ marginRight: 0.5 }}
       >
-        {definition}
+        {cleanSentence(definition)}
       </Typography>
       <Typography
         component="span"
@@ -54,7 +55,7 @@ const DefinitionRender = (props: PropsType) => {
         fontSize={15}
         sx={{ marginRight: example ? 0.5 : 0 }}
       >
-        {example}
+        {cleanSentence(example)}
       </Typography>
     </Box>
   );
