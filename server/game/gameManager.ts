@@ -19,6 +19,7 @@ export class Game {
   gameSettings: GameSettings;
   gameStep: GameStep;
   scores: Scores;
+  wordSeen: string[];
   timer: NodeJS.Timer | null;
 
   constructor(io: Server, roomId: string, gameSettings: GameSettings) {
@@ -32,6 +33,7 @@ export class Game {
     this.gameStep = GameStep.WAIT;
     this.scores = {};
     this.timer = null;
+    this.wordSeen = [];
   }
 
   removeDefinition(username: string) {
@@ -64,7 +66,10 @@ export class Game {
   newWord() {
     if (this.timer) clearInterval(this.timer);
     this.inputEntries = {};
-    const entry = get_random_entry();
+    var entry = get_random_entry();
+    while (this.wordSeen.includes(entry.word)) {
+      entry = get_random_entry();
+    }
     this.entry = entry;
     this.runTimer(this.gameSettings.maxPromptTime);
   }
