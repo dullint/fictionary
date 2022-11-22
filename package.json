@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon --exec ts-node server/index.ts",
-    "start": "nodemon --exec ts-node server/index.ts",
+    "dev": "NODE_ENV=development nodemon --exec ts-node server/src/index.ts",
+    "start": "nodemon --exec ts-node server/src/index.ts",
     "build": "cd client && npm install && npm run build"
   },
   "repository": {

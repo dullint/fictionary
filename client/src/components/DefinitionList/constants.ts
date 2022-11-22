@@ -1,4 +1,4 @@
-import { Player } from '../../../../server/room/types';
+import { Player } from '../../../../server/src/room/types';
 
 export const DICTIONARY_PLAYER: Player = {
   username: 'REAL_DEFINITION',

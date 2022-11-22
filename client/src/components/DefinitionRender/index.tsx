@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
-import { DictionnaryEntry } from '../../../../server/dictionary/types';
+import { DictionnaryEntry } from '../../../../server/src/dictionary/types';
 import { cleanSentence } from '../WordPrompt/helpers';
 import { getNatureGenre } from './helpers';
 

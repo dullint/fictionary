@@ -8,7 +8,7 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
-import { GameSettings } from '../../../../server/game/types';
+import { GameSettings } from '../../../../server/src/game/types';
 import { theme } from '../../theme';
 import {
   DEFAULT_GAME_SETTINGS,

@@ -1,6 +1,6 @@
 import { CircularProgress, Avatar as MUIAvatar, Badge } from '@mui/material';
 import React from 'react';
-import { Player } from '../../../../server/room/types';
+import { Player } from '../../../../server/src/room/types';
 import { theme } from '../../theme';
 import { getAvatarString } from './helpers';
 

@@ -1,4 +1,4 @@
-import { GameSettings } from '../../../../server/game/types';
+import { GameSettings } from '../../../../server/src/game/types';
 
 export const DEFAULT_GAME_SETTINGS: GameSettings = {
   maxPromptTime: 3,
