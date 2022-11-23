@@ -21,12 +21,11 @@ const App = () => {
   const theme = getTheme();
 
   useEffect(() => {
-    console.log('reconnection attempt');
     const server =
       process.env.NODE_ENV === 'development'
         ? 'http://localhost:3020'
         : 'https://sea-lion-app-w7b99.ondigitalocean.app/';
-    const socket = io(server, { autoConnect: false, reconnectionAttempts: 10 });
+    const socket = io(server, { autoConnect: false });
     const sessionId = localStorage.getItem('fictionarySessionId');
     socket.auth = { sessionId };
     socket.connect();
