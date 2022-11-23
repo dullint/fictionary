@@ -20,14 +20,13 @@ const App = () => {
   const [socket, setSocket] = useState<Socket>(null);
   const theme = getTheme();
 
-  const server =
-    process.env.NODE_ENV === 'development'
-      ? 'http://localhost:3020'
-      : 'https://sea-lion-app-w7b99.ondigitalocean.app/';
-
   useEffect(() => {
-    console.log(server);
-    const socket = io(server, { autoConnect: false });
+    console.log('reconnection attempt');
+    const server =
+      process.env.NODE_ENV === 'development'
+        ? 'http://localhost:3020'
+        : 'https://sea-lion-app-w7b99.ondigitalocean.app/';
+    const socket = io(server, { autoConnect: false, forceNew: true });
     const sessionId = localStorage.getItem('fictionarySessionId');
     socket.auth = { sessionId };
     socket.connect();
@@ -40,7 +39,7 @@ const App = () => {
     return () => {
       socket.disconnect();
     };
-  }, [server]);
+  }, []);
 
   return (
     <Div100vh
