@@ -34,7 +34,7 @@ const App = () => {
       localStorage.setItem('fictionarySessionId', sessionId);
       socket.userId = userId;
     });
-    setSocket(socket);
+    socket.on('connect', () => setSocket(socket));
     return () => {
       socket.disconnect();
     };
