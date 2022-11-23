@@ -56,15 +56,6 @@ export default (server: HTTPServer) => {
     roomHandler(io, socket, sessionStore);
     gameHandler(io, socket);
 
-    socket.on('disconnecting', async () => {
-      const roomId = getSocketRoom(socket);
-      console.log(`${socket.id} disconnecting from room ${roomId}`);
-      if (roomId) {
-        const playersLeft = await onLeavingRoom(io, socket, roomId);
-        io.to(roomId).emit('players', playersLeft);
-      }
-    });
-
     socket.on('disconnect', async () => {
       console.log(`${socket.id} disconnected`);
       sessionStore.saveSession(socket.data.sessionID, {

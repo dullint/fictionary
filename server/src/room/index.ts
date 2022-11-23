@@ -108,9 +108,19 @@ export const roomHandler = (
     updateRoomPlayers(roomId);
   };
 
+  const leaveRoomOnDisconnection = async () => {
+    const roomId = getSocketRoom(socket);
+    console.log(`${socket.id} disconnecting from room ${roomId}`);
+    if (roomId) {
+      const playersLeft = await onLeavingRoom(io, socket, roomId);
+      io.to(roomId).emit('players', playersLeft);
+    }
+  };
+
   socket.on('update_username', updateUsername);
   socket.on('create_room', createRoom);
   socket.on('join_room', joinRoom);
   socket.on('leave_room', leaveRoom);
   socket.on('players', queryPlayers);
+  socket.on('disconnecting', leaveRoomOnDisconnection);
 };
