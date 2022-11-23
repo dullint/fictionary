@@ -70,30 +70,31 @@ const Home = () => {
           justifyContent="space-between"
           sx={{ width: 300, margin: 2 }}
         >
-          <Input
-            placeholder="Room ID"
-            onChange={(e) => {
-              setRoomId(e.target.value.toLocaleUpperCase());
-              setJoinRoomErrorMessage(null);
-            }}
-            sx={{
-              height: 60,
-              flex: 1,
-            }}
-            // disableUnderline
-            value={roomId}
-            inputProps={{
-              maxLength: 5,
-              style: { textAlign: 'center', fontWeight: 900, fontSize: 24 },
-            }}
-          />
-          <Button
-            onClick={handleJoinGame}
-            variant="contained"
-            sx={{ marginLeft: 2, width: 'auto', height: 60 }}
-          >
-            Join game
-          </Button>
+          <Grid container>
+            <Input
+              placeholder="Room ID"
+              onChange={(e) => {
+                setRoomId(e.target.value.toLocaleUpperCase());
+                setJoinRoomErrorMessage(null);
+              }}
+              sx={{
+                height: 60,
+                flex: 1,
+              }}
+              value={roomId}
+              inputProps={{
+                maxLength: 5,
+                style: { textAlign: 'center', fontWeight: 900, fontSize: 24 },
+              }}
+            />
+            <Button
+              onClick={handleJoinGame}
+              variant="contained"
+              sx={{ marginLeft: 2, width: 'auto', height: 60 }}
+            >
+              Join game
+            </Button>
+          </Grid>
           {joinRoomErrorMessage && (
             <Typography sx={{ color: theme.palette.secondary.main }}>
               {joinRoomErrorMessage}
