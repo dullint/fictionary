@@ -48,10 +48,6 @@ const Room = () => {
     }
   }, [socket, roomId]);
 
-  useEffect(() => {
-    console.log({ players });
-  }, [players]);
-
   const renderComponent = (gameStep: GameStep) => {
     if (game && players) {
       switch (gameStep) {
