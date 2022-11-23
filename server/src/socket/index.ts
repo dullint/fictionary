@@ -17,7 +17,6 @@ export default (server: HTTPServer) => {
   });
 
   io.use((socket, next) => {
-    console.log();
     const sessionId = socket.handshake.auth.sessionId;
     // find existing session
     if (sessionId) {
@@ -54,7 +53,7 @@ export default (server: HTTPServer) => {
       userId: socket.data.userId,
     });
 
-    roomHandler(io, socket);
+    roomHandler(io, socket, sessionStore);
     gameHandler(io, socket);
 
     socket.on('disconnecting', async () => {

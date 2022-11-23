@@ -10,8 +10,13 @@ import {
   selectColor,
 } from './helpers';
 import { GameStep } from '../game/types';
+import { InMemorySessionStore } from '../socket/sessionStore';
 
-export const roomHandler = (io: Server, socket: Socket) => {
+export const roomHandler = (
+  io: Server,
+  socket: Socket,
+  sessionStore: InMemorySessionStore
+) => {
   const updateRoomPlayers = async (roomId: string) => {
     const players = await getPlayers(io, roomId);
     io.to(roomId).emit('players', players);
@@ -86,8 +91,12 @@ export const roomHandler = (io: Server, socket: Socket) => {
       });
       return;
     }
-    socket.emit('username_updated');
     socket.data.username = username;
+    sessionStore.saveSession(socket.data.sessionId, {
+      userId: socket.data.userId,
+      username: socket.data.username,
+    });
+    socket.emit('username_updated');
     updateRoomPlayers(roomId);
   };
 
