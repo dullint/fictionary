@@ -11,6 +11,7 @@ import {
 } from './helpers';
 import { GameStep } from '../game/types';
 import { InMemorySessionStore } from '../socket/sessionStore';
+import { MAX_PLAYER_IN_ROOM } from './constants';
 
 export const roomHandler = (
   io: Server,
@@ -36,6 +37,13 @@ export const roomHandler = (
       });
       return;
     }
+    const otherRoomPlayers = await getPlayers(io, roomId);
+    if (otherRoomPlayers.length >= MAX_PLAYER_IN_ROOM) {
+      socket.emit('join_room_error', {
+        message: `Room size limited to ${MAX_PLAYER_IN_ROOM} players`,
+      });
+      return;
+    }
     const socketOtherRooms = Array.from(socket.rooms.values()).filter(
       (room) => room != roomId && room != socket.id
     );
@@ -57,8 +65,7 @@ export const roomHandler = (
       return;
     }
     socket.emit('room_joined');
-    socket.data.color =
-      socket?.data?.color ?? selectColor((await getPlayers(io, roomId)).length);
+    socket.data.color = socket?.data?.color ?? selectColor(otherRoomPlayers);
     console.log(`User ${socket.id} joined room ${roomId}`);
     updateRoomPlayers(roomId);
   };
@@ -66,7 +73,8 @@ export const roomHandler = (
   const createRoom = async ({ roomId, gameSettings }: createRoomPayload) => {
     await socket.join(roomId);
     socket.emit('room_created');
-    socket.data.color = selectColor((await getPlayers(io, roomId)).length);
+    const roomPlayers = await getPlayers(io, roomId);
+    socket.data.color = selectColor(roomPlayers);
     socket.data.isAdmin = true;
     console.log(`User ${socket.id} created room ${roomId}`);
 

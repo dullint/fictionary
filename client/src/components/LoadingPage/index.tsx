@@ -1,27 +1,22 @@
 import { Button, CircularProgress, Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { CONNECT_TIMEOUT } from './constants';
+import { CONNECT_TIMEOUT, timeoutMessage } from './constants';
 
 interface PropsType {
-  joinErrorMessage: string;
+  joinErrorMessage: string | null;
 }
 const LoadingPage = (props: PropsType) => {
   const { joinErrorMessage } = props;
-  const [errorMessage, setErrorMessage] = useState(joinErrorMessage);
+  const [timeoutError, setTimeoutError] = useState(false);
   const navigate = useNavigate();
-  const { roomId } = useParams();
+
   useEffect(() => {
-    const timeout = setTimeout(
-      () => setErrorMessage(timeoutMessage),
-      CONNECT_TIMEOUT
-    );
-    if (joinErrorMessage === 'Room do not exist') {
-      clearTimeout(timeout);
-      setErrorMessage(`The room ${roomId} does not exist.`);
-    }
-    const timeoutMessage = `There was an error while trying to connect to the room ${roomId}.`;
-  }, [joinErrorMessage, roomId]);
+    setTimeout(() => setTimeoutError(true), CONNECT_TIMEOUT);
+  });
+
+  const errorMessage = timeoutError ? timeoutMessage : joinErrorMessage;
+
   return (
     <Grid container alignItems="center" justifyContent="center" height="100%">
       {errorMessage ? (
@@ -32,7 +27,7 @@ const LoadingPage = (props: PropsType) => {
           container
         >
           <Typography variant="subtitle1" align={'center'}>
-            {errorMessage.concat('\nPlease go back to the Home page.')}
+            {errorMessage}
           </Typography>
           <Button
             onClick={() => navigate('/')}
