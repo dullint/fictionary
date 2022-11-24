@@ -32,7 +32,7 @@ const Room = () => {
   const [joinErrorMessage, setJoinErrorMessage] = useState(null);
 
   useEffect(() => {
-    console.log('socket changed');
+    console.log('socket changed, id', socket?.id);
     if (socket) {
       const onRoomEnter = async () => {
         const { game, players } = await joinGameAndQueryInfo(socket, roomId);

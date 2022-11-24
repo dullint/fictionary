@@ -36,6 +36,7 @@ const App = () => {
     });
     socket.on('connect', () => {
       console.log('connected');
+      console.log(socket?.id);
       setSocket(socket);
     });
     return () => {
