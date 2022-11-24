@@ -47,6 +47,7 @@ const Room = () => {
       return () => socket.emit('leave_room', { roomId });
     }
   }, [socket, socket?.id, roomId]);
+  console.log(socket);
 
   const renderComponent = (gameStep: GameStep) => {
     if (game && players) {
