@@ -39,8 +39,13 @@ const App = () => {
       console.log(socket?.id);
       setSocket(socket);
     });
+    // socket.on('disconnect', () => {
+    //   socket.disconnect();
+    //   setSocket(socket);
+    // });
     return () => {
       socket.disconnect();
+      setSocket(socket);
     };
   }, []);
 
