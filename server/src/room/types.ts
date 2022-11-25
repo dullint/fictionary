@@ -1,5 +1,7 @@
 import { GameSettings } from '../game/types';
 
+export type RoomId = string;
+
 export interface Player {
   socketId: string;
   username?: string;

@@ -1,6 +1,6 @@
 import { RemoteSocket, Server, Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
-import GAMES from '../game/gameManager';
+import { InMemoryGameStore } from '../socket/gameStore';
 import { MAX_PLAYER_IN_ROOM } from './constants';
 import { Player } from './types';
 
@@ -72,15 +72,14 @@ export const selectNewAdmin = async (
 export const onLeavingRoom = async (
   io: Server,
   socket: Socket,
-  roomId: string
+  roomId: string,
+  gameStore: InMemoryGameStore
 ) => {
   const playersLeft = (await getPlayers(io, roomId)).filter(
     (player) => player?.socketId != socket.id
   );
   if (playersLeft.length === 0) {
-    GAMES.delete(roomId);
-    console.log(`Game of room ${roomId} deleted`);
-    console.log('Number of games stored: ', GAMES.size);
+    gameStore.deleteGame(roomId);
     return;
   }
   return socket.data?.isAdmin

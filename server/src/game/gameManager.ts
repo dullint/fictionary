@@ -115,5 +115,3 @@ export class Game {
     };
   }
 }
-
-export default new Map<string, Game>();

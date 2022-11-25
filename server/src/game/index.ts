@@ -1,10 +1,15 @@
 import { Server, Socket } from 'socket.io';
 import { getPlayers, getSocketRoom } from '../room/helpers';
+import { InMemoryGameStore } from '../socket/gameStore';
 
-import GAMES from './gameManager';
+// import InMemoryGameStore from './gameStore';
 import { GameSettings, GameStep, Scores } from './types';
 
-export const gameHandler = (io: Server, socket: Socket) => {
+export const gameHandler = (
+  io: Server,
+  socket: Socket,
+  gameStore: InMemoryGameStore
+) => {
   const submitDefinition = async ({
     definition,
     example,
@@ -13,7 +18,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     example: string;
   }) => {
     const roomId = getSocketRoom(socket);
-    const game = GAMES.get(roomId);
+    const game = gameStore.getGame(roomId);
     if (!game) return;
     game.inputEntries[socket.data.username] = { definition, example };
     const numberOfPlayers = (await getPlayers(io, roomId)).length;
@@ -26,7 +31,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
 
   const removeDefinition = () => {
     const roomId = getSocketRoom(socket);
-    const game = GAMES.get(roomId);
+    const game = gameStore.getGame(roomId);
     if (!game) return;
     game.removeDefinition(socket.data.username);
     io.to(roomId).emit('game', game.info());
@@ -34,14 +39,14 @@ export const gameHandler = (io: Server, socket: Socket) => {
 
   const queryGame = () => {
     const roomId = getSocketRoom(socket);
-    const game = GAMES.get(roomId);
+    const game = gameStore.getGame(roomId);
     if (!game) return;
     io.to(roomId).emit('game', game.info());
   };
 
   const selectDefinition = async ({ username }: { username: string }) => {
     const roomId = getSocketRoom(socket);
-    const game = GAMES.get(roomId);
+    const game = gameStore.getGame(roomId);
     if (!game) return;
     game.selections[socket.data.username] = username;
     const numberOfPlayers = (await getPlayers(io, roomId)).length;
@@ -54,7 +59,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
 
   const updateScores = ({ scores }: { scores: Scores }) => {
     const roomId = getSocketRoom(socket);
-    const game = GAMES.get(roomId);
+    const game = gameStore.getGame(roomId);
     if (!game) return;
     game.scores = scores;
     io.to(roomId).emit('game', game.info());
@@ -62,7 +67,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
 
   const resetGame = () => {
     const roomId = getSocketRoom(socket);
-    const game = GAMES.get(roomId);
+    const game = gameStore.getGame(roomId);
     if (!game) return;
     game.reset();
     io.to(roomId).emit('game', game.info());
@@ -70,7 +75,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
 
   const launchNewRound = () => {
     const roomId = getSocketRoom(socket);
-    const game = GAMES.get(roomId);
+    const game = gameStore.getGame(roomId);
     if (!game) return;
     if (game.round >= game.gameSettings.roundNumber) {
       game.gameStep = GameStep.FINISHED;
@@ -83,7 +88,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
 
   const getNewWord = () => {
     const roomId = getSocketRoom(socket);
-    const game = GAMES.get(roomId);
+    const game = gameStore.getGame(roomId);
     if (!game) return;
     game.newWord();
     io.to(roomId).emit('game', game.info());
@@ -91,7 +96,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
 
   const showResults = () => {
     const roomId = getSocketRoom(socket);
-    const game = GAMES.get(roomId);
+    const game = gameStore.getGame(roomId);
     if (!game) return;
     game.goToNextStep();
     io.to(roomId).emit('game', game.info());
@@ -99,7 +104,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
 
   const changeSettings = ({ gameSettings }: { gameSettings: GameSettings }) => {
     const roomId = getSocketRoom(socket);
-    const game = GAMES.get(roomId);
+    const game = gameStore.getGame(roomId);
     if (!game) return;
     game.gameSettings = gameSettings;
     io.to(roomId).emit('game', game.info());

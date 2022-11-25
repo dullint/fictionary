@@ -1,6 +1,5 @@
 import { Socket, Server } from 'socket.io';
 import { UpdateUsernamePayload, createRoomPayload } from './types';
-import GAMES, { Game } from '../game/gameManager';
 import {
   checkIfRoomExists,
   checkIfUsernameTaken,
@@ -12,11 +11,13 @@ import {
 import { GameStep } from '../game/types';
 import { InMemorySessionStore } from '../socket/sessionStore';
 import { MAX_PLAYER_IN_ROOM } from './constants';
+import { InMemoryGameStore } from '../socket/gameStore';
 
 export const roomHandler = (
   io: Server,
   socket: Socket,
-  sessionStore: InMemorySessionStore
+  sessionStore: InMemorySessionStore,
+  gameStore: InMemoryGameStore
 ) => {
   const updateRoomPlayers = async (roomId: string) => {
     const players = await getPlayers(io, roomId);
@@ -26,7 +27,7 @@ export const roomHandler = (
   const queryPlayers = async () => {
     const roomId = getSocketRoom(socket);
     const players = await getPlayers(io, roomId);
-    if (players.length === 0) GAMES.delete(roomId);
+    if (players.length === 0) gameStore.deleteGame(roomId);
     io.to(roomId).emit('players', players);
   };
 
@@ -56,7 +57,7 @@ export const roomHandler = (
     if (!Array.from(socket.rooms.values()).includes(roomId)) {
       await socket.join(roomId);
     }
-    const game = GAMES.get(roomId);
+    const game = gameStore.getGame(roomId);
     if (!game) return;
     if (game && game.gameStep !== GameStep.WAIT && !socket.data.username) {
       socket.emit('join_room_error', {
@@ -79,9 +80,8 @@ export const roomHandler = (
     console.log(`User ${socket.id} created room ${roomId}`);
 
     updateRoomPlayers(roomId);
-    GAMES.set(roomId, new Game(io, roomId, gameSettings));
-    console.log('Number of games stored: ', GAMES.size);
-    io.to(roomId).emit('game', GAMES.get(roomId)?.info());
+    gameStore.createGame(roomId, gameSettings);
+    io.to(roomId).emit('game', gameStore.getGame(roomId)?.info());
   };
 
   const updateUsername = async ({
@@ -110,7 +110,7 @@ export const roomHandler = (
   };
 
   const leaveRoom = async ({ roomId }: { roomId: string }) => {
-    await onLeavingRoom(io, socket, roomId);
+    await onLeavingRoom(io, socket, roomId, gameStore);
     socket.data.isAdmin = false;
     socket.leave(roomId);
     console.log(`User ${socket.id} left room ${roomId}`);
@@ -121,7 +121,7 @@ export const roomHandler = (
     const roomId = getSocketRoom(socket);
     console.log(`User ${socket.id} left room ${roomId} from disconnection`);
     if (roomId) {
-      const playersLeft = await onLeavingRoom(io, socket, roomId);
+      const playersLeft = await onLeavingRoom(io, socket, roomId, gameStore);
       io.to(roomId).emit('players', playersLeft);
     }
   };

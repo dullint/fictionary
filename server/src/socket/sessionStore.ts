@@ -18,6 +18,7 @@ export class InMemorySessionStore {
 
   saveSession(id: SessionId, session: Session) {
     this.sessions.set(id, session);
+    console.log('Number of sessions stored:', this.sessions.size);
   }
 
   findAllSessions() {
@@ -26,5 +27,6 @@ export class InMemorySessionStore {
 
   deleteSession(id: SessionId) {
     this.sessions.delete(id);
+    console.log('Number of sessions stored:', this.sessions.size);
   }
 }
