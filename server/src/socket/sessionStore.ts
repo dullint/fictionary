@@ -26,7 +26,7 @@ export class InMemorySessionStore {
   }
 
   deleteSession(id: SessionId) {
-    this.sessions.delete(id);
-    console.log('Number of sessions stored:', this.sessions.size);
+    const removed = this.sessions.delete(id);
+    if (removed) console.log('Number of sessions stored:', this.sessions.size);
   }
 }

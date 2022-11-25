@@ -31,6 +31,16 @@ const Room = () => {
   const [game, setGame] = useState(null);
   const [joinErrorMessage, setJoinErrorMessage] = useState(null);
 
+  console.log('room', socket?.id, socket);
+
+  useEffect(() => {
+    console.log('room, socket changed:', socket);
+  }, [socket]);
+
+  useEffect(() => {
+    console.log('room, socketId changed:', socket?.id);
+  }, [socket?.id]);
+
   useEffect(() => {
     if (socket) {
       const onRoomEnter = async () => {
