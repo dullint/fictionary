@@ -80,6 +80,7 @@ export const onLeavingRoom = async (
   if (playersLeft.length === 0) {
     GAMES.delete(roomId);
     console.log(`Game of room ${roomId} deleted`);
+    console.log('Number of games stored: ', GAMES.size);
     return;
   }
   return socket.data?.isAdmin

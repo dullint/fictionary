@@ -23,8 +23,8 @@ export class InMemorySessionStore {
   findAllSessions() {
     return this.sessions.values();
   }
-}
 
-// module.exports = {
-//   InMemorySessionStore,
-// };
+  deleteSession(id: SessionId) {
+    this.sessions.delete(id);
+  }
+}

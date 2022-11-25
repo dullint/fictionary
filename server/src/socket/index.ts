@@ -5,6 +5,7 @@ import { roomHandler } from '../room';
 import { getSocketRoom, onLeavingRoom } from '../room/helpers';
 import { randomBytes } from 'crypto';
 import { InMemorySessionStore } from './sessionStore';
+import { SESSION_DELETE_DELAY } from './constants';
 
 export default (server: HTTPServer) => {
   const sessionStore = new InMemorySessionStore();
@@ -47,6 +48,7 @@ export default (server: HTTPServer) => {
       userId: socket.data.userId,
       username: socket.data.username,
     });
+    console.log('Number of sessions stored:', sessionStore.sessions.size);
 
     socket.emit('session', {
       sessionId: socket.data.sessionId,
@@ -62,6 +64,11 @@ export default (server: HTTPServer) => {
         userId: socket.data.userId,
         username: socket.data.username,
       });
+      console.log('Number of sessions stored:', sessionStore.sessions.size);
+      setTimeout(() => {
+        sessionStore.deleteSession(socket.data.sessionID);
+        console.log('Number of sessions stored:', sessionStore.sessions.size);
+      }, SESSION_DELETE_DELAY);
     });
   });
   return io;

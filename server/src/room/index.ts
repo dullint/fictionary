@@ -80,6 +80,7 @@ export const roomHandler = (
 
     updateRoomPlayers(roomId);
     GAMES.set(roomId, new Game(io, roomId, gameSettings));
+    console.log('Number of games stored: ', GAMES.size);
     io.to(roomId).emit('game', GAMES.get(roomId)?.info());
   };
 
@@ -118,7 +119,7 @@ export const roomHandler = (
 
   const leaveRoomOnDisconnection = async () => {
     const roomId = getSocketRoom(socket);
-    console.log(`${socket.id} disconnecting from room ${roomId}`);
+    console.log(`User ${socket.id} left room ${roomId} from disconnection`);
     if (roomId) {
       const playersLeft = await onLeavingRoom(io, socket, roomId);
       io.to(roomId).emit('players', playersLeft);

@@ -1,0 +1,1 @@
+export const SESSION_DELETE_DELAY = 60 * 1000;
