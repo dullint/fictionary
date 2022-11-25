@@ -5,7 +5,7 @@ import { roomHandler } from '../room';
 import { randomBytes } from 'crypto';
 import { InMemorySessionStore } from './sessionStore';
 import { InMemoryGameStore } from './gameStore';
-import { SESSION_DELETE_DELAY } from './constants';
+import { PING_INTERVAL, PING_TIMEOUT, SESSION_DELETE_DELAY } from './constants';
 
 export default (server: HTTPServer) => {
   const randomId = () => randomBytes(8).toString('hex');
@@ -14,6 +14,8 @@ export default (server: HTTPServer) => {
       origin: ['http://localhost:3021', 'http://localhost:3020'],
       methods: ['GET', 'POST'],
     },
+    pingInterval: PING_INTERVAL,
+    pingTimeout: PING_TIMEOUT,
   });
   const sessionStore = new InMemorySessionStore();
   const gameStore = new InMemoryGameStore(io);
