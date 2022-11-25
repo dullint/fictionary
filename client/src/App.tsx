@@ -18,6 +18,7 @@ declare module 'socket.io-client' {
 
 const App = () => {
   const [socket, setSocket] = useState<Socket>(null);
+  // const [test, setTest] = useState(0);
   const theme = getTheme();
 
   useEffect(() => {
@@ -25,29 +26,42 @@ const App = () => {
       process.env.NODE_ENV === 'development'
         ? 'http://localhost:3020'
         : 'https://sea-lion-app-w7b99.ondigitalocean.app/';
-    const socket = io(server, { autoConnect: false, forceNew: true });
+    const socket = io(server, { autoConnect: false });
     const sessionId = localStorage.getItem('fictionarySessionId');
     socket.auth = { sessionId };
     socket.connect();
+
     socket.on('session', ({ sessionId, userId }) => {
       socket.auth = { sessionId };
       localStorage.setItem('fictionarySessionId', sessionId);
       socket.userId = userId;
     });
+
     socket.on('connect', () => {
-      console.log('connected');
-      console.log(socket?.id);
+      console.log('connected, socket set:', socket?.id, socket);
       setSocket(socket);
+      // setTest(1);
     });
-    socket.on('disconnect', () => {
-      socket.disconnect();
-      setSocket(socket);
-    });
+
+    if (sessionId === '3813fa386637d596') {
+      console.log('disconnecting in 2 sec...');
+      setTimeout(() => {
+        socket.disconnect();
+        setSocket(socket);
+        console.log('disconnected, socket set:', socket?.id, socket);
+      }, 2000);
+    }
+
+    // socket.on('disconnect', () => {
+    //   socket.connect();
+    // });
     return () => {
       socket.disconnect();
       setSocket(socket);
     };
   }, []);
+  console.log('app', socket?.id, socket?.connected, socket);
+  // console.log('test', test);
 
   return (
     <Div100vh

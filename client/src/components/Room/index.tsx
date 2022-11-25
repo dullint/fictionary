@@ -31,6 +31,8 @@ const Room = () => {
   const [game, setGame] = useState(null);
   const [joinErrorMessage, setJoinErrorMessage] = useState(null);
 
+  console.log('room', socket);
+
   useEffect(() => {
     console.log('socket changed, id', socket?.id, socket?.connected);
     if (socket) {
@@ -46,8 +48,7 @@ const Room = () => {
       socket.on('game', (game: Game) => setGame(game));
       return () => socket.emit('leave_room', { roomId });
     }
-  }, [socket, socket?.id, roomId]);
-  console.log(socket);
+  }, [socket, socket?.id, roomId, socket?.connected]);
 
   const renderComponent = (gameStep: GameStep) => {
     if (game && players) {
