@@ -32,8 +32,6 @@ const App = () => {
     });
   }, [connectCounter]);
 
-  console.log('app', socket?.id, socket);
-
   return (
     <Div100vh
       style={{

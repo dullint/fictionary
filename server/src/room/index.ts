@@ -119,9 +119,9 @@ export const roomHandler = (
 
   const leaveRoomOnDisconnection = async () => {
     const roomId = getSocketRoom(socket);
-    console.log(`User ${socket.id} left room ${roomId} from disconnection`);
     if (roomId) {
       const playersLeft = await onLeavingRoom(io, socket, roomId, gameStore);
+      console.log(`User ${socket.id} left room ${roomId} from disconnection`);
       io.to(roomId).emit('players', playersLeft);
     }
   };
