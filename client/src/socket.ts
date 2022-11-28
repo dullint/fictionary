@@ -9,7 +9,7 @@ declare module 'socket.io-client' {
 const server =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:3020'
-    : 'https://sea-lion-app-w7b99.ondigitalocean.app/';
+    : 'https://fictionary.io/';
 const socket = io(server, { autoConnect: false, forceNew: true });
 const sessionId = localStorage.getItem('fictionarySessionId');
 socket.auth = { sessionId };
