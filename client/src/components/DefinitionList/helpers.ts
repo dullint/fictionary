@@ -45,6 +45,7 @@ export const getEntriesWithUsernameToDisplay = (
         {
           definition: entry.definition,
           example: entry.example,
+          autosave: false,
         },
       ],
     ]

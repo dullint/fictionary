@@ -76,6 +76,7 @@ const WordPrompt = () => {
       roomId,
       definition: cleanSentence(definition),
       example: cleanSentence(example),
+      autosave: false,
     });
   };
 
@@ -86,7 +87,17 @@ const WordPrompt = () => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('timer', (counter: number) => setCounter(counter));
+      socket.on('timer', (counter: number) => {
+        setCounter(counter);
+        if (counter === 1) {
+          socket.emit('submit_definition', {
+            roomId,
+            definition: cleanSentence(definition),
+            example: cleanSentence(example),
+            autosave: true,
+          });
+        }
+      });
     }
   });
 

@@ -13,16 +13,20 @@ export const gameHandler = (
   const submitDefinition = async ({
     definition,
     example,
+    autosave,
   }: {
     definition: string;
     example: string;
+    autosave: boolean;
   }) => {
     const roomId = getSocketRoom(socket);
     const game = gameStore.getGame(roomId);
     if (!game) return;
-    game.inputEntries[socket.data.username] = { definition, example };
+    game.inputEntries[socket.data.username] = { definition, example, autosave };
     const numberOfPlayers = (await getPlayers(io, roomId)).length;
-    const numberOfDefinitions = Object.keys(game.inputEntries).length;
+    const numberOfDefinitions = Object.values(game.inputEntries).filter(
+      (entry) => !entry?.autosave
+    ).length;
     if (numberOfDefinitions == numberOfPlayers) {
       game.goToNextStep();
     }

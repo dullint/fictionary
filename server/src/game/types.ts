@@ -25,6 +25,7 @@ export interface Scores {
 export interface InputDictionaryEntry {
   definition: string;
   example: string;
+  autosave: boolean;
 }
 export interface InputDictionaryEntries {
   [username: string]: InputDictionaryEntry;
