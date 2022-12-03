@@ -39,8 +39,7 @@ const Home = () => {
         sx={{
           marginTop:
             isMobile && window?.screen?.orientation?.angle === 90 ? 0 : 5,
-          marginBottom:
-            isMobile && window?.screen?.orientation?.angle === 90 ? 2 : 4,
+          marginBottom: 2,
           maxWidth: {
             xs: 300,
             sm: 400,
@@ -53,7 +52,7 @@ const Home = () => {
         <Typography variant={'h1'}>Fictionary</Typography>
         <Box
           sx={{
-            minHeight: 70,
+            minHeight: 90,
           }}
         >
           <Typography
@@ -63,7 +62,7 @@ const Home = () => {
             fontFamily="bespoke-light-italic"
             sx={{ marginRight: 0.5 }}
           >
-            nom propre:
+            {'nom propre: '}
           </Typography>
           <TypeAnimation
             sequence={getTypingSequence()}
