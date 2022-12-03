@@ -37,7 +37,7 @@ const App = () => {
         width: '100vw',
       }}
     >
-      <Grid container height={1} width={1} sx={{ padding: 3, maxWidth: 700 }}>
+      <Grid container height={1} width={1} sx={{ padding: 2, maxWidth: 700 }}>
         <SocketContext.Provider value={socket}>
           <ThemeProvider theme={theme}>
             <Routes>

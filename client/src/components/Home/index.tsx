@@ -7,6 +7,9 @@ import { createRoom, joinRoom } from '../../services/room';
 import { theme } from '../../theme';
 import { DEFAULT_GAME_SETTINGS } from '../GameSettingsDialog/constants';
 import { generateRandomRoomId } from '../GameSettingsDialog/helpers';
+import { Box } from '@mui/system';
+import { TypeAnimation } from 'react-type-animation';
+import { getTypingSequence } from './helpers';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -31,31 +34,53 @@ const Home = () => {
   };
 
   return (
-    <Grid container direction="column">
-      <Typography
-        variant={'h1'}
-        align={'center'}
+    <Grid container direction="column" alignItems={'center'}>
+      <Box
         sx={{
           marginTop:
             isMobile && window?.screen?.orientation?.angle === 90 ? 0 : 5,
           marginBottom:
-            isMobile && window?.screen?.orientation?.angle === 90 ? 3 : 8,
+            isMobile && window?.screen?.orientation?.angle === 90 ? 2 : 4,
+          maxWidth: {
+            xs: 300,
+            sm: 400,
+            md: 450,
+            lg: 500,
+            xl: 500,
+          },
         }}
       >
-        Fictionary
-      </Typography>
-      <Grid
-        container
-        direction="column"
-        justifyContent="center"
-        alignItems={'center'}
-        width="auto"
-      >
+        <Typography variant={'h1'}>Fictionary</Typography>
+        <Box
+          sx={{
+            minHeight: 70,
+          }}
+        >
+          <Typography
+            component="span"
+            fontStyle={'italic'}
+            fontSize={20}
+            fontFamily="bespoke-light-italic"
+            sx={{ marginRight: 0.5 }}
+          >
+            nom propre:
+          </Typography>
+          <TypeAnimation
+            sequence={getTypingSequence()}
+            wrapper="span"
+            cursor={true}
+            repeat={Infinity}
+            deletionSpeed={70}
+            speed={50}
+            style={{ fontSize: 20, fontFamily: 'bespoke-regular' }}
+          />
+        </Box>
+      </Box>
+      <Grid container direction="column" alignItems={'center'} width="auto">
         <Button
           onClick={handleCreateGame}
           variant="contained"
           sx={{
-            alignSelf: 'center',
             width: 300,
             height: 60,
             marginBottom: 4,
@@ -68,7 +93,9 @@ const Home = () => {
           direction="row"
           alignItems="center"
           justifyContent="space-between"
-          sx={{ width: 300, margin: 2 }}
+          sx={{
+            width: 300,
+          }}
         >
           <Grid container>
             <Input
