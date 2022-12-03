@@ -87,6 +87,7 @@ const GameSettingsDialog = (props: PropsType) => {
                   }}
                   onClick={(e) => setRoundNumber(value)}
                   variant={value === roundNumber ? 'contained' : 'outlined'}
+                  key={`roundNumberOptions-${value}`}
                 >
                   {value}
                 </Button>
@@ -110,6 +111,7 @@ const GameSettingsDialog = (props: PropsType) => {
                         value === maxPromptTime ? '5px 5px black' : null,
                     },
                   }}
+                  key={`promptTimeOptions-${value}`}
                   onClick={(e) => setMaxPromptTime(value)}
                   variant={value === maxPromptTime ? 'contained' : 'outlined'}
                 >
@@ -133,6 +135,7 @@ const GameSettingsDialog = (props: PropsType) => {
                       boxShadow: value === useExample ? '5px 5px black' : null,
                     },
                   }}
+                  key={`useExampleOptions-${value}`}
                   onClick={(e) => setUseExample(value)}
                   variant={value === useExample ? 'contained' : 'outlined'}
                 >
@@ -157,6 +160,7 @@ const GameSettingsDialog = (props: PropsType) => {
                         value === showGuessVote ? '5px 5px black' : null,
                     },
                   }}
+                  key={`showGuessVoteOptions-${value}`}
                   onClick={(e) => setShowGuessVote(value)}
                   variant={value === showGuessVote ? 'contained' : 'outlined'}
                 >

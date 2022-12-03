@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import WaitingRoom from '../WaitingRoom';
 import { SocketContext } from '../../App';
 import { Player } from '../../../../server/src/room/types';
@@ -44,6 +38,7 @@ const Room = () => {
     const onRoomEnter = async () => {
       if (!fromHome) await joinRoom(socket, roomId);
       const { players, game } = await queryRoomInfo(socket, roomId);
+      console.log({ players, game });
       setGame(game);
       setPlayers(players);
     };
@@ -61,7 +56,7 @@ const Room = () => {
       socket.on('game', (game: Game) => setGame(game));
       return () => socket.emit('leave_room', { roomId });
     }
-  }, [socket, roomId]);
+  }, [socket, roomId, socket?.id]);
 
   const renderComponent = (gameStep: GameStep) => {
     if (game && players) {

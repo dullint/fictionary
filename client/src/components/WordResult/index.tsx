@@ -1,11 +1,4 @@
-import {
-  Avatar as MUIAvatar,
-  Badge,
-  Button,
-  Grid,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Button, Grid, Tooltip, Typography } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { useParams } from 'react-router-dom';
@@ -79,6 +72,7 @@ const WordResult = () => {
               justifyContent="center"
               alignItems="center"
               sx={{ maxWidth: 130 }}
+              key={player?.username}
             >
               <Avatar
                 player={player}

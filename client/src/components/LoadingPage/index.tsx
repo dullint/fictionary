@@ -1,6 +1,6 @@
 import { Button, CircularProgress, Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { CONNECT_TIMEOUT, timeoutMessage } from './constants';
 
 interface PropsType {

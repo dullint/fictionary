@@ -44,6 +44,7 @@ const VoteBanner = (props: PropsType) => {
             size={size}
             badgeContent={`+${voterPoints}`}
             displayBadge={showPoints && !!voterPoints}
+            key={`avatar-${player?.username}`}
           />
         ))}
       </AvatarGroup>

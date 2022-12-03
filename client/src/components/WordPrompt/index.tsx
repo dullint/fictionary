@@ -111,7 +111,7 @@ const WordPrompt = () => {
         <Grid
           container
           justifyContent={'space-between'}
-          flexDirection="row"
+          direction="row"
           alignItems={'center'}
         >
           {counter && (

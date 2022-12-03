@@ -55,6 +55,7 @@ const Leaderboard = () => {
                 justifyContent="center"
                 alignItems="center"
                 sx={{ maxWidth: 130 }}
+                key={player?.username}
               >
                 <Avatar
                   player={player}
