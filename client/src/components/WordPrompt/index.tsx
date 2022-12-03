@@ -16,7 +16,6 @@ import {
   DEFINITION_CHARACTER_LIMIT,
   EXAMPLE_CHARACTER_LIMIT,
 } from './constants';
-import { isMobile } from 'react-device-detect';
 import { theme } from '../../theme';
 import GameHeader from '../GameHeader';
 import { bottomPageButtonSx } from '../../constants/style';
@@ -168,7 +167,7 @@ const WordPrompt = () => {
               onKeyPress={handlePressKey}
               value={definition}
               multiline
-              rows={isMobile ? 7 : 4}
+              minRows={2}
               fullWidth
               helperText={`${definition.length}/${DEFINITION_CHARACTER_LIMIT}`}
               onChange={handleDefinitionChange}
@@ -207,7 +206,7 @@ const WordPrompt = () => {
                   onKeyPress={handlePressKey}
                   value={example}
                   multiline
-                  rows={isMobile ? 5 : 3}
+                  minRows={2}
                   fullWidth
                   helperText={`${example.length}/${EXAMPLE_CHARACTER_LIMIT}`}
                   onChange={handleExampleChange}

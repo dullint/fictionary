@@ -58,7 +58,6 @@ const DefinitionList = (props: PropsType) => {
           key={`definition-${username}`}
           ref={(el) => (definitionsRef.current[index] = el)}
           sx={{
-            boxSizing: 'border-box',
             border: `2px solid`,
             borderColor:
               username === selectedUsernameDef
@@ -66,14 +65,11 @@ const DefinitionList = (props: PropsType) => {
                 : 'transparent',
             borderRadius: 2,
             '&:hover': {
-              border: '2px solid',
-              borderColor: definitionHover
-                ? username === selectedUsernameDef
-                  ? theme.palette.primary.main
-                  : theme.palette.secondary.main
+              backgroundColor: definitionHover
+                ? theme.palette.yellow.darker
                 : 'transparent',
             },
-            padding: 1,
+            p: 0.5,
           }}
         >
           <DefinitionRender
