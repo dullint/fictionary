@@ -58,6 +58,10 @@ export class Game {
       return;
     }
     if (this.gameStep == GameStep.REVEAL) {
+      if (this.round >= this.gameSettings.roundNumber) {
+        this.gameStep = GameStep.FINISHED;
+        return;
+      }
       this.gameStep = GameStep.RESULTS;
       return;
     }

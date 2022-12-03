@@ -5,10 +5,12 @@ import { SocketContext } from '../../App';
 import Avatar from '../Avatar';
 import { GameContext, PlayerContext } from '../Room';
 import { isRoomAdmin } from '../WaitingRoom/helpers';
+import { calculatePlayerRoundScore } from '../WordResult/helpers';
 
 const Leaderboard = () => {
   const game = useContext(GameContext);
   const scores = game?.scores;
+  const selections = game?.selections;
   const socket = useContext(SocketContext);
   const players = useContext(PlayerContext);
   const navigate = useNavigate();
@@ -23,6 +25,22 @@ const Leaderboard = () => {
     socket.emit('reset_game', { roomId });
   };
   const isAdmin = isRoomAdmin(players, socket.id);
+
+  const previousRoundScores = players.reduce((acc, { username }) => {
+    return {
+      ...acc,
+      [username]: calculatePlayerRoundScore(username, selections),
+    };
+  }, {});
+
+  const finalScores = players.reduce((acc, { username }) => {
+    const previousScore = scores?.[username] ?? 0;
+    const roundScore = previousRoundScores?.[username];
+    return {
+      ...acc,
+      [username]: previousScore + roundScore,
+    };
+  }, {});
 
   return (
     <Grid
@@ -46,7 +64,8 @@ const Leaderboard = () => {
           players
             .sort(
               (player1, player2) =>
-                scores?.[player1.username] - scores?.[player1.username]
+                finalScores?.[player1.username] -
+                finalScores?.[player1.username]
             )
             .map((player) => (
               <Grid
@@ -61,7 +80,7 @@ const Leaderboard = () => {
                   player={player}
                   size={'big'}
                   displayBadge={true}
-                  badgeContent={scores?.[player?.username] ?? 0}
+                  badgeContent={finalScores?.[player?.username] ?? 0}
                 />
                 <Typography variant="subtitle1" align="center">
                   {player?.username}
