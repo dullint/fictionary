@@ -117,7 +117,12 @@ const WaitingRoom = () => {
               sx={{ maxWidth: 130 }}
               key={player.socketId}
             >
-              <Avatar player={player} displayBadge={false} size="medium" />
+              <Avatar
+                player={player}
+                displayBadge={false}
+                size="medium"
+                showCrown={true}
+              />
               <Typography variant="subtitle1" align="center">
                 {player?.username}
               </Typography>

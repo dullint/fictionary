@@ -140,7 +140,7 @@ const WordPrompt = () => {
       </Grid>
       <Grid container sx={{ overflowY: 'auto', flex: 1, position: 'relative' }}>
         <Grid item width={1}>
-          <Grid direction="column" flex={1}>
+          <Grid container direction="column" flex={1}>
             <Box
               zIndex={2}
               position="absolute"

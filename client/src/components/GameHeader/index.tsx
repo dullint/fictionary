@@ -25,7 +25,12 @@ const GameHeader = () => {
         <Typography sx={{ marginRight: 1 }} variant="h6">
           {player?.username}
         </Typography>
-        <Avatar player={player} displayBadge={false} size={'small'}></Avatar>
+        <Avatar
+          player={player}
+          displayBadge={false}
+          size={'small'}
+          showCrown={true}
+        ></Avatar>
       </Box>
     </Grid>
   );
