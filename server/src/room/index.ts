@@ -12,6 +12,7 @@ import { GameStep } from '../game/types';
 import { InMemorySessionStore } from '../socket/sessionStore';
 import { MAX_PLAYER_IN_ROOM } from './constants';
 import { InMemoryGameStore } from '../socket/gameStore';
+import { SESSION_DELETE_DELAY } from '../socket/constants';
 
 export const roomHandler = (
   io: Server,
@@ -54,16 +55,24 @@ export const roomHandler = (
       });
       return;
     }
-    if (!Array.from(socket.rooms.values()).includes(roomId)) {
-      await socket.join(roomId);
-    }
     const game = gameStore.getGame(roomId);
     if (!game) return;
-    if (game && game.gameStep !== GameStep.WAIT && !socket.data.username) {
+    if (
+      game &&
+      game.gameStep !== GameStep.WAIT &&
+      socket.data?.session?.roomId !== roomId
+    ) {
       socket.emit('join_room_error', {
         message: 'Game already in play',
       });
       return;
+    }
+    if (!Array.from(socket.rooms.values()).includes(roomId)) {
+      await socket.join(roomId);
+      if (socket.data?.session && socket.data?.session?.roomId === roomId) {
+        socket.data.username = socket.data?.session?.username;
+        socket.data.color = socket.data?.session?.color;
+      }
     }
     socket.emit('room_joined');
     socket.data.color = socket?.data?.color ?? selectColor(otherRoomPlayers);
@@ -101,10 +110,6 @@ export const roomHandler = (
       return;
     }
     socket.data.username = username;
-    sessionStore.saveSession(socket.data.sessionId, {
-      userId: socket.data.userId,
-      username: socket.data.username,
-    });
     socket.emit('username_updated');
     updateRoomPlayers(roomId);
   };
@@ -112,6 +117,8 @@ export const roomHandler = (
   const leaveRoom = async ({ roomId }: { roomId: string }) => {
     await onLeavingRoom(io, socket, roomId, gameStore);
     socket.data.isAdmin = false;
+    delete socket.data.username;
+    delete socket.data.color;
     socket.leave(roomId);
     console.log(`User ${socket.id} left room ${roomId}`);
     updateRoomPlayers(roomId);
@@ -120,6 +127,14 @@ export const roomHandler = (
   const leaveRoomOnDisconnection = async () => {
     const roomId = getSocketRoom(socket);
     if (roomId) {
+      sessionStore.saveSession(socket.data.sessionId, {
+        username: socket.data?.username,
+        roomId,
+        color: socket.data?.color,
+      });
+      setTimeout(() => {
+        sessionStore.deleteSession(socket.data.sessionId);
+      }, SESSION_DELETE_DELAY);
       const playersLeft = await onLeavingRoom(io, socket, roomId, gameStore);
       console.log(`User ${socket.id} left room ${roomId} from disconnection`);
       io.to(roomId).emit('players', playersLeft);

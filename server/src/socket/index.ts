@@ -2,13 +2,11 @@ import { Server } from 'socket.io';
 import { Server as HTTPServer } from 'http';
 import { gameHandler } from '../game';
 import { roomHandler } from '../room';
-import { randomBytes } from 'crypto';
 import { InMemorySessionStore } from './sessionStore';
 import { InMemoryGameStore } from './gameStore';
 import { PING_INTERVAL, PING_TIMEOUT, SESSION_DELETE_DELAY } from './constants';
 
 export default (server: HTTPServer) => {
-  const randomId = () => randomBytes(8).toString('hex');
   const io = new Server(server, {
     cors: {
       origin: ['http://localhost:3021', 'http://localhost:3020'],
@@ -26,49 +24,27 @@ export default (server: HTTPServer) => {
     if (sessionId) {
       const session = sessionStore.findSession(sessionId);
       if (session) {
-        socket.data.sessionId = sessionId;
-        socket.data.userId = session.userId;
-        socket.data.username = session.username;
-        return next();
+        socket.data.session = session;
+        sessionStore.deleteSession(sessionId);
       }
     }
-    // create new session
-    socket.data.sessionId = randomId();
-    socket.data.userId = randomId();
-    next();
+    socket.data.sessionId = sessionId;
+    return next();
   });
 
   io.on('connection', (socket) => {
-    console.log(
-      `Player connected ${JSON.stringify({
-        socketId: socket.id,
-        sessionId: socket.data.sessionId,
-        userId: socket.data.userId,
-        username: socket.data.username,
-      })}`
-    );
-    sessionStore.saveSession(socket.data.sessionId, {
-      userId: socket.data.userId,
-      username: socket.data.username,
-    });
-
-    socket.emit('session', {
-      sessionId: socket.data.sessionId,
-      userId: socket.data.userId,
-    });
+    console.log(`Player connected with id: ${socket.id}`);
+    if (socket.data?.session) {
+      console.log(
+        `Player ${socket.id} has a session from room ${socket.data.session.roomId} with username ${socket.data.session.username}`
+      );
+    }
 
     roomHandler(io, socket, sessionStore, gameStore);
     gameHandler(io, socket, gameStore);
 
     socket.on('disconnect', async () => {
       console.log(`${socket.id} disconnected`);
-      sessionStore.saveSession(socket.data.sessionID, {
-        userId: socket.data.userId,
-        username: socket.data.username,
-      });
-      setTimeout(() => {
-        sessionStore.deleteSession(socket.data.sessionID);
-      }, SESSION_DELETE_DELAY);
     });
   });
   return io;

@@ -26,12 +26,15 @@ export class InMemoryGameStore {
 
   deleteGame(roomId: RoomId) {
     this.games.delete(roomId);
-    console.log(`Game of room ${roomId} deleted`);
-    console.log('Number of games stored: ', this.games.size);
+    console.log(
+      `Game of room ${roomId} deleted. Number of games stored: ${this.games.size}`
+    );
   }
 
   createGame(roomId: RoomId, gameSettings: GameSettings) {
     this.games.set(roomId, new Game(this.io, roomId, gameSettings));
-    console.log('Number of games stored: ', this.games.size);
+    console.log(
+      `Game created for room ${roomId}. Number of games stored: ${this.games.size}`
+    );
   }
 }

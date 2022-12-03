@@ -21,12 +21,6 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    socket.on('session', ({ sessionId, userId }) => {
-      socket.auth = { sessionId };
-      localStorage.setItem('fictionarySessionId', sessionId);
-      socket.userId = userId;
-    });
-
     socket.on('connect', () => {
       setConnectCounter((c) => c + 1);
     });

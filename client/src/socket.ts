@@ -1,17 +1,16 @@
 import { io } from 'socket.io-client';
-
-declare module 'socket.io-client' {
-  interface Socket {
-    userId: string;
-  }
-}
+import { v4 as uuidv4 } from 'uuid';
 
 const server =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:3020'
     : 'https://fictionary.io/';
 const socket = io(server, { autoConnect: false, forceNew: true });
-const sessionId = localStorage.getItem('fictionarySessionId');
+var sessionId = localStorage.getItem('fictionarySessionId');
+if (!sessionId) {
+  sessionId = uuidv4();
+  localStorage.setItem('fictionarySessionId', sessionId);
+}
 socket.auth = { sessionId };
 socket.connect();
 

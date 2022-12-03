@@ -1,8 +1,11 @@
+import { RoomId } from '../room/types';
+
 type SessionId = string;
 
 interface Session {
-  userId: string;
   username?: string;
+  roomId: RoomId;
+  color: string;
 }
 
 export class InMemorySessionStore {
@@ -18,7 +21,10 @@ export class InMemorySessionStore {
 
   saveSession(id: SessionId, session: Session) {
     this.sessions.set(id, session);
-    console.log('Number of sessions stored:', this.sessions.size);
+    console.log(
+      `New session stored for ${session?.username} in room ${session?.roomId}. Number of sessions stored:`,
+      this.sessions.size
+    );
   }
 
   findAllSessions() {
@@ -27,6 +33,10 @@ export class InMemorySessionStore {
 
   deleteSession(id: SessionId) {
     const removed = this.sessions.delete(id);
-    if (removed) console.log('Number of sessions stored:', this.sessions.size);
+    if (removed)
+      console.log(
+        'Session deleted. Number of sessions stored:',
+        this.sessions.size
+      );
   }
 }

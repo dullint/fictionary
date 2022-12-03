@@ -17,9 +17,8 @@ import { getMyPlayer } from '../DefinitionList/helpers';
 const WaitingRoom = () => {
   const socket = useContext(SocketContext);
   const players = useContext(PlayerContext);
-  const [openUsernameDialog, setOpenUsernameDialog] = useState(
-    !getMyPlayer(players, socket.id)?.username
-  );
+  const username = getMyPlayer(players, socket?.id)?.username;
+  const [openUsernameDialog, setOpenUsernameDialog] = useState(!username);
   const [openSettingsDialog, setOpenSettingsDialog] = useState(false);
   const [copyToClipboardMsg, setCopyToClipboardMsg] = useState(false);
   const navigate = useNavigate();

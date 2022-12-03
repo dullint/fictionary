@@ -41,11 +41,16 @@ const Room = () => {
       onRoomEnter().catch((err) => {
         setJoinErrorMessage(err.message);
       });
+    }
+  }, [socket, socket?.id, roomId]);
+
+  useEffect(() => {
+    if (socket) {
       socket.on('players', (players: Player[]) => setPlayers(players));
       socket.on('game', (game: Game) => setGame(game));
       return () => socket.emit('leave_room', { roomId });
     }
-  }, [socket, socket?.id, roomId]);
+  }, [socket, roomId]);
 
   const renderComponent = (gameStep: GameStep) => {
     if (game && players) {
