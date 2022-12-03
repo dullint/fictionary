@@ -124,7 +124,7 @@ const GameSettingsDialog = (props: PropsType) => {
             variant="subtitle1"
             sx={{ marginTop: 3, marginBottom: 1 }}
           >
-            Play with example in definition:
+            Examples in definitions
           </Typography>
           <ButtonGroup variant="outlined" disabled={!isAdmin}>
             {useExampleOptions.map((value) => {
@@ -148,7 +148,7 @@ const GameSettingsDialog = (props: PropsType) => {
             variant="subtitle1"
             sx={{ marginTop: 3, marginBottom: 1 }}
           >
-            Show players vote during the selection
+            Show live players vote
           </Typography>
           <ButtonGroup variant="outlined" disabled={!isAdmin}>
             {showGuessVoteOptions.map((value) => {
