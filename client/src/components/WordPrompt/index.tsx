@@ -163,13 +163,13 @@ const WordPrompt = () => {
               onChange={handleDefinitionChange}
               inputProps={{
                 maxLength: DEFINITION_CHARACTER_LIMIT,
-                lineHeight: '22px',
+                lineheight: '22px',
               }}
               sx={{
                 marginTop: 0.5,
                 marginBottom: '14px',
                 '& .MuiOutlinedInput-input': {
-                  lineHeight: '22px',
+                  lineheight: '22px',
                   textIndent: wordWidth + 1,
                 },
               }}
@@ -202,13 +202,13 @@ const WordPrompt = () => {
                   onChange={handleExampleChange}
                   inputProps={{
                     maxLength: EXAMPLE_CHARACTER_LIMIT,
-                    lineHeight: '22px',
+                    lineheight: '22px',
                   }}
                   sx={{
                     marginTop: 0.5,
                     marginBottom: '14px',
                     '& .MuiOutlinedInput-input': {
-                      lineHeight: '22px',
+                      lineheight: '22px',
                       textIndent: ExWidth + 1,
                     },
                   }}

@@ -41,20 +41,6 @@ export const queryRoomInfo = async (
   });
 };
 
-export const joinGameAndQueryInfo = async (
-  socket: Socket,
-  roomId: string
-): Promise<{ players: Player[]; game: Game }> => {
-  return new Promise((rs, rj) => {
-    joinRoom(socket, roomId)
-      .then(() => {
-        const roomInfo = queryRoomInfo(socket, roomId);
-        rs(roomInfo);
-      })
-      .catch((error) => rj(error));
-  });
-};
-
 export const createRoom = async (
   socket: Socket,
   roomId: string,

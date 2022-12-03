@@ -1,6 +1,8 @@
 import { Socket, Server } from 'socket.io';
 import { UpdateUsernamePayload, createRoomPayload } from './types';
 import {
+  applySessionSaved,
+  canJoinRoom,
   checkIfRoomExists,
   checkIfUsernameTaken,
   getPlayers,
@@ -33,63 +35,44 @@ export const roomHandler = (
   };
 
   const joinRoom = async ({ roomId }: { roomId: string }) => {
-    if (!checkIfRoomExists(io, roomId)) {
-      socket.emit('join_room_error', {
-        message: 'Room do not exist',
-      });
-      return;
-    }
-    const otherRoomPlayers = await getPlayers(io, roomId);
-    if (otherRoomPlayers.length >= MAX_PLAYER_IN_ROOM) {
-      socket.emit('join_room_error', {
-        message: `Room size limited to ${MAX_PLAYER_IN_ROOM} players`,
-      });
-      return;
-    }
-    const socketOtherRooms = Array.from(socket.rooms.values()).filter(
-      (room) => room != roomId && room != socket.id
+    const [canJoin, errorMessage] = await canJoinRoom(
+      io,
+      socket,
+      roomId,
+      gameStore
     );
-    if (socketOtherRooms.length > 0) {
+    if (!canJoin) {
       socket.emit('join_room_error', {
-        message: 'User already in a room',
+        message: errorMessage,
       });
-      return;
     }
-    const game = gameStore.getGame(roomId);
-    if (!game) return;
-    if (
-      game &&
-      game.gameStep !== GameStep.WAIT &&
-      socket.data?.session?.roomId !== roomId
-    ) {
-      socket.emit('join_room_error', {
-        message: 'Game already in play',
-      });
-      return;
+
+    if (socket.data?.session && socket.data?.session?.roomId === roomId) {
+      applySessionSaved(socket);
     }
-    if (!Array.from(socket.rooms.values()).includes(roomId)) {
-      await socket.join(roomId);
-      if (socket.data?.session && socket.data?.session?.roomId === roomId) {
-        socket.data.username = socket.data?.session?.username;
-        socket.data.color = socket.data?.session?.color;
-      }
-    }
+
+    const otherRoomPlayers = await getPlayers(io, roomId);
+    await socket.join(roomId);
     socket.emit('room_joined');
-    socket.data.color = socket?.data?.color ?? selectColor(otherRoomPlayers);
     console.log(`User ${socket.id} joined room ${roomId}`);
+
+    socket.data.color = socket?.data?.color ?? selectColor(otherRoomPlayers);
+
     updateRoomPlayers(roomId);
   };
 
   const createRoom = async ({ roomId, gameSettings }: createRoomPayload) => {
     await socket.join(roomId);
     socket.emit('room_created');
+    console.log(`User ${socket.id} created room ${roomId}`);
+
+    gameStore.createGame(roomId, gameSettings);
+
     const roomPlayers = await getPlayers(io, roomId);
     socket.data.color = selectColor(roomPlayers);
     socket.data.isAdmin = true;
-    console.log(`User ${socket.id} created room ${roomId}`);
 
     updateRoomPlayers(roomId);
-    gameStore.createGame(roomId, gameSettings);
     io.to(roomId).emit('game', gameStore.getGame(roomId)?.info());
   };
 

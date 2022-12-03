@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import WaitingRoom from '../WaitingRoom';
 import { SocketContext } from '../../App';
 import { Player } from '../../../../server/src/room/types';
@@ -8,9 +14,10 @@ import WordPrompt from '../WordPrompt';
 import Leaderboard from '../Leaderboard';
 import WordGuess from '../WordGuess';
 import WordResult from '../WordResult';
-import { joinGameAndQueryInfo } from '../../services/room';
+import { joinRoom, queryRoomInfo } from '../../services/room';
 import LoadingPage from '../LoadingPage';
 import WordReveal from '../WordReveal';
+import { useLocation } from 'react-router-dom';
 
 export const PlayerContext = createContext<Player[]>([]);
 export const GameContext = createContext<Game>(null);
@@ -30,22 +37,26 @@ const Room = () => {
   const { roomId } = useParams();
   const [game, setGame] = useState(null);
   const [joinErrorMessage, setJoinErrorMessage] = useState(null);
+  const location = useLocation();
+  const fromHome = location.state?.fromHome;
 
   useEffect(() => {
-    if (socket) {
-      const onRoomEnter = async () => {
-        const { game, players } = await joinGameAndQueryInfo(socket, roomId);
-        setGame(game);
-        setPlayers(players);
-      };
+    const onRoomEnter = async () => {
+      if (!fromHome) await joinRoom(socket, roomId);
+      const { players, game } = await queryRoomInfo(socket, roomId);
+      setGame(game);
+      setPlayers(players);
+    };
+
+    if (socket && socket?.id) {
       onRoomEnter().catch((err) => {
         setJoinErrorMessage(err.message);
       });
     }
-  }, [socket, socket?.id, roomId]);
+  }, [fromHome, roomId, socket, socket?.id]);
 
   useEffect(() => {
-    if (socket) {
+    if (socket && socket?.id) {
       socket.on('players', (players: Player[]) => setPlayers(players));
       socket.on('game', (game: Game) => setGame(game));
       return () => socket.emit('leave_room', { roomId });

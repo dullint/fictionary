@@ -1,8 +1,9 @@
 import { RemoteSocket, Server, Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
+import { GameStep } from '../game/types';
 import { InMemoryGameStore } from '../socket/gameStore';
 import { MAX_PLAYER_IN_ROOM } from './constants';
-import { Player } from './types';
+import { Player, RoomId } from './types';
 
 export const getSocketRoom = (socket: Socket) =>
   Array.from(socket.rooms.values()).filter(
@@ -85,4 +86,51 @@ export const onLeavingRoom = async (
   return socket.data?.isAdmin
     ? await selectNewAdmin(io, socket.id, roomId)
     : playersLeft;
+};
+
+export const canJoinRoom = async (
+  io: Server,
+  socket: Socket,
+  roomId: RoomId,
+  gameStore: InMemoryGameStore
+) => {
+  // Room does not exist
+  if (!checkIfRoomExists(io, roomId)) {
+    return [false, 'Room do not exist'];
+  }
+
+  // Room already full
+  const otherRoomPlayers = await getPlayers(io, roomId);
+  if (otherRoomPlayers.length >= MAX_PLAYER_IN_ROOM) {
+    return [false, `Room size limited to ${MAX_PLAYER_IN_ROOM} players`];
+  }
+
+  // Bug and Socket did not left his last room
+  const socketOtherRooms = Array.from(socket.rooms.values()).filter(
+    (room) => room != roomId && room != socket.id
+  );
+  if (socketOtherRooms.length > 0) {
+    return [
+      false,
+      'Already in annother room, hard refresh your browser window',
+    ];
+  }
+
+  // The game is already launched and he was not part of it
+  const game = gameStore.getGame(roomId);
+  if (!game) return [false, "Room's game not found"];
+  if (
+    game &&
+    game.gameStep !== GameStep.WAIT &&
+    socket.data?.session?.roomId !== roomId
+  ) {
+    return [false, 'Game already in play'];
+  }
+  return [true, ''];
+};
+
+export const applySessionSaved = (socket: Socket) => {
+  socket.data.username = socket.data?.session?.username;
+  socket.data.color = socket.data?.session?.color;
+  delete socket.data.session;
 };

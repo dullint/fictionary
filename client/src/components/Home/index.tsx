@@ -18,7 +18,7 @@ const Home = () => {
     event.preventDefault();
     const newRoomId = generateRandomRoomId();
     const created = await createRoom(socket, newRoomId, DEFAULT_GAME_SETTINGS);
-    if (created) navigate(`/room/${newRoomId}`);
+    if (created) navigate(`/room/${newRoomId}`, { state: { fromHome: true } });
   };
 
   const handleJoinGame = async () => {
@@ -26,7 +26,7 @@ const Home = () => {
       const entered = await joinRoom(socket, roomId).catch((err) => {
         setJoinRoomErrorMessage(err.message);
       });
-      if (entered) navigate(`/room/${roomId}`);
+      if (entered) navigate(`/room/${roomId}`, { state: { fromHome: true } });
     }
   };
 
@@ -106,65 +106,4 @@ const Home = () => {
   );
 };
 
-Home.propTypes = {};
-
 export default Home;
-
-/* CSS */
-// .button-56 {
-//   align-items: center;
-//   background-color: #fee6e3;
-//   border: 2px solid #111;
-//   border-radius: 8px;
-//   box-sizing: border-box;
-//   color: #111;
-//   cursor: pointer;
-//   display: flex;
-//   font-family: Inter,sans-serif;
-//   font-size: 16px;
-//   height: 48px;
-//   justify-content: center;
-//   line-height: 24px;
-//   max-width: 100%;
-//   padding: 0 25px;
-//   position: relative;
-//   text-align: center;
-//   text-decoration: none;
-//   user-select: none;
-//   -webkit-user-select: none;
-//   touch-action: manipulation;
-// }
-
-// .button-56:after {
-//   background-color: #111;
-//   border-radius: 8px;
-//   content: "";
-//   display: block;
-//   height: 48px;
-//   left: 0;
-//   width: 100%;
-//   position: absolute;
-//   top: -2px;
-//   transform: translate(8px, 8px);
-//   transition: transform .2s ease-out;
-//   z-index: -1;
-// }
-
-// .button-56:hover:after {
-//   transform: translate(0, 0);
-// }
-
-// .button-56:active {
-//   background-color: #ffdeda;
-//   outline: 0;
-// }
-
-// .button-56:hover {
-//   outline: 0;
-// }
-
-// @media (min-width: 768px) {
-//   .button-56 {
-//     padding: 0 40px;
-//   }
-// }

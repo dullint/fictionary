@@ -115,6 +115,7 @@ const WaitingRoom = () => {
               justifyContent="center"
               alignItems="center"
               sx={{ maxWidth: 130 }}
+              key={player.socketId}
             >
               <Avatar player={player} displayBadge={false} size="medium" />
               <Typography variant="subtitle1" align="center">
