@@ -31,10 +31,11 @@ const WordGuess = () => {
         <DefinitionList
           showVoteBanner={showGuessVote}
           handleSelectDefinition={handleSelectDefinition}
-          revealedIndexes={[]}
+          revealedAuthorIndexes={[]}
           selectedUsernameDef={selectedUsernameDef}
           definitionHover={true}
           definitionsRef={definitionsRef}
+          revealedBannerIndexes={[]}
         />
       </Box>
     </Grid>

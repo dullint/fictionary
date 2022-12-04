@@ -11,21 +11,23 @@ import { theme } from '../../theme';
 
 interface PropsType {
   handleSelectDefinition: (string) => void;
-  revealedIndexes: number[];
+  revealedAuthorIndexes: number[];
   selectedUsernameDef: string | null;
   definitionHover: boolean;
   definitionsRef: MutableRefObject<unknown[]>;
   showVoteBanner: boolean;
+  revealedBannerIndexes: number[];
 }
 
 const DefinitionList = (props: PropsType) => {
   const {
     handleSelectDefinition,
-    revealedIndexes,
+    revealedAuthorIndexes,
     selectedUsernameDef,
     definitionHover,
     definitionsRef,
     showVoteBanner,
+    revealedBannerIndexes,
   } = props;
   const game = useContext(GameContext);
   const players = useContext(PlayerContext);
@@ -79,14 +81,14 @@ const DefinitionList = (props: PropsType) => {
               example: isUsingExample ? inputEntry.example : '',
             }}
           />
-          {showVoteBanner && (
+          {showVoteBanner && revealedBannerIndexes.includes(index) && (
             <VoteBanner
               votingPlayers={votingPlayersByDefinitions[username] ?? []}
               authorPlayer={extendedPlayers.find(
                 (player) => player?.username === username
               )}
               size={'small'}
-              revealed={revealedIndexes.includes(index)}
+              revealed={revealedAuthorIndexes.includes(index)}
             />
           )}
         </Box>

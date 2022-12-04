@@ -22,11 +22,16 @@ const WordReveal = () => {
   const players = useContext(PlayerContext);
   const socket = useContext(SocketContext);
   const isAdmin = isRoomAdmin(players, socket.id);
-  const [revealedIndexes, setRevealedIndexes] = useState<number[]>([]);
+  const [revealedAuthorIndexes, setRevealedAuthorIndexes] = useState<number[]>(
+    []
+  );
+  const [revealedBannerIndexes, setRevealedBannerIndexes] = useState<number[]>(
+    []
+  );
   const definitionsRef = useRef([]);
   const definitionsNumber = getNumberOfDefinitionToDisplay(game);
   const allDefinitionsAreRevealed =
-    revealedIndexes?.length >= definitionsNumber;
+    revealedAuthorIndexes?.length >= definitionsNumber;
 
   useEffect(() => {
     definitionsRef.current = definitionsRef.current.slice(0, definitionsNumber);
@@ -42,6 +47,10 @@ const WordReveal = () => {
       inline: 'nearest',
       behavior: 'smooth',
     });
+    setRevealedBannerIndexes((revealedBannerIndexes) => [
+      ...revealedBannerIndexes,
+      index,
+    ]);
     return new Promise<void>((resolve) => {
       return setTimeout(() => {
         resolve();
@@ -58,7 +67,10 @@ const WordReveal = () => {
       }
       const index = result.value as number;
       await scrollToDefinitionAndWait(index);
-      setRevealedIndexes((revealedIndexes) => [...revealedIndexes, index]);
+      setRevealedAuthorIndexes((revealedAuthorIndexes) => [
+        ...revealedAuthorIndexes,
+        index,
+      ]);
     },
     []
   );
@@ -88,7 +100,8 @@ const WordReveal = () => {
         <DefinitionList
           showVoteBanner={true}
           handleSelectDefinition={() => {}}
-          revealedIndexes={revealedIndexes}
+          revealedAuthorIndexes={revealedAuthorIndexes}
+          revealedBannerIndexes={revealedBannerIndexes}
           selectedUsernameDef={null}
           definitionHover={false}
           definitionsRef={definitionsRef}

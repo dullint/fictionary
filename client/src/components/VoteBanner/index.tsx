@@ -39,35 +39,49 @@ const VoteBanner = (props: PropsType) => {
         marginTop: 0.5,
       }}
     >
-      <Box sx={{ marginRight: 1 }} width={0.5}>
+      <Grid
+        container
+        sx={{
+          marginRight: 1,
+          maxWidth: {
+            xs: 0.5,
+            md: 0.7,
+          },
+        }}
+        spacing={0.5}
+      >
         {votingPlayers.map((player) => (
-          <Avatar
-            player={player}
-            size={size}
-            badgeContent={`+${voterPoints}`}
-            displayBadge={showPoints && !!voterPoints}
-            key={`avatar-${player?.username}`}
-          />
+          <Grid item>
+            <Avatar
+              player={player}
+              size={size}
+              badgeContent={`+${voterPoints}`}
+              displayBadge={showPoints && !!voterPoints}
+              key={`avatar-${player?.username}`}
+            />
+          </Grid>
         ))}
-      </Box>
+      </Grid>
       <Box
         sx={{
           opacity: Number(revealed),
           transition: 'opacity 400ms',
+          flex: 1,
         }}
       >
         {revealed && authorPlayer && (
-          <Grid container alignItems={'center'}>
+          <Grid container alignItems={'center'} justifyContent={'end'}>
             <Typography
               sx={{
                 marginRight: 1,
-                marginLeft: 2,
                 transition: 'transform 400ms',
                 transform: revealed ? null : 'translateX(30%)',
                 textOverflow: 'ellipsis',
                 overflow: 'hidden',
-                maxWidth: '70px',
+                width: 1,
+                flex: 1,
               }}
+              align="right"
               variant="subtitle2"
             >
               {getAuthorUsernameToDisplay(isTrueDefinition, authorPlayer)}
