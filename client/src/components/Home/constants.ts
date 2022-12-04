@@ -1,12 +1,12 @@
 export const DEFINITION_SEQUENCES = [
-  'Un jeu qui anime vos soirées entre amis',
-  'Un jeu qui dévoile ceux qui ne savent pas écrire',
-  "Un jeu sur navigateur, rien à télécharger",
-  'Un jeu compatible sur mobile',
-  'Un jeu en phase beta de développement',
-  'Un jeu sans login, sans compte à créer',
-  'Un jeu qui laisse exprimer ta créativité',
-  "Un jeu pour découvrir des mots que tu n'utiliseras jamais",
+  'A party game to play with your friends',
+  'A game that reveal your friends who cannot write properly',
+  'A web game, nothing to download',
+  'A mobile browser playable game',
+  'A game in beta development phase',
+  'A game without login, no account to create',
+  'A game that lets you express your creativity',
+  'A game to discover words you’ll never use',
 ];
 
 export const SEQUENCE_WAIT = 1000;

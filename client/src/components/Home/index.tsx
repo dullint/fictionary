@@ -62,7 +62,7 @@ const Home = () => {
             fontFamily="bespoke-light-italic"
             sx={{ marginRight: 0.5 }}
           >
-            {'nom propre: '}
+            {'proper noun: '}
           </Typography>
           <TypeAnimation
             sequence={getTypingSequence()}
