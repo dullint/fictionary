@@ -80,6 +80,7 @@ const WordReveal = () => {
       <Box
         sx={{
           overflowY: 'auto',
+          overflowX: 'hidden',
           flex: 1,
         }}
         width={1}

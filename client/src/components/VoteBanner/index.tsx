@@ -35,9 +35,11 @@ const VoteBanner = (props: PropsType) => {
       container
       justifyContent={'space-between'}
       alignItems="center"
-      sx={{ paddingRight: 1, paddingLeft: 1, marginTop: 0.5 }}
+      sx={{
+        marginTop: 0.5,
+      }}
     >
-      <AvatarGroup sx={{ marginRight: 1 }} max={5}>
+      <Box sx={{ marginRight: 1 }} width={0.5}>
         {votingPlayers.map((player) => (
           <Avatar
             player={player}
@@ -47,7 +49,7 @@ const VoteBanner = (props: PropsType) => {
             key={`avatar-${player?.username}`}
           />
         ))}
-      </AvatarGroup>
+      </Box>
       <Box
         sx={{
           opacity: Number(revealed),

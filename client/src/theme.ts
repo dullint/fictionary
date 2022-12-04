@@ -157,6 +157,14 @@ const components = {
       },
     },
   },
+  MuiAvatar: {
+    styleOverrides: {
+      root: {
+        borderColor: 'black',
+        border: '1px solid black',
+      },
+    },
+  },
 };
 
 export const themeParameters = {
