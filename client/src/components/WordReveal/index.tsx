@@ -117,7 +117,7 @@ const WordReveal = () => {
             onClick={handleNextStep}
             disabled={!isAdmin || !allDefinitionsAreRevealed}
             variant="contained"
-            size="large"
+            size="small"
             sx={bottomPageButtonSx}
           >
             Continue

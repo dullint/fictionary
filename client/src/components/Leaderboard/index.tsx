@@ -78,7 +78,7 @@ const Leaderboard = () => {
               >
                 <Avatar
                   player={player}
-                  size={'big'}
+                  size={'medium'}
                   displayBadge={true}
                   badgeContent={finalScores?.[player?.username] ?? 0}
                 />

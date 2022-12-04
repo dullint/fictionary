@@ -1,4 +1,11 @@
-import { Button, Grid, Snackbar, Tooltip, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Grid,
+  Snackbar,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
@@ -100,35 +107,47 @@ const WaitingRoom = () => {
         autoHideDuration={2000}
         message="Copied to clipboard"
       />
-      <Grid
-        container
-        justifyContent="center"
-        alignItems={'center'}
-        sx={{ marginTop: 2, marginBottom: 2, overflowY: 'auto', flex: 1 }}
-        maxWidth={500}
+      <Box
+        sx={{
+          paddingTop: 4, //to be able to show the admin crown
+          marginTop: 3,
+          marginBottom: 2,
+          overflowY: 'auto',
+          flex: 1,
+          width: 1,
+        }}
       >
-        {players &&
-          players.map((player) => (
-            <Grid
-              container
-              direction="column"
-              justifyContent="center"
-              alignItems="center"
-              sx={{ maxWidth: 130 }}
-              key={player.socketId}
-            >
-              <Avatar
-                player={player}
-                displayBadge={false}
-                size="medium"
-                showCrown={true}
-              />
-              <Typography variant="subtitle1" align="center">
-                {player?.username}
-              </Typography>
-            </Grid>
-          ))}
-      </Grid>
+        <Grid container spacing={2}>
+          {players &&
+            players.map((player) => (
+              <Grid item xs={4} sm={3}>
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="center"
+                  alignItems="center"
+                  key={player.socketId}
+                >
+                  <Avatar
+                    player={player}
+                    displayBadge={false}
+                    size="medium"
+                    showCrown={true}
+                  />
+                  <Typography
+                    variant="subtitle1"
+                    align="center"
+                    textOverflow="ellipsis"
+                    overflow={'hidden'}
+                    sx={{ flex: 1, width: 1 }}
+                  >
+                    {player?.username}
+                  </Typography>
+                </Box>
+              </Grid>
+            ))}
+        </Grid>
+      </Box>
       <Tooltip
         title={getPlayTooltip(isAdmin, allPlayersHaveAUsername)}
         placement="top"
