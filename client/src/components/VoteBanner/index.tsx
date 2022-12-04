@@ -62,39 +62,40 @@ const VoteBanner = (props: PropsType) => {
           </Grid>
         ))}
       </Grid>
-      <Box
-        sx={{
-          opacity: Number(revealed),
-          transition: 'opacity 400ms',
-          flex: 1,
-        }}
-      >
-        {revealed && authorPlayer && (
-          <Grid container alignItems={'center'} justifyContent={'end'}>
-            <Typography
-              sx={{
-                marginRight: 1,
-                transition: 'transform 400ms',
-                transform: revealed ? null : 'translateX(30%)',
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-                width: 1,
-                flex: 1,
-              }}
-              align="right"
-              variant="subtitle2"
-            >
-              {getAuthorUsernameToDisplay(isTrueDefinition, authorPlayer)}
-            </Typography>
-            <Avatar
-              player={authorPlayer}
-              size={size}
-              badgeContent={`+${authorPoints}`}
-              displayBadge={showPoints && !!authorPoints}
-            />
-          </Grid>
-        )}
-      </Box>
+      {authorPlayer && (
+        <Box
+          alignItems={'center'}
+          display="flex"
+          justifyContent={'end'}
+          sx={{
+            opacity: Number(revealed),
+            transition: 'opacity 400ms',
+            flex: 1,
+          }}
+        >
+          <Typography
+            sx={{
+              marginRight: 1,
+              transition: 'transform 400ms',
+              transform: revealed ? null : 'translateX(30%)',
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+              width: 1,
+              flex: 1,
+            }}
+            align="right"
+            variant="subtitle2"
+          >
+            {getAuthorUsernameToDisplay(isTrueDefinition, authorPlayer)}
+          </Typography>
+          <Avatar
+            player={authorPlayer}
+            size={size}
+            badgeContent={`+${authorPoints}`}
+            displayBadge={showPoints && !!authorPoints}
+          />
+        </Box>
+      )}
     </Grid>
   );
 };
