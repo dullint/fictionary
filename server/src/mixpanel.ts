@@ -14,14 +14,14 @@ class Mixpanel {
     });
   }
 
-  playGame(
+  launchGame(
     userId: UserId,
     ip: string,
     players: Player[],
     gameSettings: GameSettings,
     roomId: RoomId
   ) {
-    this.mixpanel.track('play_game', {
+    this.mixpanel.track('launch_game', {
       distinct_id: userId,
       ip,
       gameSettings,

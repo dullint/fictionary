@@ -121,7 +121,7 @@ export const gameHandler = (
     const players = await getPlayers(io, roomId);
     const game = gameStore.getGame(roomId);
     if (!game) return;
-    Mixpanel.playGame(
+    Mixpanel.launchGame(
       socket.data?.userId,
       socket.data?.ip,
       players,
