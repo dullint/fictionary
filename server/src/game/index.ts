@@ -117,13 +117,13 @@ export const gameHandler = (
   const launchGame = async () => {
     const roomId = getSocketRoom(socket);
     const playerSockets = await io.in(roomId).fetchSockets();
-    const adminSessionId = playerSockets.filter(
+    const adminUserId = playerSockets.filter(
       (socket) => socket.data?.isAdmin
-    )?.[0]?.data?.sessionId;
+    )?.[0]?.data?.userId;
     const game = gameStore.getGame(roomId);
     if (!game) return;
     Mixpanel.gameLaunched(
-      adminSessionId,
+      adminUserId,
       game?.gameSettings,
       playerSockets?.length
     );

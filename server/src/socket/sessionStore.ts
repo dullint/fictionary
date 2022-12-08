@@ -1,6 +1,6 @@
 import { RoomId } from '../room/types';
 
-export type SessionId = string;
+export type UserId = string;
 
 export interface Session {
   username?: string;
@@ -9,17 +9,17 @@ export interface Session {
 }
 
 export class InMemorySessionStore {
-  sessions: Map<SessionId, Session>;
+  sessions: Map<UserId, Session>;
 
   constructor() {
     this.sessions = new Map();
   }
 
-  findSession(id: SessionId) {
+  findSession(id: UserId) {
     return this.sessions.get(id);
   }
 
-  saveSession(id: SessionId, session: Session) {
+  saveSession(id: UserId, session: Session) {
     this.sessions.set(id, session);
     console.log(
       `New session stored for ${session?.username} in room ${session?.roomId}. Number of sessions stored:`,
@@ -31,7 +31,7 @@ export class InMemorySessionStore {
     return this.sessions.values();
   }
 
-  deleteSession(id: SessionId) {
+  deleteSession(id: UserId) {
     const removed = this.sessions.delete(id);
     if (removed)
       console.log(

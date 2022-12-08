@@ -6,12 +6,12 @@ const server =
     ? 'http://localhost:3020'
     : 'https://fictionary.io/';
 const socket = io(server, { autoConnect: false, forceNew: true });
-var sessionId = localStorage.getItem('fictionarySessionId');
-if (!sessionId) {
-  sessionId = uuidv4();
-  localStorage.setItem('fictionarySessionId', sessionId);
+var userId = localStorage.getItem('fictionaryUserId');
+if (!userId) {
+  userId = uuidv4();
+  localStorage.setItem('fictionaryUserId', userId);
 }
-socket.auth = { sessionId };
+socket.auth = { userId };
 socket.connect();
 
 export default socket;

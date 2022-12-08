@@ -110,13 +110,13 @@ export const roomHandler = (
   const leaveRoomOnDisconnection = async () => {
     const roomId = getSocketRoom(socket);
     if (roomId) {
-      sessionStore.saveSession(socket.data.sessionId, {
+      sessionStore.saveSession(socket.data.userId, {
         username: socket.data?.username,
         roomId,
         color: socket.data?.color,
       });
       setTimeout(() => {
-        sessionStore.deleteSession(socket.data.sessionId);
+        sessionStore.deleteSession(socket.data.userId);
       }, SESSION_DELETE_DELAY);
       const playersLeft = await onLeavingRoom(io, socket, roomId, gameStore);
       console.log(`User ${socket.id} left room ${roomId} from disconnection`);

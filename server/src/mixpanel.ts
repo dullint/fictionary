@@ -1,6 +1,6 @@
 import MixpanelClient from 'mixpanel';
 import { GameSettings } from './game/types';
-import { SessionId } from './socket/sessionStore';
+import { UserId } from './socket/sessionStore';
 const MIXPANEL_TOKEN = 'f1f650cd2f800c43fc7b520990c1b226';
 
 class Mixpanel {
@@ -13,20 +13,20 @@ class Mixpanel {
   }
 
   gameLaunched(
-    adminSessionId: SessionId,
+    adminUserId: UserId,
     gameSettings: GameSettings,
     numberOfPlayer: number
   ) {
     this.mixpanel.track('Game Launched', {
-      distinct_id: adminSessionId,
+      distinct_id: adminUserId,
       gameSettings,
       numberOfPlayer,
     });
   }
 
-  playerConnected(sessionId: SessionId) {
+  playerConnected(userId: UserId) {
     this.mixpanel.track('Connection', {
-      distinct_id: sessionId,
+      distinct_id: userId,
     });
   }
 }

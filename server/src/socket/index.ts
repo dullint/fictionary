@@ -19,16 +19,16 @@ export default (server: HTTPServer) => {
   const gameStore = new InMemoryGameStore(io);
 
   io.use((socket, next) => {
-    const sessionId = socket.handshake.auth.sessionId;
+    const userId = socket.handshake.auth.userId;
     // find existing session
-    if (sessionId) {
-      const session = sessionStore.findSession(sessionId);
+    if (userId) {
+      const session = sessionStore.findSession(userId);
       if (session) {
         socket.data.session = session;
-        sessionStore.deleteSession(sessionId);
+        sessionStore.deleteSession(userId);
       }
     }
-    socket.data.sessionId = sessionId;
+    socket.data.userId = userId;
     return next();
   });
 
