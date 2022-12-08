@@ -33,7 +33,7 @@ const WaitingRoom = () => {
   const isAdmin = isRoomAdmin(players, socket.id);
 
   const handlePlay = () => {
-    socket.emit('new_round', { roomId });
+    socket.emit('launch_game', { roomId });
   };
 
   const handleLeaveRoom = () => {

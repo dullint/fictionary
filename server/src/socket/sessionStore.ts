@@ -1,8 +1,8 @@
 import { RoomId } from '../room/types';
 
-type SessionId = string;
+export type SessionId = string;
 
-interface Session {
+export interface Session {
   username?: string;
   roomId: RoomId;
   color: string;

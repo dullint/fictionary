@@ -1,4 +1,3 @@
-- set scroll in waiting room and word displays
-- feat: better avatars with letters and colors and loading avatar while choosing pseudo, dictionary avatar
-- feat: better leaderborad
-- debt: clean handlers
+- have a dictionary english and be able to select it in the settings
+- automatic language detection
+- mixpanel

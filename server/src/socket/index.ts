@@ -4,7 +4,7 @@ import { gameHandler } from '../game';
 import { roomHandler } from '../room';
 import { InMemorySessionStore } from './sessionStore';
 import { InMemoryGameStore } from './gameStore';
-import { PING_INTERVAL, PING_TIMEOUT, SESSION_DELETE_DELAY } from './constants';
+import { PING_INTERVAL, PING_TIMEOUT } from './constants';
 
 export default (server: HTTPServer) => {
   const io = new Server(server, {
