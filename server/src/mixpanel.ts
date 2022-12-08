@@ -26,6 +26,7 @@ class Mixpanel {
       ip,
       gameSettings,
       roomId,
+      numberOfPlayer: players.length,
       userIds: players.map((player) => player.userId),
     });
     players.forEach((player) => {
