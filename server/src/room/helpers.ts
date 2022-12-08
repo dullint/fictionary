@@ -15,6 +15,7 @@ const getPlayerFromSocket = (
 ): Player => {
   return {
     socketId: socket.id,
+    userId: socket.data?.userId,
     username: socket.data?.username,
     color: socket.data?.color,
     isAdmin: socket.data?.isAdmin,

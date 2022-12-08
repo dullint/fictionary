@@ -1,4 +1,5 @@
 import { Server, Socket } from 'socket.io';
+import mixpanel from '../mixpanel';
 import Mixpanel from '../mixpanel';
 import { getPlayers, getSocketRoom } from '../room/helpers';
 import { InMemoryGameStore } from '../socket/gameStore';
@@ -94,6 +95,7 @@ export const gameHandler = (
     const roomId = getSocketRoom(socket);
     const game = gameStore.getGame(roomId);
     if (!game) return;
+    mixpanel.changeWord(socket.data?.userId, socket.data?.ip, game.entry?.word);
     game.newWord();
     io.to(roomId).emit('game', game.info());
   };
@@ -116,16 +118,15 @@ export const gameHandler = (
 
   const launchGame = async () => {
     const roomId = getSocketRoom(socket);
-    const playerSockets = await io.in(roomId).fetchSockets();
-    const adminUserId = playerSockets.filter(
-      (socket) => socket.data?.isAdmin
-    )?.[0]?.data?.userId;
+    const players = await getPlayers(io, roomId);
     const game = gameStore.getGame(roomId);
     if (!game) return;
-    Mixpanel.gameLaunched(
-      adminUserId,
+    Mixpanel.playGame(
+      socket.data?.userId,
+      socket.data?.ip,
+      players,
       game?.gameSettings,
-      playerSockets?.length
+      roomId
     );
     launchNewRound();
   };

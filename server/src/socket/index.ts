@@ -5,6 +5,7 @@ import { roomHandler } from '../room';
 import { InMemorySessionStore } from './sessionStore';
 import { InMemoryGameStore } from './gameStore';
 import { PING_INTERVAL, PING_TIMEOUT } from './constants';
+import mixpanel from '../mixpanel';
 
 export default (server: HTTPServer) => {
   const io = new Server(server, {
@@ -20,6 +21,7 @@ export default (server: HTTPServer) => {
 
   io.use((socket, next) => {
     const userId = socket.handshake.auth.userId;
+    const ip = socket.conn.remoteAddress;
     // find existing session
     if (userId) {
       const session = sessionStore.findSession(userId);
@@ -29,11 +31,13 @@ export default (server: HTTPServer) => {
       }
     }
     socket.data.userId = userId;
+    socket.data.ip = ip;
     return next();
   });
 
   io.on('connection', (socket) => {
     console.log(`Player connected with id: ${socket.id}`);
+    mixpanel.userConnect(socket.data?.userId, socket.data?.ip);
     if (socket.data?.session) {
       console.log(
         `Player ${socket.id} has a session from room ${socket.data.session.roomId} with username ${socket.data.session.username}`
