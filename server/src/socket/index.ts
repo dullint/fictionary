@@ -36,7 +36,9 @@ export default (server: HTTPServer) => {
   });
 
   io.on('connection', (socket) => {
-    console.log(`Player connected with id: ${socket.id}`);
+    console.log(
+      `Player connected with id: ${socket.id} and ip ${socket.data?.ip}`
+    );
     mixpanel.userConnect(socket.data?.userId, socket.data?.ip);
     if (socket.data?.session) {
       console.log(
