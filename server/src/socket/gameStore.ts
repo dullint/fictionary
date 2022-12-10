@@ -25,10 +25,11 @@ export class InMemoryGameStore {
   }
 
   deleteGame(roomId: RoomId) {
-    this.games.delete(roomId);
-    console.log(
-      `Game of room ${roomId} deleted. Number of games stored: ${this.games.size}`
-    );
+    const deleted = this.games.delete(roomId);
+    if (deleted)
+      console.log(
+        `Game of room ${roomId} deleted. Number of games stored: ${this.games.size}`
+      );
   }
 
   createGame(roomId: RoomId, gameSettings: GameSettings) {

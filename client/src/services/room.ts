@@ -9,8 +9,12 @@ export const joinRoom = async (
 ): Promise<boolean> => {
   return new Promise((rs, rj) => {
     socket.emit('join_room', { roomId });
-    socket.on('room_joined', () => rs(true));
-    socket.on('join_room_error', (error) => rj(error));
+    socket.on('room_joined', () => {
+      rs(true);
+    });
+    socket.on('join_room_error', (error) => {
+      rj(error);
+    });
   });
 };
 export const checkRoomExistence = async (

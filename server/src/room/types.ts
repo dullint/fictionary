@@ -15,7 +15,7 @@ export interface UpdateUsernamePayload {
   username: string;
 }
 
-export interface createRoomPayload {
+export interface CreateRoomPayload {
   roomId: string;
   gameSettings: GameSettings;
 }

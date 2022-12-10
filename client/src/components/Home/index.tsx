@@ -21,15 +21,15 @@ const Home = () => {
     event.preventDefault();
     const newRoomId = generateRandomRoomId();
     const created = await createRoom(socket, newRoomId, DEFAULT_GAME_SETTINGS);
-    if (created) navigate(`/room/${newRoomId}`, { state: { fromHome: true } });
+    if (created) navigate(`/room/${newRoomId}`);
   };
 
   const handleJoinGame = async () => {
     if (roomId) {
-      const entered = await joinRoom(socket, roomId).catch((err) => {
+      const joined = await joinRoom(socket, roomId).catch((err) => {
         setJoinRoomErrorMessage(err.message);
       });
-      if (entered) navigate(`/room/${roomId}`, { state: { fromHome: true } });
+      if (joined) navigate(`/room/${roomId}`);
     }
   };
 

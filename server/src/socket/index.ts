@@ -6,16 +6,28 @@ import { InMemorySessionStore } from './sessionStore';
 import { InMemoryGameStore } from './gameStore';
 import { PING_INTERVAL, PING_TIMEOUT } from './constants';
 import mixpanel from '../mixpanel';
+import {
+  ClientToServerEvents,
+  ServerToClientEvents,
+  SocketData,
+} from './types';
 
 export default (server: HTTPServer) => {
-  const io = new Server(server, {
-    cors: {
-      origin: ['http://localhost:3021', 'http://localhost:3020'],
-      methods: ['GET', 'POST'],
-    },
-    pingInterval: PING_INTERVAL,
-    pingTimeout: PING_TIMEOUT,
-  });
+  const io = new Server<ClientToServerEvents, ServerToClientEvents, SocketData>(
+    server,
+    {
+      cors: {
+        origin: [
+          'http://localhost:3021',
+          'http://localhost:3020',
+          'http://192.168.1.24:3021',
+        ],
+        methods: ['GET', 'POST'],
+      },
+      pingInterval: PING_INTERVAL,
+      pingTimeout: PING_TIMEOUT,
+    }
+  );
   const sessionStore = new InMemorySessionStore();
   const gameStore = new InMemoryGameStore(io);
 

@@ -1,5 +1,5 @@
 import { Socket, Server } from 'socket.io';
-import { UpdateUsernamePayload, createRoomPayload } from './types';
+import { UpdateUsernamePayload, CreateRoomPayload } from './types';
 import {
   applySessionSaved,
   canJoinRoom,
@@ -35,6 +35,10 @@ export const roomHandler = (
   };
 
   const joinRoom = async ({ roomId }: { roomId: string }) => {
+    if (Array.from(socket.rooms.values()).includes(roomId)) {
+      socket.emit('room_joined');
+      return;
+    }
     const [canJoin, errorMessage] = await canJoinRoom(
       io,
       socket,
@@ -61,7 +65,7 @@ export const roomHandler = (
     updateRoomPlayers(roomId);
   };
 
-  const createRoom = async ({ roomId, gameSettings }: createRoomPayload) => {
+  const createRoom = async ({ roomId, gameSettings }: CreateRoomPayload) => {
     await socket.join(roomId);
     socket.emit('room_created');
     console.log(`User ${socket.id} created room ${roomId}`);
@@ -124,6 +128,7 @@ export const roomHandler = (
     }
   };
 
+  socket.on('can_join_room', canJoinRoom);
   socket.on('update_username', updateUsername);
   socket.on('create_room', createRoom);
   socket.on('join_room', joinRoom);

@@ -11,7 +11,6 @@ import WordResult from '../WordResult';
 import { joinRoom, queryRoomInfo } from '../../services/room';
 import LoadingPage from '../LoadingPage';
 import WordReveal from '../WordReveal';
-import { useLocation } from 'react-router-dom';
 
 export const PlayerContext = createContext<Player[]>([]);
 export const GameContext = createContext<Game>(null);
@@ -31,12 +30,10 @@ const Room = () => {
   const { roomId } = useParams();
   const [game, setGame] = useState(null);
   const [joinErrorMessage, setJoinErrorMessage] = useState(null);
-  const location = useLocation();
-  const fromHome = location.state?.fromHome;
 
   useEffect(() => {
     const onRoomEnter = async () => {
-      if (!fromHome) await joinRoom(socket, roomId);
+      await joinRoom(socket, roomId);
       const { players, game } = await queryRoomInfo(socket, roomId);
       console.log({ players, game });
       setGame(game);
@@ -48,7 +45,7 @@ const Room = () => {
         setJoinErrorMessage(err.message);
       });
     }
-  }, [fromHome, roomId, socket, socket?.id]);
+  }, [roomId, socket, socket?.id]);
 
   useEffect(() => {
     if (socket && socket?.id) {
