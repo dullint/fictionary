@@ -10,9 +10,7 @@ import {
   onLeavingRoom,
   selectColor,
 } from './helpers';
-import { GameStep } from '../game/types';
 import { InMemorySessionStore } from '../socket/sessionStore';
-import { MAX_PLAYER_IN_ROOM } from './constants';
 import { InMemoryGameStore } from '../socket/gameStore';
 import { SESSION_DELETE_DELAY } from '../socket/constants';
 

@@ -1,4 +1,4 @@
-import { Button, Grid, Tooltip, Typography } from '@mui/material';
+import { Box, Button, Grid, Tooltip, Typography } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { useParams } from 'react-router-dom';
@@ -49,7 +49,7 @@ const WordResult = () => {
     <Grid
       alignItems="center"
       container
-      justifyContent="center"
+      justifyContent="space-between"
       direction="column"
       height={1}
       width={1}
@@ -57,35 +57,37 @@ const WordResult = () => {
       <Typography variant="h4" sx={{ margin: 2 }}>
         Scores:
       </Typography>
-      <Grid
-        container
-        justifyContent="center"
-        alignItems={'center'}
-        sx={{ overflowY: 'auto', flex: 1 }}
-        maxWidth={500}
-      >
+
+      <Grid container spacing={2}>
         {players &&
           players.map((player) => (
-            <Grid
-              container
-              direction="column"
-              justifyContent="center"
-              alignItems="center"
-              sx={{ maxWidth: 130 }}
-              key={player?.username}
-            >
-              <Avatar
-                player={player}
-                size={'medium'}
-                displayBadge={true}
-                badgeContent={displayedScores?.[player?.username] ?? 0}
-              />
-              <Typography variant="subtitle1" align="center">
-                {player?.username}
-              </Typography>
+            <Grid item xs={4} sm={3} key={player.socketId}>
+              <Box
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Avatar
+                  player={player}
+                  size={'medium'}
+                  displayBadge={true}
+                  badgeContent={displayedScores?.[player?.username] ?? 0}
+                />
+                <Typography
+                  variant="subtitle1"
+                  align="center"
+                  textOverflow="ellipsis"
+                  overflow={'hidden'}
+                  sx={{ flex: 1, width: 1 }}
+                >
+                  {player?.username}
+                </Typography>
+              </Box>
             </Grid>
           ))}
       </Grid>
+
       <Tooltip
         title={isAdmin ? null : 'Waiting for the admin to continue'}
         placement="top"

@@ -1,6 +1,12 @@
-import { Button, Grid, Input, Typography } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  Grid,
+  Input,
+  Typography,
+} from '@mui/material';
 import React, { useContext, useState } from 'react';
-import { isMobile } from 'react-device-detect';
 import { useNavigate } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import { createRoom, joinRoom } from '../../services/room';
@@ -10,11 +16,13 @@ import { generateRandomRoomId } from '../GameSettingsDialog/helpers';
 import { Box } from '@mui/system';
 import { TypeAnimation } from 'react-type-animation';
 import { getTypingSequence } from './helpers';
+import HowToPlay from '../HowToPlay';
 
 const Home = () => {
   const navigate = useNavigate();
   const socket = useContext(SocketContext);
   const [roomId, setRoomId] = useState('');
+  const [isHowToPlayDialogOpen, setIsHowToPlayDialogOpen] = useState(false);
   const [joinRoomErrorMessage, setJoinRoomErrorMessage] = useState(null);
 
   const handleCreateGame = async (event) => {
@@ -37,8 +45,6 @@ const Home = () => {
     <Grid container direction="column" alignItems={'center'}>
       <Box
         sx={{
-          marginTop:
-            isMobile && window?.screen?.orientation?.angle === 90 ? 0 : 5,
           marginBottom: 2,
           maxWidth: {
             xs: 300,
@@ -75,12 +81,18 @@ const Home = () => {
           />
         </Box>
       </Box>
-      <Grid container direction="column" alignItems={'center'} width="auto">
+      <Grid
+        container
+        direction="column"
+        alignItems={'center'}
+        width="auto"
+        sx={{ marginBottom: 5 }}
+      >
         <Button
           onClick={handleCreateGame}
           variant="contained"
           sx={{
-            width: 300,
+            width: { xs: 300, sm: 400 },
             height: 60,
             marginBottom: 4,
           }}
@@ -93,7 +105,7 @@ const Home = () => {
           alignItems="center"
           justifyContent="space-between"
           sx={{
-            width: 300,
+            width: { xs: 300, sm: 400 },
           }}
         >
           <Grid container>
@@ -116,7 +128,7 @@ const Home = () => {
             <Button
               onClick={handleJoinGame}
               variant="contained"
-              sx={{ marginLeft: 2, width: 'auto', height: 60 }}
+              sx={{ marginLeft: 2, width: { xs: 'auto', sm: 200 }, height: 60 }}
             >
               Join game
             </Button>
@@ -128,6 +140,26 @@ const Home = () => {
           )}
         </Grid>
       </Grid>
+      {/* <Button
+        onClick={() => setIsHowToPlayDialogOpen(true)}
+        variant="outlined"
+        sx={{ width: { xs: 300, sm: 400 }, height: 60, marginTop: 5 }}
+      >
+        How to play ?
+      </Button> */}
+      {/* <Dialog
+        open={isHowToPlayDialogOpen}
+        onClose={() => setIsHowToPlayDialogOpen(false)}
+      >
+        <DialogContent
+          sx={{
+            backgroundColor: theme.palette.yellow.main,
+            border: '4px solid black',
+          }}
+        > */}
+      <HowToPlay />
+      {/* </DialogContent> */}
+      {/* </Dialog> */}
     </Grid>
   );
 };

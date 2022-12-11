@@ -7,6 +7,7 @@ import { getNatureGenre } from './helpers';
 
 interface PropsType {
   entry: DictionnaryEntry;
+  small?: boolean;
 }
 
 const DefinitionRender = (props: PropsType) => {
@@ -17,14 +18,14 @@ const DefinitionRender = (props: PropsType) => {
         component="span"
         fontFamily="bespoke-extrabold-italic"
         sx={{ marginRight: 0.5 }}
-        fontSize={17}
+        fontSize={props.small ? 14 : 17}
       >
         {word}
       </Typography>
       <Typography
         component="span"
         fontStyle={'italic'}
-        fontSize={15}
+        fontSize={props.small ? 13 : 15}
         fontFamily="bespoke-light-italic"
         sx={{ marginRight: 0.5 }}
       >
@@ -32,7 +33,7 @@ const DefinitionRender = (props: PropsType) => {
       </Typography>
       <Typography
         component="span"
-        fontSize={15}
+        fontSize={props.small ? 13 : 15}
         textOverflow="ellipsis"
         overflow={'hidden'}
         variant="body1"
@@ -43,7 +44,7 @@ const DefinitionRender = (props: PropsType) => {
       <Typography
         component="span"
         fontStyle={'italic'}
-        fontSize={16}
+        fontSize={props.small ? 14 : 16}
         fontWeight={900}
         fontFamily="bespoke-medium"
         sx={{ marginRight: example ? 0.5 : 0 }}
@@ -52,7 +53,7 @@ const DefinitionRender = (props: PropsType) => {
       </Typography>
       <Typography
         component="span"
-        fontSize={15}
+        fontSize={props.small ? 13 : 15}
         sx={{ marginRight: example ? 0.5 : 0 }}
       >
         {cleanSentence(example)}

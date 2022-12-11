@@ -30,7 +30,8 @@ const App = () => {
     <Div100vh
       style={{
         background: palette.yellow.main,
-        overflow: 'hidden',
+        backgroundColor: palette.yellow.main,
+        overflow: 'auto',
         display: 'flex',
         alignItems: 'start',
         justifyContent: 'center',
