@@ -107,15 +107,29 @@ const WordPrompt = () => {
     }
   };
 
-  const remainingPlayers =
-    players.length - Object.values(game?.inputEntries ?? {}).length;
+  const numberOfSubmittedDefinition = Object.values(
+    game?.inputEntries ?? {}
+  ).filter((entry) => !entry.autosave).length;
 
   const minutes = counter && Math.floor(counter / 60);
   const seconds = counter && counter - minutes * 60;
   return (
     <Grid container alignItems="center" direction="column" height={1} width={1}>
       <Grid item width={1}>
-        <GameHeader />
+        <GameHeader>
+          <Box display="flex" flexDirection={'row'}>
+            <Typography variant="h6">
+              {`${numberOfSubmittedDefinition} / ${players.length}`}
+            </Typography>
+            <Typography
+              variant="h6"
+              display={{ xs: 'none', sm: 'block' }}
+              sx={{ textIndent: 10 }}
+            >
+              definitions
+            </Typography>
+          </Box>
+        </GameHeader>
       </Grid>
       <Grid item width={1}>
         <Grid
@@ -225,16 +239,6 @@ const WordPrompt = () => {
                 />
               </Box>
             )}
-            <Typography
-              display="flex"
-              alignItems={'center'}
-              variant="subtitle1"
-              color="primary"
-            >
-              {hasSubmited
-                ? `Waiting for ${remainingPlayers} more players to finish their definition`
-                : null}
-            </Typography>
           </Grid>
         </Grid>
       </Grid>

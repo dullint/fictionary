@@ -36,7 +36,6 @@ class Mixpanel {
   }
 
   userConnect(userId: UserId, ip: string) {
-    console.log('env', process.env.NODE_ENV);
     if (process.env.NODE_ENV === 'development') return;
     this.mixpanel.track('user_connect', {
       distinct_id: userId,

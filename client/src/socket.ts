@@ -8,7 +8,7 @@ import {
 
 const server =
   process.env.NODE_ENV === 'development'
-    ? 'http://192.168.1.24:3020'
+    ? 'http://localhost:3020/'
     : 'https://fictionary.io/';
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(server, {
   autoConnect: false,

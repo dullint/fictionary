@@ -1,6 +1,7 @@
 import { RemoteSocket, Server, Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { GameStep } from '../game/types';
+import { GAME_DELETE_DELAY } from '../socket/constants';
 import { InMemoryGameStore } from '../socket/gameStore';
 import { MAX_PLAYER_IN_ROOM } from './constants';
 import { Player, RoomId } from './types';
@@ -81,7 +82,10 @@ export const onLeavingRoom = async (
     (player) => player?.socketId != socket.id
   );
   if (playersLeft.length === 0) {
-    gameStore.deleteGame(roomId);
+    setTimeout(async () => {
+      if ((await getPlayers(io, roomId)).length === 0)
+        gameStore.deleteGame(roomId);
+    }, GAME_DELETE_DELAY);
     return;
   }
   return socket.data?.isAdmin
@@ -95,8 +99,11 @@ export const canJoinRoom = async (
   roomId: RoomId,
   gameStore: InMemoryGameStore
 ) => {
+  const game = gameStore.getGame(roomId);
   // Room does not exist
   if (!checkIfRoomExists(io, roomId)) {
+    //Room was deleted after last person's departure but the game still exist
+    if (game) return [true, ''];
     return [false, 'Room do not exist'];
   }
 
@@ -118,7 +125,6 @@ export const canJoinRoom = async (
   }
 
   // The game is already launched and he was not part of it
-  const game = gameStore.getGame(roomId);
   if (!game) return [false, "Room's game not found"];
   if (
     game &&

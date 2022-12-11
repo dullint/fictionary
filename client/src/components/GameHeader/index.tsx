@@ -6,7 +6,11 @@ import Avatar from '../Avatar';
 import { GameContext, PlayerContext } from '../Room';
 import { getMyPlayer } from '../DefinitionList/helpers';
 
-const GameHeader = () => {
+interface PropsType {
+  children?: React.ReactNode;
+}
+
+const GameHeader = (props: PropsType) => {
   const players = useContext(PlayerContext);
   const socket = useContext(SocketContext);
   const game = useContext(GameContext);
@@ -21,6 +25,7 @@ const GameHeader = () => {
       sx={{ marginBottom: 2 }}
     >
       <Typography variant="h6">{`Round ${currentRound} / ${roundNumber}`}</Typography>
+      {props.children}
       <Box display="flex" alignItems={'center'} sx={{ marginRight: 0.5 }}>
         <Typography sx={{ marginRight: 1 }} variant="h6">
           {player?.username}
