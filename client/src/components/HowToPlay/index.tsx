@@ -25,11 +25,10 @@ const HowToPlay = () => {
       <Carousel
         autoPlay={false}
         animation="slide"
-        duration={1000}
+        duration={500}
         interval={6000}
         sx={{
           width: { xs: '348px', sm: '400px' },
-          minHeight: 300,
         }}
       >
         {[
@@ -40,11 +39,7 @@ const HowToPlay = () => {
             justifyContent={'space-between'}
           >
             <Box>
-              <Typography
-                variant="subtitle2"
-                // marginBottom={1}
-                color={theme.palette.green.dark}
-              >
+              <Typography variant="subtitle2" color={theme.palette.green.dark}>
                 You are given a rare word.
               </Typography>
               <Typography
@@ -91,37 +86,6 @@ const HowToPlay = () => {
                 />
               </Box>
             </Box>
-            {/* <Box display="flex" alignItems={'center'}>
-              <Typography
-                component="span"
-                sx={{ flex: 1 }}
-                variant="body2"
-                fontSize={12}
-              >
-                <Box
-                  component="span"
-                  sx={{ fontFamily: 'bespoke-medium', fontWeight: 900 }}
-                >
-                  Tip:{' '}
-                </Box>
-                If you already know the word, get a new one by clicking on this
-                button:
-              </Typography>
-              <Box
-                display="flex"
-                justifyContent={'center'}
-                alignItems="center"
-                sx={{
-                  border: `2px solid black`,
-                  width: 30,
-                  height: 30,
-                  borderRadius: 2.5,
-                  marginLeft: 1,
-                }}
-              >
-                <FindReplaceIcon />
-              </Box>
-            </Box> */}
           </Box>,
           <Box
             sx={cardSx}
@@ -176,22 +140,7 @@ const HowToPlay = () => {
                 />
               </Box>
             </Box>
-            <Box>
-              {/* <Typography
-                component="span"
-                sx={{ flex: 1 }}
-                variant="body2"
-                fontSize={12}
-              >
-                <Box
-                  component="span"
-                  sx={{ fontFamily: 'bespoke-medium', fontWeight: 900 }}
-                >
-                  Tip:{' '}
-                </Box>
-                You can deactivate the use of examples in the game settings
-              </Typography> */}
-            </Box>
+            <Box></Box>
           </Box>,
           <Box sx={cardSx}>
             <Typography variant="subtitle2">
