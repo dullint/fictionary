@@ -120,13 +120,12 @@ const WaitingRoom = () => {
         <Grid container spacing={2}>
           {players &&
             players.map((player) => (
-              <Grid item xs={4} sm={3}>
+              <Grid item xs={4} sm={3} key={player.socketId}>
                 <Box
                   display="flex"
                   flexDirection="column"
                   justifyContent="center"
                   alignItems="center"
-                  key={player.socketId}
                 >
                   <Avatar
                     player={player}

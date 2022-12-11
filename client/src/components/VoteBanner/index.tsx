@@ -51,13 +51,12 @@ const VoteBanner = (props: PropsType) => {
         spacing={0.5}
       >
         {votingPlayers.map((player) => (
-          <Grid item>
+          <Grid item key={`avatar-${player?.username}`}>
             <Avatar
               player={player}
               size={size}
               badgeContent={`+${voterPoints}`}
               displayBadge={showPoints && !!voterPoints}
-              key={`avatar-${player?.username}`}
             />
           </Grid>
         ))}
