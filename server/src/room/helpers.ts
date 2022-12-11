@@ -103,7 +103,10 @@ export const canJoinRoom = async (
   // Room does not exist
   if (!checkIfRoomExists(io, roomId)) {
     //Room was deleted after last person's departure but the game still exist
-    if (game) return [true, ''];
+    if (game) {
+      socket.data.isAdmin = true;
+      return [true, ''];
+    }
     return [false, 'Room do not exist'];
   }
 
