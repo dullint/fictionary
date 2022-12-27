@@ -11,8 +11,8 @@ export const getSocketRoom = (socket: Socket) =>
     (roomId) => roomId !== socket.id
   )?.[0];
 
-const getPlayerFromSocket = (
-  socket: RemoteSocket<DefaultEventsMap, any>
+export const getPlayerFromSocket = (
+  socket: RemoteSocket<DefaultEventsMap, any> | Socket
 ): Player => {
   return {
     socketId: socket.id,
@@ -23,7 +23,7 @@ const getPlayerFromSocket = (
   };
 };
 
-export const getPlayers = async (io: Server, roomId: string) => {
+export const getConnectedPlayers = async (io: Server, roomId: string) => {
   const playerSockets = await io.in(roomId).fetchSockets();
   return playerSockets.map((socket) => getPlayerFromSocket(socket));
 };
@@ -38,7 +38,7 @@ export const checkIfUsernameTaken = async (
   roomId: string,
   username: string
 ) => {
-  const players = await getPlayers(io, roomId);
+  const players = await getConnectedPlayers(io, roomId);
   const roomUsernames = players.map((player) => player?.username);
   return roomUsernames.includes(username);
 };
@@ -78,12 +78,12 @@ export const onLeavingRoom = async (
   roomId: string,
   gameStore: InMemoryGameStore
 ) => {
-  const playersLeft = (await getPlayers(io, roomId)).filter(
+  const playersLeft = (await getConnectedPlayers(io, roomId)).filter(
     (player) => player?.socketId != socket.id
   );
   if (playersLeft.length === 0) {
     setTimeout(async () => {
-      if ((await getPlayers(io, roomId)).length === 0)
+      if ((await getConnectedPlayers(io, roomId)).length === 0)
         gameStore.deleteGame(roomId);
     }, GAME_DELETE_DELAY);
     return;
@@ -111,7 +111,7 @@ export const canJoinRoom = async (
   }
 
   // Room already full
-  const otherRoomPlayers = await getPlayers(io, roomId);
+  const otherRoomPlayers = await getConnectedPlayers(io, roomId);
   if (otherRoomPlayers.length >= MAX_PLAYER_IN_ROOM) {
     return [false, `Room size limited to ${MAX_PLAYER_IN_ROOM} players`];
   }

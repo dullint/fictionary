@@ -11,7 +11,7 @@ import FindReplaceIcon from '@mui/icons-material/FindReplace';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
-import { GameContext, PlayerContext } from '../Room';
+import { GameContext, ConnectedPlayersContext } from '../Room';
 import {
   DEFINITION_CHARACTER_LIMIT,
   EXAMPLE_CHARACTER_LIMIT,
@@ -24,7 +24,7 @@ import { cleanSentence } from './helpers';
 
 const WordPrompt = () => {
   const game = useContext(GameContext);
-  const players = useContext(PlayerContext);
+  const connectedPlayers = useContext(ConnectedPlayersContext);
   const wordRef = useRef(null);
   const ExRef = useRef(null);
   const [wordWidth, setWordWidth] = useState(0);
@@ -119,7 +119,7 @@ const WordPrompt = () => {
         <GameHeader>
           <Box display="flex" flexDirection={'row'}>
             <Typography variant="h6">
-              {`${numberOfSubmittedDefinition} / ${players.length}`}
+              {`${numberOfSubmittedDefinition} / ${connectedPlayers.length}`}
             </Typography>
             <Typography
               variant="h6"

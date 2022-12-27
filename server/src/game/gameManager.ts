@@ -1,5 +1,7 @@
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { DictionnaryEntry } from '../dictionary/types';
+import { getPlayerFromSocket, getConnectedPlayers } from '../room/helpers';
+import { Player } from '../room/types';
 import { get_random_entry } from './helpers';
 import {
   GameSettings,
@@ -21,8 +23,14 @@ export class Game {
   scores: Scores;
   wordSeen: string[];
   timer: NodeJS.Timer | null;
+  gamePlayers: Player[];
 
-  constructor(io: Server, roomId: string, gameSettings: GameSettings) {
+  constructor(
+    io: Server,
+    roomId: string,
+    gameSettings: GameSettings,
+    socket: Socket
+  ) {
     this.io = io;
     this.roomId = roomId;
     this.round = 0;
@@ -34,6 +42,7 @@ export class Game {
     this.scores = {};
     this.timer = null;
     this.wordSeen = [];
+    this.gamePlayers = [getPlayerFromSocket(socket)];
   }
 
   removeDefinition(username: string) {
@@ -107,6 +116,10 @@ export class Game {
     }, 1000);
   }
 
+  addPlayers(players: Player[]) {
+    this.gamePlayers.push(...players);
+  }
+
   info() {
     return {
       round: this.round,
@@ -116,6 +129,7 @@ export class Game {
       gameSettings: this.gameSettings,
       gameStep: this.gameStep,
       scores: this.scores,
+      gamePlayers: this.gamePlayers,
     };
   }
 }

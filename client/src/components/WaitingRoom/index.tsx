@@ -9,7 +9,7 @@ import {
 import React, { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
-import { PlayerContext } from '../Room';
+import { ConnectedPlayersContext } from '../Room';
 import UsernameDialog from '../UsernameDialog';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { getPlayTooltip, isRoomAdmin } from './helpers';
@@ -23,14 +23,14 @@ import { getMyPlayer } from '../DefinitionList/helpers';
 
 const WaitingRoom = () => {
   const socket = useContext(SocketContext);
-  const players = useContext(PlayerContext);
-  const username = getMyPlayer(players, socket?.id)?.username;
+  const connectedPlayers = useContext(ConnectedPlayersContext);
+  const username = getMyPlayer(connectedPlayers, socket?.id)?.username;
   const [openUsernameDialog, setOpenUsernameDialog] = useState(!username);
   const [openSettingsDialog, setOpenSettingsDialog] = useState(false);
   const [copyToClipboardMsg, setCopyToClipboardMsg] = useState(false);
   const navigate = useNavigate();
   const { roomId } = useParams();
-  const isAdmin = isRoomAdmin(players, socket.id);
+  const isAdmin = isRoomAdmin(connectedPlayers, socket.id);
 
   const handlePlay = () => {
     socket.emit('launch_game', { roomId });
@@ -50,7 +50,7 @@ const WaitingRoom = () => {
     navigator.clipboard.writeText(window.location.href);
   };
 
-  const allPlayersHaveAUsername = players
+  const allPlayersHaveAUsername = connectedPlayers
     .map((player) => player?.username)
     .every((username) => username);
 
@@ -118,8 +118,8 @@ const WaitingRoom = () => {
         }}
       >
         <Grid container spacing={2}>
-          {players &&
-            players.map((player) => (
+          {connectedPlayers &&
+            connectedPlayers.map((player) => (
               <Grid item xs={4} sm={3} key={player.socketId}>
                 <Box
                   display="flex"

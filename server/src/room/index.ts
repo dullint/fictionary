@@ -5,7 +5,7 @@ import {
   canJoinRoom,
   checkIfRoomExists,
   checkIfUsernameTaken,
-  getPlayers,
+  getConnectedPlayers,
   getSocketRoom,
   onLeavingRoom,
   selectColor,
@@ -20,16 +20,16 @@ export const roomHandler = (
   sessionStore: InMemorySessionStore,
   gameStore: InMemoryGameStore
 ) => {
-  const updateRoomPlayers = async (roomId: string) => {
-    const players = await getPlayers(io, roomId);
-    io.to(roomId).emit('players', players);
+  const updateConnectedPlayers = async (roomId: string) => {
+    const players = await getConnectedPlayers(io, roomId);
+    io.to(roomId).emit('connectedPlayers', players);
   };
 
-  const queryPlayers = async () => {
+  const queryConnectedPlayers = async () => {
     const roomId = getSocketRoom(socket);
-    const players = await getPlayers(io, roomId);
+    const players = await getConnectedPlayers(io, roomId);
     if (players.length === 0) gameStore.deleteGame(roomId);
-    io.to(roomId).emit('players', players);
+    io.to(roomId).emit('connectedPlayers', players);
   };
 
   const joinRoom = async ({ roomId }: { roomId: string }) => {
@@ -53,14 +53,14 @@ export const roomHandler = (
       applySessionSaved(socket);
     }
 
-    const otherRoomPlayers = await getPlayers(io, roomId);
+    const otherRoomPlayers = await getConnectedPlayers(io, roomId);
     await socket.join(roomId);
     socket.emit('room_joined');
     console.log(`User ${socket.id} joined room ${roomId}`);
 
     socket.data.color = socket?.data?.color ?? selectColor(otherRoomPlayers);
 
-    updateRoomPlayers(roomId);
+    updateConnectedPlayers(roomId);
   };
 
   const createRoom = async ({ roomId, gameSettings }: CreateRoomPayload) => {
@@ -68,13 +68,13 @@ export const roomHandler = (
     socket.emit('room_created');
     console.log(`User ${socket.id} created room ${roomId}`);
 
-    gameStore.createGame(roomId, gameSettings);
+    gameStore.createGame(roomId, gameSettings, socket);
 
-    const roomPlayers = await getPlayers(io, roomId);
+    const roomPlayers = await getConnectedPlayers(io, roomId);
     socket.data.color = selectColor(roomPlayers);
     socket.data.isAdmin = true;
 
-    updateRoomPlayers(roomId);
+    updateConnectedPlayers(roomId);
     io.to(roomId).emit('game', gameStore.getGame(roomId)?.info());
   };
 
@@ -96,7 +96,7 @@ export const roomHandler = (
     }
     socket.data.username = username;
     socket.emit('username_updated');
-    updateRoomPlayers(roomId);
+    updateConnectedPlayers(roomId);
   };
 
   const leaveRoom = async ({ roomId }: { roomId: string }) => {
@@ -106,7 +106,7 @@ export const roomHandler = (
     delete socket.data.color;
     socket.leave(roomId);
     console.log(`User ${socket.id} left room ${roomId}`);
-    updateRoomPlayers(roomId);
+    updateConnectedPlayers(roomId);
   };
 
   const leaveRoomOnDisconnection = async () => {
@@ -122,7 +122,7 @@ export const roomHandler = (
       }, SESSION_DELETE_DELAY);
       const playersLeft = await onLeavingRoom(io, socket, roomId, gameStore);
       console.log(`User ${socket.id} left room ${roomId} from disconnection`);
-      io.to(roomId).emit('players', playersLeft);
+      io.to(roomId).emit('connectedPlayers', playersLeft);
     }
   };
 
@@ -131,6 +131,6 @@ export const roomHandler = (
   socket.on('create_room', createRoom);
   socket.on('join_room', joinRoom);
   socket.on('leave_room', leaveRoom);
-  socket.on('players', queryPlayers);
+  socket.on('connectedPlayers', queryConnectedPlayers);
   socket.on('disconnecting', leaveRoomOnDisconnection);
 };

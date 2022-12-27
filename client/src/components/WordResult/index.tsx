@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import Avatar from '../Avatar';
-import { GameContext, PlayerContext } from '../Room';
+import { GameContext, ConnectedPlayersContext } from '../Room';
 import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { calculatePlayerRoundScore } from './helpers';
 
@@ -13,9 +13,9 @@ const WordResult = () => {
   const scores = game?.scores;
   const selections = game?.selections;
   const socket = useContext(SocketContext);
-  const players = useContext(PlayerContext);
+  const connectedPlayers = useContext(ConnectedPlayersContext);
   const { roomId } = useParams();
-  const isAdmin = isRoomAdmin(players, socket.id);
+  const isAdmin = isRoomAdmin(connectedPlayers, socket.id);
   const [displayNewScores, setDisplayNewScores] = useState(false);
 
   useEffect(() => {
@@ -27,14 +27,14 @@ const WordResult = () => {
     socket.emit('new_round', { roomId });
   };
 
-  const roundScores = players.reduce((acc, { username }) => {
+  const roundScores = connectedPlayers.reduce((acc, { username }) => {
     return {
       ...acc,
       [username]: calculatePlayerRoundScore(username, selections),
     };
   }, {});
 
-  const newScores = players.reduce((acc, { username }) => {
+  const newScores = connectedPlayers.reduce((acc, { username }) => {
     const previousScore = scores?.[username] ?? 0;
     const roundScore = roundScores?.[username];
     return {
@@ -59,8 +59,8 @@ const WordResult = () => {
       </Typography>
 
       <Grid container spacing={2}>
-        {players &&
-          players.map((player) => (
+        {connectedPlayers &&
+          connectedPlayers.map((player) => (
             <Grid item xs={4} sm={3} key={player.socketId}>
               <Box
                 display="flex"

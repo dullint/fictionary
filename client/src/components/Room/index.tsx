@@ -12,7 +12,7 @@ import { joinRoom, queryRoomInfo } from '../../services/room';
 import LoadingPage from '../LoadingPage';
 import WordReveal from '../WordReveal';
 
-export const PlayerContext = createContext<Player[]>([]);
+export const ConnectedPlayersContext = createContext<Player[]>([]);
 export const GameContext = createContext<Game>(null);
 
 export enum GameStep {
@@ -34,7 +34,7 @@ const Room = () => {
   useEffect(() => {
     const onRoomEnter = async () => {
       await joinRoom(socket, roomId);
-      const { players, game } = await queryRoomInfo(socket, roomId);
+      const { game } = await queryRoomInfo(socket, roomId);
       console.log({ players, game });
       setGame(game);
       setPlayers(players);
@@ -78,11 +78,11 @@ const Room = () => {
   };
 
   return (
-    <PlayerContext.Provider value={players}>
+    <ConnectedPlayersContext.Provider value={players}>
       <GameContext.Provider value={game}>
         {renderComponent(game?.gameStep)}
       </GameContext.Provider>
-    </PlayerContext.Provider>
+    </ConnectedPlayersContext.Provider>
   );
 };
 

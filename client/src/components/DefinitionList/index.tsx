@@ -1,5 +1,5 @@
 import React, { MutableRefObject, useContext } from 'react';
-import { GameContext, PlayerContext } from '../Room';
+import { GameContext, ConnectedPlayersContext } from '../Room';
 import { useParams } from 'react-router-dom';
 import { getVotingPlayersByDefinitions } from './helpers';
 import VoteBanner from '../VoteBanner';
@@ -30,7 +30,7 @@ const DefinitionList = (props: PropsType) => {
     revealedBannerIndexes,
   } = props;
   const game = useContext(GameContext);
-  const players = useContext(PlayerContext);
+  const connectedPlayers = useContext(ConnectedPlayersContext);
   const inputEntries = game?.inputEntries;
   const entry = game?.entry;
   const selections = game.selections;
@@ -44,11 +44,11 @@ const DefinitionList = (props: PropsType) => {
   );
 
   const votingPlayersByDefinitions = getVotingPlayersByDefinitions(
-    players,
+    connectedPlayers,
     selections
   );
 
-  const extendedPlayers = players.concat(DICTIONARY_PLAYER);
+  const extendedPlayers = connectedPlayers.concat(DICTIONARY_PLAYER);
 
   return (
     <Box display="flex" flexDirection="column">

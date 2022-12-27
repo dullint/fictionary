@@ -3,7 +3,7 @@ import { Box } from '@mui/system';
 import React, { useContext } from 'react';
 import { SocketContext } from '../../App';
 import Avatar from '../Avatar';
-import { GameContext, PlayerContext } from '../Room';
+import { GameContext, ConnectedPlayersContext } from '../Room';
 import { getMyPlayer } from '../DefinitionList/helpers';
 
 interface PropsType {
@@ -11,12 +11,12 @@ interface PropsType {
 }
 
 const GameHeader = (props: PropsType) => {
-  const players = useContext(PlayerContext);
+  const connectPlayers = useContext(ConnectedPlayersContext);
   const socket = useContext(SocketContext);
   const game = useContext(GameContext);
   const roundNumber = game.gameSettings.roundNumber;
   const currentRound = game.round;
-  const player = getMyPlayer(players, socket.id);
+  const player = getMyPlayer(connectPlayers, socket.id);
   return (
     <Grid
       container

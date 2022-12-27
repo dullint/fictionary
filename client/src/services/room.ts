@@ -30,18 +30,20 @@ export const checkRoomExistence = async (
 export const queryRoomInfo = async (
   socket: Socket,
   roomId: string
-): Promise<{ players: Player[]; game: Game }> => {
+): Promise<{ playersConnected: Player[]; game: Game }> => {
   return Promise.all([
     new Promise<Game>((rs, rj) => {
       socket.emit('game', { roomId });
-      socket.on('game', (players: Game) => rs(players));
+      socket.on('game', (game: Game) => rs(game));
     }),
     new Promise<Player[]>((rs, rj) => {
-      socket.emit('players', { roomId });
-      socket.on('players', (players: Player[]) => rs(players));
+      socket.emit('connectedPlayers', { roomId });
+      socket.on('connectedPlayers', (playersConnected: Player[]) =>
+        rs(playersConnected)
+      );
     }),
-  ]).then(([game, players]) => {
-    return { players, game };
+  ]).then(([game, playersConnected]) => {
+    return { playersConnected, game };
   });
 };
 

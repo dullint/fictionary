@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import Avatar from '../Avatar';
-import { GameContext, PlayerContext } from '../Room';
+import { GameContext, ConnectedPlayersContext } from '../Room';
 import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { calculatePlayerRoundScore } from '../WordResult/helpers';
 
@@ -12,7 +12,7 @@ const Leaderboard = () => {
   const scores = game?.scores;
   const selections = game?.selections;
   const socket = useContext(SocketContext);
-  const players = useContext(PlayerContext);
+  const connectedPlayers = useContext(ConnectedPlayersContext);
   const navigate = useNavigate();
   const { roomId } = useParams();
 
@@ -24,16 +24,16 @@ const Leaderboard = () => {
   const handleGoToWaitingRoom = () => {
     socket.emit('reset_game', { roomId });
   };
-  const isAdmin = isRoomAdmin(players, socket.id);
+  const isAdmin = isRoomAdmin(connectedPlayers, socket.id);
 
-  const previousRoundScores = players.reduce((acc, { username }) => {
+  const previousRoundScores = connectedPlayers.reduce((acc, { username }) => {
     return {
       ...acc,
       [username]: calculatePlayerRoundScore(username, selections),
     };
   }, {});
 
-  const finalScores = players.reduce((acc, { username }) => {
+  const finalScores = connectedPlayers.reduce((acc, { username }) => {
     const previousScore = scores?.[username] ?? 0;
     const roundScore = previousRoundScores?.[username];
     return {
@@ -60,8 +60,8 @@ const Leaderboard = () => {
         sx={{ marginTop: 2, marginBottom: 2, overflowY: 'auto', flex: 1 }}
         maxWidth={500}
       >
-        {players &&
-          players
+        {connectedPlayers &&
+          connectedPlayers
             .sort(
               (player1, player2) =>
                 finalScores?.[player1.username] -

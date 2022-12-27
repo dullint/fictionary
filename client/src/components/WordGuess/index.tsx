@@ -4,14 +4,14 @@ import { SocketContext } from '../../App';
 import GameHeader from '../GameHeader';
 import DefinitionList from '../DefinitionList';
 import { getNumberOfDefinitionToDisplay } from '../DefinitionList/helpers';
-import { GameContext, PlayerContext } from '../Room';
+import { GameContext, ConnectedPlayersContext } from '../Room';
 import { Box } from '@mui/system';
 import { theme } from '../../theme';
 
 const WordGuess = () => {
   const [selectedUsernameDef, setSelectedUsernameDef] = useState(null);
   const socket = useContext(SocketContext);
-  const players = useContext(PlayerContext);
+  const connectedPlayers = useContext(ConnectedPlayersContext);
   const game = useContext(GameContext);
   const definitionsRef = useRef([]);
   const definitionsNumber = getNumberOfDefinitionToDisplay(game);
@@ -32,7 +32,7 @@ const WordGuess = () => {
       <GameHeader>
         <Box display="flex" flexDirection={'row'}>
           <Typography variant="h6">
-            {`${numberOfGuess} / ${players.length}`}
+            {`${numberOfGuess} / ${connectedPlayers.length}`}
           </Typography>
           <Typography
             variant="h6"

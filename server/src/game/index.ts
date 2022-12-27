@@ -1,7 +1,7 @@
 import { Server, Socket } from 'socket.io';
 import mixpanel from '../mixpanel';
 import Mixpanel from '../mixpanel';
-import { getPlayers, getSocketRoom } from '../room/helpers';
+import { getConnectedPlayers, getSocketRoom } from '../room/helpers';
 import { InMemoryGameStore } from '../socket/gameStore';
 
 import { GameSettings, GameStep, Scores } from './types';
@@ -24,7 +24,7 @@ export const gameHandler = (
     const game = gameStore.getGame(roomId);
     if (!game) return;
     game.inputEntries[socket.data.username] = { definition, example, autosave };
-    const numberOfPlayers = (await getPlayers(io, roomId)).length;
+    const numberOfPlayers = (await getConnectedPlayers(io, roomId)).length;
     const numberOfDefinitions = Object.values(game.inputEntries).filter(
       (entry) => !entry?.autosave
     ).length;
@@ -54,7 +54,7 @@ export const gameHandler = (
     const game = gameStore.getGame(roomId);
     if (!game) return;
     game.selections[socket.data.username] = username;
-    const numberOfPlayers = (await getPlayers(io, roomId)).length;
+    const numberOfPlayers = (await getConnectedPlayers(io, roomId)).length;
     const numberOfSelectedDefinitions = Object.keys(game.selections).length;
     if (numberOfSelectedDefinitions == numberOfPlayers) {
       game.goToNextStep();
@@ -118,7 +118,7 @@ export const gameHandler = (
 
   const launchGame = async () => {
     const roomId = getSocketRoom(socket);
-    const players = await getPlayers(io, roomId);
+    const players = await getConnectedPlayers(io, roomId);
     const game = gameStore.getGame(roomId);
     if (!game) return;
     Mixpanel.launchGame(
@@ -128,6 +128,7 @@ export const gameHandler = (
       game?.gameSettings,
       roomId
     );
+    game.addPlayers(players);
     launchNewRound();
   };
 
