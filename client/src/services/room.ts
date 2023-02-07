@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io-client';
 import { GameSettings } from '../../../server/src/game/types';
-import { Player } from '../../../server/src/room/types';
+import { ConnectedPlayer } from '../../../server/src/room/types';
 import { Game } from '../../../server/src/game/gameManager';
 
 export const joinRoom = async (
@@ -30,20 +30,20 @@ export const checkRoomExistence = async (
 export const queryRoomInfo = async (
   socket: Socket,
   roomId: string
-): Promise<{ playersConnected: Player[]; game: Game }> => {
+): Promise<{ connectedPlayers: ConnectedPlayer[]; game: Game }> => {
   return Promise.all([
     new Promise<Game>((rs, rj) => {
       socket.emit('game', { roomId });
       socket.on('game', (game: Game) => rs(game));
     }),
-    new Promise<Player[]>((rs, rj) => {
+    new Promise<ConnectedPlayer[]>((rs, rj) => {
       socket.emit('connectedPlayers', { roomId });
-      socket.on('connectedPlayers', (playersConnected: Player[]) =>
-        rs(playersConnected)
+      socket.on('connectedPlayers', (connectedPlayers: ConnectedPlayer[]) =>
+        rs(connectedPlayers)
       );
     }),
-  ]).then(([game, playersConnected]) => {
-    return { playersConnected, game };
+  ]).then(([game, connectedPlayers]) => {
+    return { connectedPlayers, game };
   });
 };
 

@@ -1,6 +1,6 @@
-import { Player } from '../../../../server/src/room/types';
+import { GamePlayer } from '../../../../server/src/room/types';
 
-export const DICTIONARY_PLAYER: Player = {
+export const DICTIONARY_PLAYER: GamePlayer = {
   username: 'REAL_DEFINITION',
   userId: 'dictionary-userId',
   socketId: 'dictionary',

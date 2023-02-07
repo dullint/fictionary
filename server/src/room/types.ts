@@ -3,10 +3,13 @@ import { UserId } from '../socket/sessionStore';
 
 export type RoomId = string;
 
-export interface Player {
+export interface ConnectedPlayer {
   socketId: string;
   userId: UserId;
-  username?: string;
+}
+
+export interface GamePlayer extends ConnectedPlayer {
+  username: string;
   color: string;
   isAdmin: boolean;
 }

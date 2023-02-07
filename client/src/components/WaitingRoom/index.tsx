@@ -9,7 +9,7 @@ import {
 import React, { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
-import { ConnectedPlayersContext } from '../Room';
+import { ConnectedPlayersContext, GameContext } from '../Room';
 import UsernameDialog from '../UsernameDialog';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { getPlayTooltip, isRoomAdmin } from './helpers';
@@ -23,14 +23,16 @@ import { getMyPlayer } from '../DefinitionList/helpers';
 
 const WaitingRoom = () => {
   const socket = useContext(SocketContext);
+  const game = useContext(GameContext);
+  const gamePlayers = game.gamePlayers;
   const connectedPlayers = useContext(ConnectedPlayersContext);
-  const username = getMyPlayer(connectedPlayers, socket?.id)?.username;
+  const username = getMyPlayer(gamePlayers, socket?.id)?.username;
   const [openUsernameDialog, setOpenUsernameDialog] = useState(!username);
   const [openSettingsDialog, setOpenSettingsDialog] = useState(false);
   const [copyToClipboardMsg, setCopyToClipboardMsg] = useState(false);
   const navigate = useNavigate();
   const { roomId } = useParams();
-  const isAdmin = isRoomAdmin(connectedPlayers, socket.id);
+  const isAdmin = isRoomAdmin(gamePlayers, socket.id);
 
   const handlePlay = () => {
     socket.emit('launch_game', { roomId });

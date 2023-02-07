@@ -5,17 +5,17 @@ import {
 } from '../../../../server/src/game/types';
 import { shuffle } from 'shuffle-seed';
 
-import { Player } from '../../../../server/src/room/types';
+import { GamePlayer } from '../../../../server/src/room/types';
 import { DictionnaryEntry } from '../../../../server/src/dictionary/types';
 import { DICTIONARY_PLAYER } from './constants';
 import { Game } from '../../../../server/src/game/gameManager';
 
-export const getMyPlayer = (players: Player[], socketId: string) => {
+export const getMyPlayer = (players: GamePlayer[], socketId: string) => {
   return players.filter((player) => player?.socketId === socketId)?.[0];
 };
 
 export const getVotingPlayersByDefinitions = (
-  players: Player[],
+  players: GamePlayer[],
   selections: SelectedDefinitions
 ) => {
   const votingPlayersByDefinitions = players.reduce((acc, { username }) => {

@@ -1,13 +1,13 @@
 import { createAvatar } from '@dicebear/avatars';
 import * as style from '@dicebear/croodles';
-import { Player } from '../../../../server/src/room/types';
+import { GamePlayer } from '../../../../server/src/room/types';
 import dictionaryImage from '../../img/dictionary.jpg';
 
-export const getAvatarString = (player: Player) => {
-  const isDictionary = player?.socketId === 'dictionary';
+export const getAvatarString = (gamePlayer: GamePlayer) => {
+  const isDictionary = gamePlayer?.socketId === 'dictionary';
   const stringSVG = createAvatar(style, {
-    seed: player?.username,
-    backgroundColor: player?.color,
+    seed: gamePlayer?.username,
+    backgroundColor: gamePlayer?.color,
     size: 120,
     topColor: ['black'],
   });

@@ -1,10 +1,10 @@
 import { ResponsiveBar } from '@nivo/bar';
 import React from 'react';
 import { Scores } from '../../../../server/src/game/types';
-import { Player } from '../../../../server/src/room/types';
+import { GamePlayer } from '../../../../server/src/room/types';
 
 interface PropsType {
-  players: Player[];
+  players: GamePlayer[];
   scores: Scores;
   animate?: boolean;
   layout?: 'horizontal' | 'vertical';

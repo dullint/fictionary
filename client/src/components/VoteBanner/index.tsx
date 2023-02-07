@@ -1,12 +1,12 @@
 import { Box, Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Player } from '../../../../server/src/room/types';
+import { GamePlayer } from '../../../../server/src/room/types';
 import Avatar from '../Avatar';
 import { getAuthorUsernameToDisplay } from './helpers';
 
 interface PropsType {
-  votingPlayers: Player[];
-  authorPlayer?: Player;
+  votingPlayers: GamePlayer[];
+  authorPlayer?: GamePlayer;
   revealed: boolean;
   size?: 'big' | 'small' | 'medium';
 }

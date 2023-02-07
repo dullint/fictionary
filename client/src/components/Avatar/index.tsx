@@ -1,12 +1,12 @@
 import { CircularProgress, Avatar as MUIAvatar, Badge } from '@mui/material';
 import React from 'react';
-import { Player } from '../../../../server/src/room/types';
+import { GamePlayer } from '../../../../server/src/room/types';
 import { theme } from '../../theme';
 import { getAvatarString } from './helpers';
 import crownImage from '../../img/coloredCrown.png';
 
 interface PropsType {
-  player: Player;
+  player: GamePlayer;
   showCrown?: boolean;
   size?: 'big' | 'small' | 'medium';
   badgeContent?: string | number;

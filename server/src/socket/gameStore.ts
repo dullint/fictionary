@@ -1,5 +1,5 @@
 import { Server, Socket } from 'socket.io';
-import { RoomId } from '../room/types';
+import { GamePlayer, RoomId } from '../room/types';
 import { Game } from '../game/gameManager';
 import { GameSettings } from '../game/types';
 
@@ -32,8 +32,11 @@ export class InMemoryGameStore {
       );
   }
 
-  createGame(roomId: RoomId, gameSettings: GameSettings, socket: Socket) {
-    this.games.set(roomId, new Game(this.io, roomId, gameSettings, socket));
+  createGame(roomId: RoomId, gameSettings: GameSettings, adminUserId: string) {
+    this.games.set(
+      roomId,
+      new Game(this.io, roomId, gameSettings, adminUserId)
+    );
     console.log(
       `Game created for room ${roomId}. Number of games stored: ${this.games.size}`
     );

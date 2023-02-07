@@ -11,7 +11,7 @@ export const gameHandler = (
   socket: Socket,
   gameStore: InMemoryGameStore
 ) => {
-  const submitDefinition = async ({
+  const submitDefinition = ({
     definition,
     example,
     autosave,
@@ -24,11 +24,11 @@ export const gameHandler = (
     const game = gameStore.getGame(roomId);
     if (!game) return;
     game.inputEntries[socket.data.username] = { definition, example, autosave };
-    const numberOfPlayers = (await getConnectedPlayers(io, roomId)).length;
+    const numberOfGamePlayers = game.gamePlayers.length;
     const numberOfDefinitions = Object.values(game.inputEntries).filter(
       (entry) => !entry?.autosave
     ).length;
-    if (numberOfDefinitions == numberOfPlayers) {
+    if (numberOfDefinitions === numberOfGamePlayers) {
       game.goToNextStep();
     }
     io.to(roomId).emit('game', game.info());
@@ -49,14 +49,14 @@ export const gameHandler = (
     io.to(roomId).emit('game', game.info());
   };
 
-  const selectDefinition = async ({ username }: { username: string }) => {
+  const selectDefinition = ({ username }: { username: string }) => {
     const roomId = getSocketRoom(socket);
     const game = gameStore.getGame(roomId);
     if (!game) return;
     game.selections[socket.data.username] = username;
-    const numberOfPlayers = (await getConnectedPlayers(io, roomId)).length;
+    const numberOfPlayers = game.gamePlayers.length;
     const numberOfSelectedDefinitions = Object.keys(game.selections).length;
-    if (numberOfSelectedDefinitions == numberOfPlayers) {
+    if (numberOfSelectedDefinitions === numberOfPlayers) {
       game.goToNextStep();
     }
     io.to(roomId).emit('game', game.info());

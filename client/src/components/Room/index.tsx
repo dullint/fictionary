@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import WaitingRoom from '../WaitingRoom';
 import { SocketContext } from '../../App';
-import { Player } from '../../../../server/src/room/types';
+import { ConnectedPlayer } from '../../../../server/src/room/types';
 import { useParams } from 'react-router-dom';
 import { Game } from '../../../../server/src/game/gameManager';
 import WordPrompt from '../WordPrompt';
@@ -12,7 +12,7 @@ import { joinRoom, queryRoomInfo } from '../../services/room';
 import LoadingPage from '../LoadingPage';
 import WordReveal from '../WordReveal';
 
-export const ConnectedPlayersContext = createContext<Player[]>([]);
+export const ConnectedPlayersContext = createContext<ConnectedPlayer[]>([]);
 export const GameContext = createContext<Game>(null);
 
 export enum GameStep {
@@ -26,7 +26,9 @@ export enum GameStep {
 
 const Room = () => {
   const socket = useContext(SocketContext);
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [connectedPlayers, setConnectedPlayers] = useState<ConnectedPlayer[]>(
+    []
+  );
   const { roomId } = useParams();
   const [game, setGame] = useState(null);
   const [joinErrorMessage, setJoinErrorMessage] = useState(null);
@@ -34,10 +36,10 @@ const Room = () => {
   useEffect(() => {
     const onRoomEnter = async () => {
       await joinRoom(socket, roomId);
-      const { game } = await queryRoomInfo(socket, roomId);
-      console.log({ players, game });
+      const { connectedPlayers, game } = await queryRoomInfo(socket, roomId);
+      console.log({ connectedPlayers, game });
       setGame(game);
-      setPlayers(players);
+      setConnectedPlayers(connectedPlayers);
     };
 
     if (socket && socket?.id) {
@@ -49,14 +51,19 @@ const Room = () => {
 
   useEffect(() => {
     if (socket && socket?.id) {
-      socket.on('players', (players: Player[]) => setPlayers(players));
-      socket.on('game', (game: Game) => setGame(game));
+      socket.on('connectedPlayers', (connectedPlayers: ConnectedPlayer[]) =>
+        setConnectedPlayers(connectedPlayers)
+      );
+      socket.on('game', (game: Game) => {
+        setGame(game);
+        console.log({ connectedPlayers, game });
+      });
       return () => socket.emit('leave_room', { roomId });
     }
   }, [socket, roomId, socket?.id]);
 
   const renderComponent = (gameStep: GameStep) => {
-    if (game && players) {
+    if (game && connectedPlayers) {
       switch (gameStep) {
         case GameStep.WAIT:
           return <WaitingRoom />;
@@ -78,7 +85,7 @@ const Room = () => {
   };
 
   return (
-    <ConnectedPlayersContext.Provider value={players}>
+    <ConnectedPlayersContext.Provider value={connectedPlayers}>
       <GameContext.Provider value={game}>
         {renderComponent(game?.gameStep)}
       </GameContext.Provider>

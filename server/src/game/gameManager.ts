@@ -1,7 +1,8 @@
 import { Server, Socket } from 'socket.io';
 import { DictionnaryEntry } from '../dictionary/types';
-import { getPlayerFromSocket, getConnectedPlayers } from '../room/helpers';
-import { Player } from '../room/types';
+import { getConnectedPlayers } from '../room/helpers';
+import { GamePlayer } from '../room/types';
+import { UserId } from '../socket/sessionStore';
 import { get_random_entry } from './helpers';
 import {
   GameSettings,
@@ -23,13 +24,14 @@ export class Game {
   scores: Scores;
   wordSeen: string[];
   timer: NodeJS.Timer | null;
-  gamePlayers: Player[];
+  gamePlayers: GamePlayer[];
+  adminUserId: string;
 
   constructor(
     io: Server,
     roomId: string,
     gameSettings: GameSettings,
-    socket: Socket
+    adminUserId: string
   ) {
     this.io = io;
     this.roomId = roomId;
@@ -42,7 +44,8 @@ export class Game {
     this.scores = {};
     this.timer = null;
     this.wordSeen = [];
-    this.gamePlayers = [getPlayerFromSocket(socket)];
+    this.gamePlayers = [];
+    this.adminUserId = adminUserId;
   }
 
   removeDefinition(username: string) {
@@ -116,7 +119,7 @@ export class Game {
     }, 1000);
   }
 
-  addPlayers(players: Player[]) {
+  addPlayers(players: GamePlayer[]) {
     this.gamePlayers.push(...players);
   }
 
@@ -130,6 +133,7 @@ export class Game {
       gameStep: this.gameStep,
       scores: this.scores,
       gamePlayers: this.gamePlayers,
+      // adminPlayer: this.adminPlayer,
     };
   }
 }

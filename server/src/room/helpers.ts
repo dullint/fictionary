@@ -1,31 +1,26 @@
 import { RemoteSocket, Server, Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
+import { Game } from '../game/gameManager';
 import { GameStep } from '../game/types';
 import { GAME_DELETE_DELAY } from '../socket/constants';
 import { InMemoryGameStore } from '../socket/gameStore';
 import { MAX_PLAYER_IN_ROOM } from './constants';
-import { Player, RoomId } from './types';
+import { ConnectedPlayer, GamePlayer, RoomId } from './types';
 
 export const getSocketRoom = (socket: Socket) =>
   Array.from(socket.rooms.values()).filter(
     (roomId) => roomId !== socket.id
   )?.[0];
 
-export const getPlayerFromSocket = (
-  socket: RemoteSocket<DefaultEventsMap, any> | Socket
-): Player => {
-  return {
-    socketId: socket.id,
-    userId: socket.data?.userId,
-    username: socket.data?.username,
-    color: socket.data?.color,
-    isAdmin: socket.data?.isAdmin,
-  };
-};
-
 export const getConnectedPlayers = async (io: Server, roomId: string) => {
   const playerSockets = await io.in(roomId).fetchSockets();
-  return playerSockets.map((socket) => getPlayerFromSocket(socket));
+  return playerSockets.map((socket) => {
+    const connectedPlayer: ConnectedPlayer = {
+      socketId: socket.id,
+      userId: socket.data?.userId,
+    };
+    return connectedPlayer;
+  });
 };
 
 export const checkIfRoomExists = (io: Server, roomId: string) => {
@@ -33,17 +28,7 @@ export const checkIfRoomExists = (io: Server, roomId: string) => {
   return serverRooms.includes(roomId);
 };
 
-export const checkIfUsernameTaken = async (
-  io: Server,
-  roomId: string,
-  username: string
-) => {
-  const players = await getConnectedPlayers(io, roomId);
-  const roomUsernames = players.map((player) => player?.username);
-  return roomUsernames.includes(username);
-};
-
-export const selectColor = (players: Player[]) => {
+export const selectColor = (players: GamePlayer[]) => {
   const alreadyGivenColors = players.map((player) => player?.color);
   const possibleHues = Array.from(Array(MAX_PLAYER_IN_ROOM).keys()).map(
     (n) => n * 137.508
@@ -60,16 +45,22 @@ export const selectColor = (players: Player[]) => {
 };
 
 export const selectNewAdmin = async (
-  io: Server,
+  game: Game,
   socketId: string,
   roomId: string
 ) => {
-  const playerSockets = await io.in(roomId).fetchSockets();
-  const otherSockets = playerSockets.filter((socket) => socket.id != socketId);
-  if (otherSockets.length === 0) return;
-  otherSockets[0].data.isAdmin = true;
-  console.log(`${otherSockets[0].id} is the new admin of the room ${roomId}`);
-  return otherSockets.map((socket) => getPlayerFromSocket(socket));
+  const gamePlayers = game.gamePlayers;
+  const otherGamePlayers = gamePlayers.filter(
+    (player) => player.socketId != socketId
+  );
+  if (otherGamePlayers.length === 0) return;
+  const newAdminPlayer = otherGamePlayers[0];
+  game.adminPlayer = newAdminPlayer;
+  game.gamePlayers = gamePlayers.map((player) => {
+    if (player.socketId === newAdminPlayer.socketId) player.isAdmin = true;
+    return player;
+  });
+  console.log(`${newAdminPlayer} is the new admin of the room ${roomId}`);
 };
 
 export const onLeavingRoom = async (
@@ -83,14 +74,18 @@ export const onLeavingRoom = async (
   );
   if (playersLeft.length === 0) {
     setTimeout(async () => {
+      //in order to let the admin reconnect if he is the only one left
       if ((await getConnectedPlayers(io, roomId)).length === 0)
         gameStore.deleteGame(roomId);
     }, GAME_DELETE_DELAY);
     return;
   }
-  return socket.data?.isAdmin
-    ? await selectNewAdmin(io, socket.id, roomId)
-    : playersLeft;
+  if (socket.data?.isAdmin) {
+    const game = gameStore.getGame(roomId);
+    if (!game) return playersLeft;
+    return await selectNewAdmin(game, socket.id, roomId);
+  }
+  return playersLeft;
 };
 
 export const canJoinRoom = async (
@@ -100,6 +95,7 @@ export const canJoinRoom = async (
   gameStore: InMemoryGameStore
 ) => {
   const game = gameStore.getGame(roomId);
+  if (!game) return [false, "Room's game not found"];
   // Room does not exist
   if (!checkIfRoomExists(io, roomId)) {
     //Room was deleted after last person's departure but the game still exist
@@ -128,7 +124,6 @@ export const canJoinRoom = async (
   }
 
   // The game is already launched and he was not part of it
-  if (!game) return [false, "Room's game not found"];
   if (
     game &&
     game.gameStep !== GameStep.WAIT &&
@@ -137,6 +132,21 @@ export const canJoinRoom = async (
     return [false, 'Game already in play'];
   }
   return [true, ''];
+};
+
+export const createPlayerForSocket = (
+  socket: Socket,
+  username: string,
+  otherPlayers: GamePlayer[],
+  isAdmin: boolean = false
+) => {
+  return {
+    socketId: socket.id,
+    userId: socket.data.userId,
+    username,
+    color: selectColor(otherPlayers),
+    isAdmin,
+  };
 };
 
 export const applySessionSaved = (socket: Socket) => {

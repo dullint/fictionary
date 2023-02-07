@@ -4,8 +4,8 @@ import {
   applySessionSaved,
   canJoinRoom,
   checkIfRoomExists,
-  checkIfUsernameTaken,
   getConnectedPlayers,
+  // getPlayerFromSocket,
   getSocketRoom,
   onLeavingRoom,
   selectColor,
@@ -53,12 +53,12 @@ export const roomHandler = (
       applySessionSaved(socket);
     }
 
-    const otherRoomPlayers = await getConnectedPlayers(io, roomId);
+    // const otherRoomPlayers = await getConnectedPlayers(io, roomId);
     await socket.join(roomId);
     socket.emit('room_joined');
     console.log(`User ${socket.id} joined room ${roomId}`);
 
-    socket.data.color = socket?.data?.color ?? selectColor(otherRoomPlayers);
+    // socket.data.color = socket?.data?.color ?? selectColor(otherRoomPlayers);
 
     updateConnectedPlayers(roomId);
   };
@@ -67,13 +67,7 @@ export const roomHandler = (
     await socket.join(roomId);
     socket.emit('room_created');
     console.log(`User ${socket.id} created room ${roomId}`);
-
-    gameStore.createGame(roomId, gameSettings, socket);
-
-    const roomPlayers = await getConnectedPlayers(io, roomId);
-    socket.data.color = selectColor(roomPlayers);
-    socket.data.isAdmin = true;
-
+    gameStore.createGame(roomId, gameSettings, socket.data.userId);
     updateConnectedPlayers(roomId);
     io.to(roomId).emit('game', gameStore.getGame(roomId)?.info());
   };
@@ -88,7 +82,11 @@ export const roomHandler = (
       });
       return;
     }
-    if (await checkIfUsernameTaken(io, roomId, username)) {
+    const game = gameStore.getGame(roomId);
+    if (!game) return;
+    const gamePlayers = game.gamePlayers;
+    const playerUsernames = gamePlayers.map((player) => player.username);
+    if (playerUsernames.includes(username)) {
       socket.emit('update_username_error', {
         message: 'Username already taken',
       });
