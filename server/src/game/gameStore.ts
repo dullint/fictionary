@@ -1,7 +1,7 @@
 import { Server } from 'socket.io';
 import { RoomId } from '../room/types';
-import { Game } from '../game/gameManager';
-import { GameSettings } from '../game/types';
+import { Game } from '.';
+import { GameSettings } from './types';
 
 export class InMemoryGameStore {
   games: Map<RoomId, Game>;

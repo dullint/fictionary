@@ -2,7 +2,7 @@ import { RemoteSocket, Server, Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { GameStep } from '../game/types';
 import { GAME_DELETE_DELAY } from '../socket/constants';
-import { InMemoryGameStore } from '../socket/gameStore';
+import { InMemoryGameStore } from '../game/gameStore';
 import { MAX_PLAYER_IN_ROOM } from './constants';
 import { Player, RoomId } from './types';
 
@@ -41,22 +41,6 @@ export const checkIfUsernameTaken = async (
   const players = await getPlayers(io, roomId);
   const roomUsernames = players.map((player) => player?.username);
   return roomUsernames.includes(username);
-};
-
-export const selectColor = (players: Player[]) => {
-  const alreadyGivenColors = players.map((player) => player?.color);
-  const possibleHues = Array.from(Array(MAX_PLAYER_IN_ROOM).keys()).map(
-    (n) => n * 137.508
-  );
-  const possibleColors = possibleHues.map((hue) => `hsl(${hue},100%,80%)`);
-  const shuffledPossibleColors = possibleColors.sort(
-    (a, b) => 0.5 - Math.random()
-  );
-  const newColor =
-    shuffledPossibleColors.filter(
-      (color) => !alreadyGivenColors.includes(color)
-    )?.[0] ?? 'white';
-  return newColor;
 };
 
 export const selectNewAdmin = async (

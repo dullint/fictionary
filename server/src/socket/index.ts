@@ -1,9 +1,9 @@
 import { Server } from 'socket.io';
 import { Server as HTTPServer } from 'http';
-import { gameHandler } from '../game';
-import { roomHandler } from '../room';
+import { gameHandler } from '../handler/gameHandler';
+import { roomHandler } from '../handler/playerHandler';
 import { InMemorySessionStore } from './sessionStore';
-import { InMemoryGameStore } from './gameStore';
+import { InMemoryGameStore } from '../game/gameStore';
 import { PING_INTERVAL, PING_TIMEOUT } from './constants';
 import mixpanel from '../mixpanel';
 import {

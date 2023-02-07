@@ -1,5 +1,5 @@
 import { Socket, Server } from 'socket.io';
-import { UpdateUsernamePayload, CreateRoomPayload } from './types';
+import { UpdateUsernamePayload, CreateRoomPayload } from '../room/types';
 import {
   applySessionSaved,
   canJoinRoom,
@@ -9,9 +9,9 @@ import {
   getSocketRoom,
   onLeavingRoom,
   selectColor,
-} from './helpers';
+} from '../room/helpers';
 import { InMemorySessionStore } from '../socket/sessionStore';
-import { InMemoryGameStore } from '../socket/gameStore';
+import { InMemoryGameStore } from '../game/gameStore';
 import { SESSION_DELETE_DELAY } from '../socket/constants';
 
 export const roomHandler = (
