@@ -2,14 +2,14 @@ import { Server, Socket } from 'socket.io';
 import mixpanel from '../mixpanel';
 import Mixpanel from '../mixpanel';
 import { getPlayers, getSocketRoom } from '../room/helpers';
-import { InMemoryGameStore } from '../game/gameStore';
+import { GameStore } from '../game/gameStore';
 
 import { GameSettings, GameStep, Scores } from '../game/types';
 
 export const gameHandler = (
   io: Server,
   socket: Socket,
-  gameStore: InMemoryGameStore
+  gameStore: GameStore
 ) => {
   const submitDefinition = async ({
     definition,

@@ -2,9 +2,10 @@ import { RemoteSocket, Server, Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { GameStep } from '../game/types';
 import { GAME_DELETE_DELAY } from '../socket/constants';
-import { InMemoryGameStore } from '../game/gameStore';
+import { GameStore } from '../game/gameStore';
 import { MAX_PLAYER_IN_ROOM } from './constants';
 import { Player, RoomId } from './types';
+import { PlayerStore } from '../game/gamePlayers';
 
 export const getSocketRoom = (socket: Socket) =>
   Array.from(socket.rooms.values()).filter(
@@ -60,7 +61,7 @@ export const onLeavingRoom = async (
   io: Server,
   socket: Socket,
   roomId: string,
-  gameStore: InMemoryGameStore
+  gameStore: GameStore
 ) => {
   const playersLeft = (await getPlayers(io, roomId)).filter(
     (player) => player?.socketId != socket.id
@@ -81,22 +82,23 @@ export const canJoinRoom = async (
   io: Server,
   socket: Socket,
   roomId: RoomId,
-  gameStore: InMemoryGameStore
+  gameStore: GameStore,
+  playerStore: PlayerStore
 ) => {
   const game = gameStore.getGame(roomId);
   // Room does not exist
   if (!checkIfRoomExists(io, roomId)) {
     //Room was deleted after last person's departure but the game still exist
     if (game) {
-      socket.data.isAdmin = true;
       return [true, ''];
     }
     return [false, 'Room do not exist'];
   }
 
   // Room already full
-  const otherRoomPlayers = await getPlayers(io, roomId);
-  if (otherRoomPlayers.length >= MAX_PLAYER_IN_ROOM) {
+  const alreadyInGamePlayers = playerStore.getInGamePlayers(roomId);
+  if (!alreadyInGamePlayers) return [false, "Room's game not found"];
+  if (alreadyInGamePlayers.length >= MAX_PLAYER_IN_ROOM) {
     return [false, `Room size limited to ${MAX_PLAYER_IN_ROOM} players`];
   }
 

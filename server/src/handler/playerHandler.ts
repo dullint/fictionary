@@ -8,17 +8,17 @@ import {
   getPlayers,
   getSocketRoom,
   onLeavingRoom,
-  selectColor,
 } from '../room/helpers';
 import { InMemorySessionStore } from '../socket/sessionStore';
-import { InMemoryGameStore } from '../game/gameStore';
+import { GameStore } from '../game/gameStore';
 import { SESSION_DELETE_DELAY } from '../socket/constants';
+import { PlayerStore } from '../game/gamePlayers';
 
 export const roomHandler = (
   io: Server,
   socket: Socket,
   sessionStore: InMemorySessionStore,
-  gameStore: InMemoryGameStore
+  gameStore: GameStore
 ) => {
   const updateRoomPlayers = async (roomId: string) => {
     const players = await getPlayers(io, roomId);
@@ -41,7 +41,8 @@ export const roomHandler = (
       io,
       socket,
       roomId,
-      gameStore
+      gameStore,
+      playerStore
     );
     if (!canJoin) {
       socket.emit('join_room_error', {
@@ -52,7 +53,13 @@ export const roomHandler = (
     if (socket.data?.session && socket.data?.session?.roomId === roomId) {
       applySessionSaved(socket);
     }
-
+    const playersInGame = playerStore.getInGamePlayers(roomId);
+    if (!playersInGame) {
+      socket.emit('join_room_error', {
+        message: 'Room do not exist anymore',
+      });
+    }
+    const shouldBeAdmin = playersInGame.length === 0;
     const otherRoomPlayers = await getPlayers(io, roomId);
     await socket.join(roomId);
     socket.emit('room_joined');

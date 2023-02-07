@@ -3,7 +3,7 @@ import { Server as HTTPServer } from 'http';
 import { gameHandler } from '../handler/gameHandler';
 import { roomHandler } from '../handler/playerHandler';
 import { InMemorySessionStore } from './sessionStore';
-import { InMemoryGameStore } from '../game/gameStore';
+import { GameStore } from '../game/gameStore';
 import { PING_INTERVAL, PING_TIMEOUT } from './constants';
 import mixpanel from '../mixpanel';
 import {
@@ -25,7 +25,7 @@ export default (server: HTTPServer) => {
     }
   );
   const sessionStore = new InMemorySessionStore();
-  const gameStore = new InMemoryGameStore(io);
+  const gameStore = new GameStore(io);
 
   io.use((socket, next) => {
     const userId = socket.handshake.auth.userId;

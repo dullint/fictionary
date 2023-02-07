@@ -1,5 +1,6 @@
 import { Server } from 'socket.io';
 import { DictionnaryEntry } from '../dictionary/types';
+import { Player } from '../player';
 import { get_random_entry } from './helpers';
 import {
   GameSettings,
@@ -21,6 +22,7 @@ export class Game {
   scores: Scores;
   wordSeen: string[];
   timer: NodeJS.Timer | null;
+  players: GamePlayers;
 
   constructor(io: Server, roomId: string, gameSettings: GameSettings) {
     this.io = io;
@@ -34,6 +36,7 @@ export class Game {
     this.scores = {};
     this.timer = null;
     this.wordSeen = [];
+    this.player = new GamePlayers();
   }
 
   removeDefinition(username: string) {

@@ -3,7 +3,7 @@ import { RoomId } from '../room/types';
 import { Game } from '.';
 import { GameSettings } from './types';
 
-export class InMemoryGameStore {
+export class GameStore {
   games: Map<RoomId, Game>;
   io: Server;
 
