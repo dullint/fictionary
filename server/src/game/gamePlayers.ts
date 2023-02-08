@@ -2,14 +2,17 @@ import { Server } from 'socket.io';
 import { Player } from '../player';
 import { MAX_PLAYER_IN_ROOM } from '../room/constants';
 import { RoomId } from '../room/types';
-import { UserId } from '../socket/sessionStore';
 import { Color } from '../player/type';
+import { GAME_DELETE_DELAY } from './constant';
+import { GameStore } from './gameStore';
+import { UserId } from '../socket/types';
 
 export class GamePlayers {
   players: Map<UserId, Player>;
 
-  constructor() {
+  constructor(creatorUserId: UserId) {
     this.players = new Map();
+    this.addPlayer(creatorUserId);
   }
 
   getAllPlayers() {
@@ -20,8 +23,23 @@ export class GamePlayers {
     return this.getAllPlayers().filter((player) => player.isInGame);
   }
 
-  deletePlayer(userId: UserId) {
+  deletePlayer(userId: UserId, roomId: RoomId, gameStore: GameStore) {
+    const wasAdmin = this.getOnePlayer(userId)?.isAdmin;
     this.players.delete(userId);
+    const remaningInGamePlayers = this.getInGamePlayers();
+    if (remaningInGamePlayers.length === 0) {
+      setTimeout(async () => {
+        if (this.getInGamePlayers().length === 0) gameStore.deleteGame(roomId);
+      }, GAME_DELETE_DELAY);
+      return;
+    }
+    if (wasAdmin) {
+      remaningInGamePlayers[0].isAdmin = true;
+    }
+  }
+
+  getOnePlayer(userId: UserId) {
+    return this.players.get(userId);
   }
 
   addPlayer(userId: UserId) {

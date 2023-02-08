@@ -2,7 +2,6 @@ import { Server } from 'socket.io';
 import { Server as HTTPServer } from 'http';
 import { gameHandler } from '../handler/gameHandler';
 import { roomHandler } from '../handler/playerHandler';
-import { InMemorySessionStore } from './sessionStore';
 import { GameStore } from '../game/gameStore';
 import { PING_INTERVAL, PING_TIMEOUT } from './constants';
 import mixpanel from '../mixpanel';
@@ -24,20 +23,11 @@ export default (server: HTTPServer) => {
       pingTimeout: PING_TIMEOUT,
     }
   );
-  const sessionStore = new InMemorySessionStore();
   const gameStore = new GameStore(io);
 
   io.use((socket, next) => {
     const userId = socket.handshake.auth.userId;
     const ip = socket.conn.remoteAddress;
-    // find existing session
-    if (userId) {
-      const session = sessionStore.findSession(userId);
-      if (session) {
-        socket.data.session = session;
-        sessionStore.deleteSession(userId);
-      }
-    }
     socket.data.userId = userId;
     socket.data.ip = ip;
     return next();
@@ -45,20 +35,15 @@ export default (server: HTTPServer) => {
 
   io.on('connection', (socket) => {
     console.log(
-      `Player connected with id: ${socket.id} and ip ${socket.data?.ip}`
+      `User of id ${socket.data.userId} connected with socket of id: ${socket.id}`
     );
-    mixpanel.userConnect(socket.data?.userId, socket.data?.ip);
-    if (socket.data?.session) {
-      console.log(
-        `Player ${socket.id} has a session from room ${socket.data.session.roomId} with username ${socket.data.session.username}`
-      );
-    }
+    mixpanel.userConnect(socket.data.userId, socket.data.ip);
 
-    roomHandler(io, socket, sessionStore, gameStore);
+    roomHandler(io, socket, gameStore);
     gameHandler(io, socket, gameStore);
 
     socket.on('disconnect', async () => {
-      console.log(`${socket.id} disconnected`);
+      console.log(`User of id ${socket.data.userId} disconnected`);
     });
   });
   return io;

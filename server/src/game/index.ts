@@ -1,6 +1,9 @@
 import { Server } from 'socket.io';
 import { DictionnaryEntry } from '../dictionary/types';
 import { Player } from '../player';
+import { UserId } from '../socket/types';
+import { DEFAULT_GAME_SETTINGS } from './constant';
+import { GamePlayers } from './gamePlayers';
 import { get_random_entry } from './helpers';
 import {
   GameSettings,
@@ -24,29 +27,29 @@ export class Game {
   timer: NodeJS.Timer | null;
   players: GamePlayers;
 
-  constructor(io: Server, roomId: string, gameSettings: GameSettings) {
+  constructor(io: Server, roomId: string, creatorUserId: UserId) {
     this.io = io;
     this.roomId = roomId;
     this.round = 0;
     this.entry = null;
     this.inputEntries = {};
     this.selections = {};
-    this.gameSettings = gameSettings;
+    this.gameSettings = DEFAULT_GAME_SETTINGS;
     this.gameStep = GameStep.WAIT;
     this.scores = {};
     this.timer = null;
     this.wordSeen = [];
-    this.player = new GamePlayers();
+    this.players = new GamePlayers(creatorUserId);
   }
 
-  removeDefinition(username: string) {
-    delete this.inputEntries?.[username];
+  removeDefinition(userId: string) {
+    delete this.inputEntries?.[userId];
   }
 
-  selectDefinition(choosingUsername: string, definitionUsername: string) {
+  selectDefinition(choosingUserId: string, definitionUserId: string) {
     this.selections = {
       ...this.selections,
-      [choosingUsername]: definitionUsername,
+      [choosingUserId]: definitionUserId,
     };
   }
 

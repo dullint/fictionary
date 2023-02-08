@@ -1,7 +1,7 @@
 import { Server } from 'socket.io';
 import { RoomId } from '../room/types';
 import { Game } from '.';
-import { GameSettings } from './types';
+import { UserId } from '../socket/types';
 
 export class GameStore {
   games: Map<RoomId, Game>;
@@ -32,8 +32,8 @@ export class GameStore {
       );
   }
 
-  createGame(roomId: RoomId, gameSettings: GameSettings) {
-    this.games.set(roomId, new Game(this.io, roomId, gameSettings));
+  createGame(roomId: RoomId, creatorUserId: UserId) {
+    this.games.set(roomId, new Game(this.io, roomId, creatorUserId));
     console.log(
       `Game created for room ${roomId}. Number of games stored: ${this.games.size}`
     );

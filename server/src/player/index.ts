@@ -1,4 +1,4 @@
-import { UserId } from '../socket/sessionStore';
+import { UserId } from '../socket/types';
 import { Color, Username } from './type';
 
 export class Player {
@@ -18,10 +18,19 @@ export class Player {
     this.isAdmin = isAdmin;
   }
 
-  disconnect() {
+  updateUsername(username: Username) {
+    this.username = username;
+  }
+
+  onDisconnect() {
     this.isConnected = false;
     setTimeout(() => {
       if (this.isConnected) this.isInGame = false;
     });
+  }
+
+  onConnect() {
+    this.isConnected = false;
+    this.isInGame = true;
   }
 }

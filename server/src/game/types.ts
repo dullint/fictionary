@@ -15,11 +15,11 @@ export interface GameSettings {
 }
 
 export interface SelectedDefinitions {
-  [username: string]: string;
+  [userId: string]: string;
 }
 
 export interface Scores {
-  [username: string]: number;
+  [userId: string]: number;
 }
 
 export interface InputDictionaryEntry {
@@ -28,5 +28,5 @@ export interface InputDictionaryEntry {
   autosave: boolean;
 }
 export interface InputDictionaryEntries {
-  [username: string]: InputDictionaryEntry;
+  [userId: string]: InputDictionaryEntry;
 }
