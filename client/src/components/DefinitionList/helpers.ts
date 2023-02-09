@@ -5,14 +5,10 @@ import {
 } from '../../../../server/src/game/types';
 import { shuffle } from 'shuffle-seed';
 
-import { Player } from '../../../../server/src/room/types';
 import { DictionnaryEntry } from '../../../../server/src/dictionary/types';
 import { DICTIONARY_PLAYER } from './constants';
 import { Game } from '../../../../server/src/game';
-
-export const getMyPlayer = (players: Player[], socketId: string) => {
-  return players.filter((player) => player?.socketId === socketId)?.[0];
-};
+import { Player } from '../../../../server/src/player';
 
 export const getVotingPlayersByDefinitions = (
   players: Player[],

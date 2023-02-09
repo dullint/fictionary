@@ -1,7 +1,7 @@
-import { Player } from '../../../../server/src/room/types';
+import { Player } from '../../../../server/src/player';
 
-export const isRoomAdmin = (players: Player[], socketId: string) =>
-  players.filter((player) => player?.socketId === socketId)?.[0]?.isAdmin;
+export const isRoomAdmin = (players: Player[], userId: string) =>
+  players.filter((player) => player?.userId === userId)?.[0]?.isAdmin;
 
 export const getPlayTooltip = (
   isAdmin: boolean,

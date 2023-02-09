@@ -1,9 +1,12 @@
-import { Player } from '../../../../server/src/room/types';
+import { Player } from '../../../../server/src/player';
 
 export const DICTIONARY_PLAYER: Player = {
-  username: 'REAL_DEFINITION',
-  userId: 'dictionary-userId',
-  socketId: 'dictionary',
+  userId: 'dictionary',
   color: 'black',
-  isAdmin: false,
+  isAdmin: true,
+  isConnected: true,
+  isInGame: true,
+  onConnect: () => {},
+  updateUsername: () => {},
+  onDisconnect: () => {},
 };

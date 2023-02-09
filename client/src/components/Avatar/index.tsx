@@ -1,9 +1,9 @@
 import { CircularProgress, Avatar as MUIAvatar, Badge } from '@mui/material';
 import React from 'react';
-import { Player } from '../../../../server/src/room/types';
 import { theme } from '../../theme';
 import { getAvatarString } from './helpers';
 import crownImage from '../../img/coloredCrown.png';
+import { Player } from '../../../../server/src/player';
 
 interface PropsType {
   player: Player;

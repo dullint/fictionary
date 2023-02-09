@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import Avatar from '../Avatar';
-import { GameContext, PlayerContext } from '../Room';
+import { GameContext } from '../Room';
 import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { calculatePlayerRoundScore } from './helpers';
 
@@ -13,7 +13,7 @@ const WordResult = () => {
   const scores = game?.scores;
   const selections = game?.selections;
   const socket = useContext(SocketContext);
-  const players = useContext(PlayerContext);
+  const players = game.players.getInGamePlayers();
   const { roomId } = useParams();
   const isAdmin = isRoomAdmin(players, socket.id);
   const [displayNewScores, setDisplayNewScores] = useState(false);
@@ -61,7 +61,7 @@ const WordResult = () => {
       <Grid container spacing={2}>
         {players &&
           players.map((player) => (
-            <Grid item xs={4} sm={3} key={player.socketId}>
+            <Grid item xs={4} sm={3} key={player.userId}>
               <Box
                 display="flex"
                 flexDirection="column"

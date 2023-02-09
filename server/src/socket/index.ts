@@ -1,7 +1,7 @@
 import { Server } from 'socket.io';
 import { Server as HTTPServer } from 'http';
 import { gameHandler } from '../handler/gameHandler';
-import { roomHandler } from '../handler/playerHandler';
+import { playerHandler } from '../handler/playerHandler';
 import { GameStore } from '../game/gameStore';
 import { PING_INTERVAL, PING_TIMEOUT } from './constants';
 import mixpanel from '../mixpanel';
@@ -10,6 +10,7 @@ import {
   ServerToClientEvents,
   SocketData,
 } from './types';
+import { roomHandler } from '../handler/roomHandler';
 
 export default (server: HTTPServer) => {
   const io = new Server<ClientToServerEvents, ServerToClientEvents, SocketData>(
@@ -40,6 +41,7 @@ export default (server: HTTPServer) => {
     mixpanel.userConnect(socket.data.userId, socket.data.ip);
 
     roomHandler(io, socket, gameStore);
+    playerHandler(io, socket, gameStore);
     gameHandler(io, socket, gameStore);
 
     socket.on('disconnect', async () => {

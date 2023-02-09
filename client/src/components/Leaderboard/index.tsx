@@ -3,16 +3,16 @@ import React, { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import Avatar from '../Avatar';
-import { GameContext, PlayerContext } from '../Room';
+import { GameContext } from '../Room';
 import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { calculatePlayerRoundScore } from '../WordResult/helpers';
 
 const Leaderboard = () => {
   const game = useContext(GameContext);
+  const players = game.players.getInGamePlayers();
   const scores = game?.scores;
   const selections = game?.selections;
   const socket = useContext(SocketContext);
-  const players = useContext(PlayerContext);
   const navigate = useNavigate();
   const { roomId } = useParams();
 

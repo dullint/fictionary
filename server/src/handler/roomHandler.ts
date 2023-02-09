@@ -68,6 +68,7 @@ export const roomHandler = (
 
   const createRoom = async (payload: RoomIdPayload) => {
     const { roomId } = payload;
+    console.log('in handler create room');
     await socket.join(roomId);
     gameStore.createGame(roomId, socket.data.userId);
     socket.emit('room_created');

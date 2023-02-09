@@ -9,7 +9,7 @@ import {
 import React, { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
-import { PlayerContext } from '../Room';
+import { GameContext } from '../Room';
 import UsernameDialog from '../UsernameDialog';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { getPlayTooltip, isRoomAdmin } from './helpers';
@@ -19,12 +19,12 @@ import Avatar from '../Avatar';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { theme } from '../../theme';
 import { bottomPageButtonSx } from '../../constants/style';
-import { getMyPlayer } from '../DefinitionList/helpers';
 
 const WaitingRoom = () => {
   const socket = useContext(SocketContext);
-  const players = useContext(PlayerContext);
-  const username = getMyPlayer(players, socket?.id)?.username;
+  const game = useContext(GameContext);
+  const players = game.players.getInGamePlayers();
+  const username = game.players.getOnePlayer(socket.auth.user)?.username;
   const [openUsernameDialog, setOpenUsernameDialog] = useState(!username);
   const [openSettingsDialog, setOpenSettingsDialog] = useState(false);
   const [copyToClipboardMsg, setCopyToClipboardMsg] = useState(false);
@@ -120,7 +120,7 @@ const WaitingRoom = () => {
         <Grid container spacing={2}>
           {players &&
             players.map((player) => (
-              <Grid item xs={4} sm={3} key={player.socketId}>
+              <Grid item xs={4} sm={3} key={player.userId}>
                 <Box
                   display="flex"
                   flexDirection="column"

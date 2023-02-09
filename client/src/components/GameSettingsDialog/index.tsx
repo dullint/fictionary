@@ -11,12 +11,12 @@ import {
 import { GameSettings } from '../../../../server/src/game/types';
 import { theme } from '../../theme';
 import {
-  DEFAULT_GAME_SETTINGS,
   promptTimeOptions,
   roundNumberOptions,
   showGuessVoteOptions,
   useExampleOptions,
 } from './constants';
+import { GameContext } from '../Room';
 
 export interface PropsType {
   open: boolean;
@@ -26,17 +26,15 @@ export interface PropsType {
 
 const GameSettingsDialog = (props: PropsType) => {
   const { open, setOpen, isAdmin } = props;
+  const game = useContext(GameContext);
+  const gameSettings = game.gameSettings;
   const [maxPromptTime, setMaxPromptTime] = useState(
-    DEFAULT_GAME_SETTINGS.maxPromptTime
+    gameSettings.maxPromptTime
   );
-  const [useExample, setUseExample] = useState(
-    DEFAULT_GAME_SETTINGS.useExample
-  );
-  const [roundNumber, setRoundNumber] = useState(
-    DEFAULT_GAME_SETTINGS.roundNumber
-  );
+  const [useExample, setUseExample] = useState(gameSettings.useExample);
+  const [roundNumber, setRoundNumber] = useState(gameSettings.roundNumber);
   const [showGuessVote, setShowGuessVote] = useState(
-    DEFAULT_GAME_SETTINGS.showGuessVote
+    gameSettings.showGuessVote
   );
   const socket = useContext(SocketContext);
 

@@ -4,15 +4,14 @@ import { SocketContext } from '../../App';
 import GameHeader from '../GameHeader';
 import DefinitionList from '../DefinitionList';
 import { getNumberOfDefinitionToDisplay } from '../DefinitionList/helpers';
-import { GameContext, PlayerContext } from '../Room';
+import { GameContext } from '../Room';
 import { Box } from '@mui/system';
-import { theme } from '../../theme';
 
 const WordGuess = () => {
   const [selectedUsernameDef, setSelectedUsernameDef] = useState(null);
   const socket = useContext(SocketContext);
-  const players = useContext(PlayerContext);
   const game = useContext(GameContext);
+  const players = game.players.getInGamePlayers();
   const definitionsRef = useRef([]);
   const definitionsNumber = getNumberOfDefinitionToDisplay(game);
   const showGuessVote = game?.gameSettings?.showGuessVote;

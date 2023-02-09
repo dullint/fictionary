@@ -3,7 +3,7 @@ import { GameStore } from '../game/gameStore';
 import { getSocketRoom } from '../room/helpers';
 import { UpdateUsernamePayload } from '../socket/types';
 
-export const roomHandler = (
+export const playerHandler = (
   io: Server,
   socket: Socket,
   gameStore: GameStore

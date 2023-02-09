@@ -3,20 +3,18 @@ import { Box } from '@mui/system';
 import React, { useContext } from 'react';
 import { SocketContext } from '../../App';
 import Avatar from '../Avatar';
-import { GameContext, PlayerContext } from '../Room';
-import { getMyPlayer } from '../DefinitionList/helpers';
+import { GameContext } from '../Room';
 
 interface PropsType {
   children?: React.ReactNode;
 }
 
 const GameHeader = (props: PropsType) => {
-  const players = useContext(PlayerContext);
   const socket = useContext(SocketContext);
   const game = useContext(GameContext);
   const roundNumber = game.gameSettings.roundNumber;
   const currentRound = game.round;
-  const player = getMyPlayer(players, socket.id);
+  const player = game.players.getOnePlayer(socket.auth.userId);
   return (
     <Grid
       container

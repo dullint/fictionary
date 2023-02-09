@@ -1,10 +1,10 @@
 import { createAvatar } from '@dicebear/avatars';
 import * as style from '@dicebear/croodles';
-import { Player } from '../../../../server/src/room/types';
+import { Player } from '../../../../server/src/player';
 import dictionaryImage from '../../img/dictionary.jpg';
 
 export const getAvatarString = (player: Player) => {
-  const isDictionary = player?.socketId === 'dictionary';
+  const isDictionary = player?.userId === 'dictionary-userId';
   const stringSVG = createAvatar(style, {
     seed: player?.username,
     backgroundColor: player?.color,

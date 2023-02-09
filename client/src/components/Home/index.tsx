@@ -1,17 +1,9 @@
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  Grid,
-  Input,
-  Typography,
-} from '@mui/material';
+import { Button, Grid, Input, Typography } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SocketContext } from '../../App';
 import { createRoom, joinRoom } from '../../services/room';
 import { theme } from '../../theme';
-import { DEFAULT_GAME_SETTINGS } from '../GameSettingsDialog/constants';
 import { generateRandomRoomId } from '../GameSettingsDialog/helpers';
 import { Box } from '@mui/system';
 import { TypeAnimation } from 'react-type-animation';
@@ -22,13 +14,13 @@ const Home = () => {
   const navigate = useNavigate();
   const socket = useContext(SocketContext);
   const [roomId, setRoomId] = useState('');
-  const [isHowToPlayDialogOpen, setIsHowToPlayDialogOpen] = useState(false);
+  // const [isHowToPlayDialogOpen, setIsHowToPlayDialogOpen] = useState(false);
   const [joinRoomErrorMessage, setJoinRoomErrorMessage] = useState(null);
 
   const handleCreateGame = async (event) => {
     event.preventDefault();
     const newRoomId = generateRandomRoomId();
-    const created = await createRoom(socket, newRoomId, DEFAULT_GAME_SETTINGS);
+    const created = await createRoom(socket, newRoomId);
     if (created) navigate(`/room/${newRoomId}`);
   };
 

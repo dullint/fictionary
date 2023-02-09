@@ -1,6 +1,6 @@
 import { Box, Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Player } from '../../../../server/src/room/types';
+import { Player } from '../../../../server/src/player';
 import Avatar from '../Avatar';
 import { getAuthorUsernameToDisplay } from './helpers';
 
@@ -22,11 +22,11 @@ const VoteBanner = (props: PropsType) => {
     }, 400);
   }, [revealed]);
 
-  const isTrueDefinition = authorPlayer?.socketId === 'dictionary';
+  const isTrueDefinition = authorPlayer?.userId === 'dictionary';
   const voterPoints = Number(isTrueDefinition);
   const authorPoints =
     authorPlayer?.username &&
-    authorPlayer?.socketId !== 'dictionary' &&
+    authorPlayer?.userId !== 'dictionary' &&
     votingPlayers.filter(
       (player) => player?.username !== authorPlayer?.username
     ).length;
