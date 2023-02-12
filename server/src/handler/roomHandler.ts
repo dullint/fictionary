@@ -4,6 +4,7 @@ import { JoinRoomError } from '../room/errors';
 import { MAX_PLAYER_IN_ROOM } from '../room/constants';
 import { GameStep } from '../game/types';
 import { RoomIdPayload } from '../socket/types';
+import logger from '../logging';
 
 export const roomHandler = (
   io: Server,
@@ -12,6 +13,7 @@ export const roomHandler = (
 ) => {
   const joinRoom = async (payload: RoomIdPayload) => {
     const { roomId } = payload;
+    //already in the room
     if (Array.from(socket.rooms.values()).includes(roomId)) {
       socket.emit('room_joined');
       return;
@@ -63,16 +65,15 @@ export const roomHandler = (
     await socket.join(roomId);
     gamePlayers.addPlayer(userId);
     socket.emit('room_joined');
-    console.log(`User ${socket.id} joined room ${roomId}`);
+    logger.info(`User ${socket.id} joined room ${roomId}`);
   };
 
   const createRoom = async (payload: RoomIdPayload) => {
     const { roomId } = payload;
-    console.log('in handler create room');
     await socket.join(roomId);
     gameStore.createGame(roomId, socket.data.userId);
     socket.emit('room_created');
-    console.log(`User of id ${socket.data.userId} created room ${roomId}`);
+    logger.info(`User of id ${socket.data.userId} created room ${roomId}`);
     io.to(roomId).emit('game', gameStore.getGame(roomId)?.info());
   };
 
@@ -81,7 +82,7 @@ export const roomHandler = (
     if (!game) return;
     game.players.deletePlayer(socket.data.userId, roomId, gameStore);
     socket.leave(roomId);
-    console.log(`User of id ${socket.data.userId} left room ${roomId}`);
+    logger.info(`User of id ${socket.data.userId} left room ${roomId}`);
   };
 
   socket.on('create_room', createRoom);

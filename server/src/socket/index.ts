@@ -11,6 +11,7 @@ import {
   SocketData,
 } from './types';
 import { roomHandler } from '../handler/roomHandler';
+import logger from '../logging';
 
 export default (server: HTTPServer) => {
   const io = new Server<ClientToServerEvents, ServerToClientEvents, SocketData>(
@@ -35,7 +36,7 @@ export default (server: HTTPServer) => {
   });
 
   io.on('connection', (socket) => {
-    console.log(
+    logger.info(
       `User of id ${socket.data.userId} connected with socket of id: ${socket.id}`
     );
     mixpanel.userConnect(socket.data.userId, socket.data.ip);
@@ -45,7 +46,7 @@ export default (server: HTTPServer) => {
     gameHandler(io, socket, gameStore);
 
     socket.on('disconnect', async () => {
-      console.log(`User of id ${socket.data.userId} disconnected`);
+      logger.info(`User of id ${socket.data.userId} disconnected`);
     });
   });
   return io;

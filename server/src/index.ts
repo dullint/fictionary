@@ -4,6 +4,7 @@ import cors from 'cors';
 import path from 'path';
 import dictionary from './dictionary';
 import io from './socket';
+import logger from './logging';
 
 const app = express();
 app.use(cors());
@@ -18,5 +19,5 @@ dictionary.parseDatabase().then(() => {
   const server = http.createServer(app);
   const port = process.env.PORT || 3020;
   io(server);
-  server.listen(port, () => console.log(`SERVER IS RUNNING ON PORT ${port}`));
+  server.listen(port, () => logger.info(`SERVER IS RUNNING ON PORT ${port}`));
 });

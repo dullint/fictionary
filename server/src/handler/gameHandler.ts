@@ -70,13 +70,13 @@ export const gameHandler = (
       io.to(roomId).emit('game', game.info());
       return;
     }
-    game.newRound();
+    game.newRound(io);
     io.to(roomId).emit('game', game.info());
   };
 
   const getNewWord = () => {
     mixpanel.changeWord(socket.data?.userId, socket.data?.ip, game.entry?.word);
-    game.newWord();
+    game.newWord(io);
     io.to(roomId).emit('game', game.info());
   };
 

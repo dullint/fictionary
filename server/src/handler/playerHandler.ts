@@ -1,5 +1,6 @@
 import { Socket, Server } from 'socket.io';
 import { GameStore } from '../game/gameStore';
+import logger from '../logging';
 import { getSocketRoom } from '../room/helpers';
 import { UpdateUsernamePayload } from '../socket/types';
 
@@ -29,7 +30,7 @@ export const playerHandler = (
     const roomId = getSocketRoom(socket);
     const game = gameStore.getGame(roomId);
     game?.players.getOnePlayer(socket.data.userId)?.onDisconnect();
-    console.log(`User of id ${socket.data.userId} left room ${roomId}`);
+    logger.info(`User of id ${socket.data.userId} left room ${roomId}`);
   };
 
   socket.on('update_username', updateUsername);

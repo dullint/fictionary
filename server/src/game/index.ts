@@ -14,7 +14,6 @@ import {
 } from './types';
 
 export class Game {
-  io: Server;
   roomId: string;
   round: number;
   entry: DictionnaryEntry | null;
@@ -27,8 +26,7 @@ export class Game {
   timer: NodeJS.Timer | null;
   players: GamePlayers;
 
-  constructor(io: Server, roomId: string, creatorUserId: UserId) {
-    this.io = io;
+  constructor(roomId: string, creatorUserId: UserId) {
     this.roomId = roomId;
     this.round = 0;
     this.entry = null;
@@ -73,7 +71,7 @@ export class Game {
     }
   }
 
-  newWord() {
+  newWord(io: Server) {
     if (this.timer) clearInterval(this.timer);
     this.inputEntries = {};
     var entry = get_random_entry();
@@ -81,15 +79,15 @@ export class Game {
       entry = get_random_entry();
     }
     this.entry = entry;
-    this.runTimer(this.gameSettings.maxPromptTime);
+    this.runTimer(io, this.gameSettings.maxPromptTime);
   }
 
-  newRound() {
+  newRound(io: Server) {
     this.round++;
     this.gameStep = GameStep.PROMPT;
     this.selections = {};
     this.inputEntries = {};
-    this.newWord();
+    this.newWord(io);
   }
 
   reset() {
@@ -100,14 +98,14 @@ export class Game {
     this.scores = {};
   }
 
-  runTimer(time: number) {
+  runTimer(io: Server, time: number) {
     var counter = time * 60;
     this.timer = setInterval(() => {
-      this.io.to(this.roomId).emit('timer', counter);
+      io.to(this.roomId).emit('timer', counter);
       if (counter === 0 && this.timer) {
         clearInterval(this.timer);
         this.goToNextStep();
-        this.io.to(this.roomId).emit('game', this.info());
+        io.to(this.roomId).emit('game', this.info());
       }
       counter--;
     }, 1000);
@@ -122,6 +120,7 @@ export class Game {
       gameSettings: this.gameSettings,
       gameStep: this.gameStep,
       scores: this.scores,
+      players: this.players,
     };
   }
 }
