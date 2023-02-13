@@ -1,43 +1,36 @@
 import { Server } from 'socket.io';
 import { DictionnaryEntry } from '../dictionary/types';
-import { Player } from '../player';
-import { UserId } from '../socket/types';
-import { DEFAULT_GAME_SETTINGS } from './constant';
-import { GamePlayers } from './gamePlayers';
+import { GameSettings } from '../room/types';
 import { get_random_entry } from './helpers';
 import {
-  GameSettings,
+  GameState,
   GameStep,
   InputDictionaryEntries,
   Scores,
   SelectedDefinitions,
 } from './types';
 
-export class Game {
+export class GameManager {
   roomId: string;
   round: number;
   entry: DictionnaryEntry | null;
   inputEntries: InputDictionaryEntries;
   selections: SelectedDefinitions;
-  gameSettings: GameSettings;
   gameStep: GameStep;
   scores: Scores;
   wordSeen: string[];
   timer: NodeJS.Timer | null;
-  players: GamePlayers;
 
-  constructor(roomId: string, creatorUserId: UserId) {
+  constructor(roomId: string) {
     this.roomId = roomId;
     this.round = 0;
     this.entry = null;
     this.inputEntries = {};
     this.selections = {};
-    this.gameSettings = DEFAULT_GAME_SETTINGS;
     this.gameStep = GameStep.WAIT;
     this.scores = {};
     this.timer = null;
     this.wordSeen = [];
-    this.players = new GamePlayers(creatorUserId);
   }
 
   removeDefinition(userId: string) {
@@ -51,7 +44,7 @@ export class Game {
     };
   }
 
-  goToNextStep() {
+  goToNextStep(gameSettings: GameSettings) {
     if (this.timer) clearInterval(this.timer);
     if (this.gameStep == GameStep.PROMPT) {
       this.gameStep = GameStep.GUESS;
@@ -62,7 +55,7 @@ export class Game {
       return;
     }
     if (this.gameStep == GameStep.REVEAL) {
-      if (this.round >= this.gameSettings.roundNumber) {
+      if (this.round >= gameSettings.roundNumber) {
         this.gameStep = GameStep.FINISHED;
         return;
       }
@@ -71,7 +64,7 @@ export class Game {
     }
   }
 
-  newWord(io: Server) {
+  newWord(io: Server, gameSettings: GameSettings) {
     if (this.timer) clearInterval(this.timer);
     this.inputEntries = {};
     var entry = get_random_entry();
@@ -79,15 +72,15 @@ export class Game {
       entry = get_random_entry();
     }
     this.entry = entry;
-    this.runTimer(io, this.gameSettings.maxPromptTime);
+    this.runTimer(io, gameSettings.maxPromptTime, gameSettings);
   }
 
-  newRound(io: Server) {
+  newRound(io: Server, gameSettings: GameSettings) {
     this.round++;
     this.gameStep = GameStep.PROMPT;
     this.selections = {};
     this.inputEntries = {};
-    this.newWord(io);
+    this.newWord(io, gameSettings);
   }
 
   reset() {
@@ -98,29 +91,32 @@ export class Game {
     this.scores = {};
   }
 
-  runTimer(io: Server, time: number) {
+  runTimer(io: Server, time: number, gameSettings: GameSettings) {
     var counter = time * 60;
     this.timer = setInterval(() => {
       io.to(this.roomId).emit('timer', counter);
       if (counter === 0 && this.timer) {
         clearInterval(this.timer);
-        this.goToNextStep();
-        io.to(this.roomId).emit('game', this.info());
+        this.goToNextStep(gameSettings);
+        this.updateClient(io);
       }
       counter--;
     }, 1000);
   }
 
-  info() {
+  getState(): GameState {
     return {
       round: this.round,
       entry: this.entry,
       inputEntries: this.inputEntries,
       selections: this.selections,
-      gameSettings: this.gameSettings,
       gameStep: this.gameStep,
       scores: this.scores,
-      players: this.players,
+      wordSeen: this.wordSeen,
     };
+  }
+
+  updateClient(io: Server) {
+    io.to(this.roomId).emit('game_state', this.getState());
   }
 }

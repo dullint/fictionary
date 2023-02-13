@@ -1,5 +1,5 @@
 import React, { MutableRefObject, useContext } from 'react';
-import { GameContext } from '../Room';
+import { RoomContext } from '../Room';
 import { useParams } from 'react-router-dom';
 import { getVotingPlayersByDefinitions } from './helpers';
 import VoteBanner from '../VoteBanner';
@@ -29,8 +29,8 @@ const DefinitionList = (props: PropsType) => {
     showVoteBanner,
     revealedBannerIndexes,
   } = props;
-  const game = useContext(GameContext);
-  const players = game.players.getInGamePlayers();
+  const game = useContext(RoomContext);
+  const players = game.players;
   const inputEntries = game?.inputEntries;
   const entry = game?.entry;
   const selections = game.selections;

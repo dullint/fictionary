@@ -1,40 +1,33 @@
 import { Socket, Server } from 'socket.io';
-import { GameStore } from '../game/gameStore';
+import roomStore, { RoomStore } from '../room/roomStore';
 import { JoinRoomError } from '../room/errors';
 import { MAX_PLAYER_IN_ROOM } from '../room/constants';
 import { GameStep } from '../game/types';
 import { RoomIdPayload } from '../socket/types';
 import logger from '../logging';
+import { GameSettings } from '../room/types';
+import { getSocketRoom } from '../room/helpers';
 
-export const roomHandler = (
-  io: Server,
-  socket: Socket,
-  gameStore: GameStore
-) => {
+export const roomHandler = (io: Server, socket: Socket) => {
   const joinRoom = async (payload: RoomIdPayload) => {
     const { roomId } = payload;
-    //already in the room
-    if (Array.from(socket.rooms.values()).includes(roomId)) {
-      socket.emit('room_joined');
-      return;
-    }
     const userId = socket.data.userId;
-    const game = gameStore.getGame(roomId);
+    const room = roomStore.get(roomId);
 
     // Room does not exist
-    if (!game) {
+    if (!room) {
       socket.emit('join_room_error', {
-        type: JoinRoomError.gameNotFound,
+        type: JoinRoomError.roomNotFound,
       });
       return;
     }
-    const gamePlayers = game.players;
+    const roomPlayers = room.players;
 
     // Room already full
-    const alreadyInGamePlayers = gamePlayers.getInGamePlayers();
+    const alreadyInGamePlayers = roomPlayers.getInGamePlayers();
     if (alreadyInGamePlayers.length >= MAX_PLAYER_IN_ROOM) {
       socket.emit('join_room_error', {
-        type: JoinRoomError.gameFull,
+        type: JoinRoomError.roomFull,
       });
       return;
     }
@@ -45,47 +38,57 @@ export const roomHandler = (
     );
     if (socketOtherRooms.length > 0) {
       socket.emit('join_room_error', {
-        type: JoinRoomError.inAnotherGame,
+        type: JoinRoomError.inAnotherRoom,
       });
       return;
     }
 
     // The game is already launched and he was not part of it
     if (
-      game &&
-      game.gameStep !== GameStep.WAIT &&
-      !gamePlayers.getAllPlayers().includes(userId)
+      room.game.gameStep !== GameStep.WAIT &&
+      !roomPlayers.getAllPlayers().includes(userId)
     ) {
       socket.emit('join_room_error', {
-        type: JoinRoomError.inAnotherGame,
+        type: JoinRoomError.gameAlreadyLaunched,
       });
       return;
     }
 
     await socket.join(roomId);
-    gamePlayers.addPlayer(userId);
-    socket.emit('room_joined');
-    logger.info(`User ${socket.id} joined room ${roomId}`);
+    roomPlayers.addPlayer(userId);
+    socket.emit('room_joined', room.getRoomAfterJoin());
+    logger.info(`User ${userId} joined room ${roomId}`);
   };
 
   const createRoom = async (payload: RoomIdPayload) => {
     const { roomId } = payload;
     await socket.join(roomId);
-    gameStore.createGame(roomId, socket.data.userId);
+    roomStore.createRoom(roomId, socket.data.userId);
     socket.emit('room_created');
     logger.info(`User of id ${socket.data.userId} created room ${roomId}`);
-    io.to(roomId).emit('game', gameStore.getGame(roomId)?.info());
   };
 
   const leaveRoom = ({ roomId }: { roomId: string }) => {
-    const game = gameStore.getGame(roomId);
-    if (!game) return;
-    game.players.deletePlayer(socket.data.userId, roomId, gameStore);
+    const room = roomStore.getRoom(io, roomId);
+    if (!room) return;
+    room.players.deletePlayer(socket.data.userId, roomId, roomStore);
     socket.leave(roomId);
     logger.info(`User of id ${socket.data.userId} left room ${roomId}`);
+  };
+
+  const changeGameSettings = ({
+    gameSettings,
+  }: {
+    gameSettings: GameSettings;
+  }) => {
+    const roomId = getSocketRoom(socket);
+    const room = roomStore.getRoom(io, roomId);
+    if (!room) return;
+    room.updateGameSettings(gameSettings);
   };
 
   socket.on('create_room', createRoom);
   socket.on('join_room', joinRoom);
   socket.on('leave_room', leaveRoom);
+  socket.on('change_game_settings', changeGameSettings);
 };

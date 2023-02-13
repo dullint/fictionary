@@ -2,37 +2,37 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import WaitingRoom from '../WaitingRoom';
 import { SocketContext } from '../../App';
 import { useParams } from 'react-router-dom';
-import { Game } from '../../../../server/src/game';
 import WordPrompt from '../WordPrompt';
 import Leaderboard from '../Leaderboard';
 import WordGuess from '../WordGuess';
 import WordResult from '../WordResult';
-import { getGame, joinRoom } from '../../services/room';
+import { joinRoom } from '../../services/room';
 import LoadingPage from '../LoadingPage';
 import WordReveal from '../WordReveal';
+import { ClientRoom } from '../../../../server/src/room/types';
+import { GameStep } from '../../../../server/src/game/types';
 
-export const GameContext = createContext<Game>(null);
+export const RoomContext = createContext<ClientRoom>(null);
 
-export enum GameStep {
-  WAIT,
-  PROMPT,
-  GUESS,
-  REVEAL,
-  RESULTS,
-  FINISHED,
-}
+// export enum GameStep {
+//   WAIT,
+//   PROMPT,
+//   GUESS,
+//   REVEAL,
+//   RESULTS,
+//   FINISHED,
+// }
 
 const Room = () => {
   const socket = useContext(SocketContext);
   const { roomId } = useParams();
-  const [game, setGame] = useState(null);
+  const [room, setRoom] = useState<ClientRoom>(null);
   const [joinErrorMessage, setJoinErrorMessage] = useState(null);
 
   useEffect(() => {
     const onRoomEnter = async () => {
-      await joinRoom(socket, roomId);
-      const game = await getGame(socket, roomId);
-      setGame(game);
+      const room = await joinRoom(socket, roomId);
+      setRoom(room);
     };
 
     if (socket && socket?.id) {
@@ -44,13 +44,13 @@ const Room = () => {
 
   useEffect(() => {
     if (socket && socket?.id) {
-      socket.on('game', (game: Game) => setGame(game));
+      // socket.on('room', (game: Game) => setRoom(game));
       return () => socket.emit('leave_room', { roomId });
     }
   }, [socket, roomId, socket?.id]);
 
   const renderComponent = (gameStep: GameStep) => {
-    if (game) {
+    if (room) {
       switch (gameStep) {
         case GameStep.WAIT:
           return <WaitingRoom />;
@@ -72,9 +72,9 @@ const Room = () => {
   };
 
   return (
-    <GameContext.Provider value={game}>
-      {renderComponent(game?.gameStep)}
-    </GameContext.Provider>
+    <RoomContext.Provider value={room}>
+      {renderComponent(room?.gameState.gameStep)}
+    </RoomContext.Provider>
   );
 };
 

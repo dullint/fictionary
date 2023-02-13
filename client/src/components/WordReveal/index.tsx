@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { SocketContext } from '../../App';
-import { GameContext } from '../Room';
+import { RoomContext } from '../Room';
 import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { Box } from '@mui/system';
 import { BEFORE_AUTHOR_REVEAL_DELAY, BEFORE_NEXT_DEF_DELAY } from './constants';
@@ -18,7 +18,7 @@ import { getPlayerIndexGenerator } from './helpers';
 import { getNumberOfDefinitionToDisplay } from '../DefinitionList/helpers';
 
 const WordReveal = () => {
-  const game = useContext(GameContext);
+  const game = useContext(RoomContext);
   const players = game.players.getInGamePlayers();
   const socket = useContext(SocketContext);
   const isAdmin = isRoomAdmin(players, socket.id);

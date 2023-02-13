@@ -9,7 +9,7 @@ import {
 import React, { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SocketContext } from '../../App';
-import { GameContext } from '../Room';
+import { RoomContext } from '../Room';
 import UsernameDialog from '../UsernameDialog';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { getPlayTooltip, isRoomAdmin } from './helpers';
@@ -22,7 +22,7 @@ import { bottomPageButtonSx } from '../../constants/style';
 
 const WaitingRoom = () => {
   const socket = useContext(SocketContext);
-  const game = useContext(GameContext);
+  const game = useContext(RoomContext);
   const players = game.players.getInGamePlayers();
   const username = game.players.getOnePlayer(socket.auth.user)?.username;
   const [openUsernameDialog, setOpenUsernameDialog] = useState(!username);

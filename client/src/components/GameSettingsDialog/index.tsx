@@ -16,7 +16,7 @@ import {
   showGuessVoteOptions,
   useExampleOptions,
 } from './constants';
-import { GameContext } from '../Room';
+import { RoomContext } from '../Room';
 
 export interface PropsType {
   open: boolean;
@@ -26,7 +26,7 @@ export interface PropsType {
 
 const GameSettingsDialog = (props: PropsType) => {
   const { open, setOpen, isAdmin } = props;
-  const game = useContext(GameContext);
+  const game = useContext(RoomContext);
   const gameSettings = game.gameSettings;
   const [maxPromptTime, setMaxPromptTime] = useState(
     gameSettings.maxPromptTime

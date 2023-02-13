@@ -2,19 +2,11 @@ import { Server, Socket } from 'socket.io';
 import mixpanel from '../mixpanel';
 import Mixpanel from '../mixpanel';
 import { getSocketRoom } from '../room/helpers';
-import { GameStore } from '../game/gameStore';
+import roomStore, { RoomStore } from '../room/roomStore';
 
-import { GameSettings, GameStep, Scores } from '../game/types';
+import { GameStep, Scores } from '../game/types';
 
-export const gameHandler = (
-  io: Server,
-  socket: Socket,
-  gameStore: GameStore
-) => {
-  const roomId = getSocketRoom(socket);
-  const game = gameStore.getGame(roomId);
-  if (!game) return;
-
+export const gameHandler = (io: Server, socket: Socket) => {
   const submitDefinition = async ({
     definition,
     example,
@@ -24,79 +16,113 @@ export const gameHandler = (
     example: string;
     autosave: boolean;
   }) => {
-    game.inputEntries[socket.data.username] = { definition, example, autosave };
-    const numberOfPlayers = game.players.getInGamePlayers().length;
+    const roomId = getSocketRoom(socket);
+    const room = roomStore.getRoom(io, roomId);
+    if (!room) return;
+    const game = room.game;
+    game.inputEntries[socket.data.username] = {
+      definition,
+      example,
+      autosave,
+    };
+    const numberOfPlayers = room.players.getInGamePlayers().length;
     const numberOfDefinitions = Object.values(game.inputEntries).filter(
       (entry) => !entry?.autosave
     ).length;
     if (numberOfDefinitions == numberOfPlayers) {
-      game.goToNextStep();
+      game.goToNextStep(room.gameSettings);
     }
-    io.to(roomId).emit('game', game.info());
+    game.updateClient(io);
   };
 
   const removeDefinition = () => {
+    const roomId = getSocketRoom(socket);
+    const room = roomStore.getRoom(io, roomId);
+    if (!room) return;
+    const game = room.game;
+    if (!game) return;
     game.removeDefinition(socket.data.username);
-    io.to(roomId).emit('game', game.info());
-  };
-
-  const queryGame = () => {
-    io.to(roomId).emit('game', game.info());
+    game.updateClient(io);
   };
 
   const selectDefinition = async ({ username }: { username: string }) => {
+    const roomId = getSocketRoom(socket);
+    const room = roomStore.getRoom(io, roomId);
+    if (!room) return;
+    const game = room.game;
+    const roomPlayers = room.players;
+    if (!game) return;
     game.selections[socket.data.username] = username;
-    const numberOfPlayers = game.players.getInGamePlayers().length;
+    const numberOfPlayers = roomPlayers.getInGamePlayers().length;
     const numberOfSelectedDefinitions = Object.keys(game.selections).length;
     if (numberOfSelectedDefinitions == numberOfPlayers) {
-      game.goToNextStep();
+      game.goToNextStep(room.gameSettings);
     }
-    io.to(roomId).emit('game', game.info());
+    game.updateClient(io);
   };
 
   const updateScores = ({ scores }: { scores: Scores }) => {
+    const roomId = getSocketRoom(socket);
+    const room = roomStore.getRoom(io, roomId);
+    if (!room) return;
+    const game = room.game;
     game.scores = scores;
-    io.to(roomId).emit('game', game.info());
+    game.updateClient(io);
   };
 
   const resetGame = () => {
+    const roomId = getSocketRoom(socket);
+    const room = roomStore.getRoom(io, roomId);
+    if (!room) return;
+    const game = room.game;
     game.reset();
-    io.to(roomId).emit('game', game.info());
+    game.updateClient(io);
   };
 
   const launchNewRound = () => {
-    if (game.round >= game.gameSettings.roundNumber) {
+    const roomId = getSocketRoom(socket);
+    const room = roomStore.getRoom(io, roomId);
+    if (!room) return;
+    const game = room.game;
+    if (game.round >= room.gameSettings.roundNumber) {
       game.gameStep = GameStep.FINISHED;
-      io.to(roomId).emit('game', game.info());
+      game.updateClient(io);
       return;
     }
-    game.newRound(io);
-    io.to(roomId).emit('game', game.info());
+    game.newRound(io, room.gameSettings);
+    game.updateClient(io);
   };
 
   const getNewWord = () => {
+    const roomId = getSocketRoom(socket);
+    const room = roomStore.getRoom(io, roomId);
+    if (!room) return;
+    const game = room.game;
     mixpanel.changeWord(socket.data?.userId, socket.data?.ip, game.entry?.word);
-    game.newWord(io);
-    io.to(roomId).emit('game', game.info());
+    game.newWord(io, room.gameSettings);
+    game.updateClient(io);
   };
 
   const showResults = () => {
-    game.goToNextStep();
-    io.to(roomId).emit('game', game.info());
-  };
-
-  const changeSettings = ({ gameSettings }: { gameSettings: GameSettings }) => {
-    game.gameSettings = gameSettings;
-    io.to(roomId).emit('game', game.info());
+    const roomId = getSocketRoom(socket);
+    const room = roomStore.getRoom(io, roomId);
+    if (!room) return;
+    const game = room.game;
+    game.goToNextStep(room.gameSettings);
+    game.updateClient(io);
   };
 
   const launchGame = async () => {
-    const players = game.players.getInGamePlayers();
+    const roomId = getSocketRoom(socket);
+    const room = roomStore.getRoom(io, roomId);
+    if (!room) return;
+    const game = room.game;
+    const gamePlayers = room.players.getInGamePlayers();
     Mixpanel.launchGame(
       socket.data?.userId,
       socket.data?.ip,
-      players,
-      game?.gameSettings,
+      gamePlayers,
+      room.gameSettings,
       roomId
     );
     launchNewRound();
@@ -107,10 +133,8 @@ export const gameHandler = (
   socket.on('update_scores', updateScores);
   socket.on('new_round', launchNewRound);
   socket.on('submit_definition', submitDefinition);
-  socket.on('game', queryGame);
   socket.on('select_definition', selectDefinition);
   socket.on('remove_definition', removeDefinition);
   socket.on('get_new_word', getNewWord);
-  socket.on('change_game_settings', changeSettings);
   socket.on('show_results', showResults);
 };

@@ -1,8 +1,6 @@
 import { Server } from 'socket.io';
 import { Server as HTTPServer } from 'http';
-import { gameHandler } from '../handler/gameHandler';
 import { playerHandler } from '../handler/playerHandler';
-import { GameStore } from '../game/gameStore';
 import { PING_INTERVAL, PING_TIMEOUT } from './constants';
 import mixpanel from '../mixpanel';
 import {
@@ -12,6 +10,7 @@ import {
 } from './types';
 import { roomHandler } from '../handler/roomHandler';
 import logger from '../logging';
+import { gameHandler } from '../handler/gameHandler';
 
 export default (server: HTTPServer) => {
   const io = new Server<ClientToServerEvents, ServerToClientEvents, SocketData>(
@@ -25,7 +24,6 @@ export default (server: HTTPServer) => {
       pingTimeout: PING_TIMEOUT,
     }
   );
-  const gameStore = new GameStore(io);
 
   io.use((socket, next) => {
     const userId = socket.handshake.auth.userId;
@@ -41,9 +39,9 @@ export default (server: HTTPServer) => {
     );
     mixpanel.userConnect(socket.data.userId, socket.data.ip);
 
-    roomHandler(io, socket, gameStore);
-    playerHandler(io, socket, gameStore);
-    gameHandler(io, socket, gameStore);
+    roomHandler(io, socket);
+    playerHandler(io, socket);
+    gameHandler(io, socket);
 
     socket.on('disconnect', async () => {
       logger.info(`User of id ${socket.data.userId} disconnected`);

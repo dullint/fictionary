@@ -1,8 +1,7 @@
 import MixpanelClient from 'mixpanel';
 import { RemoteSocket } from 'socket.io';
-import { GameSettings } from './game/types';
 import { Player } from './player';
-import { RoomId } from './room/types';
+import { GameSettings, RoomId } from './room/types';
 import { UserId } from './socket/types';
 const MIXPANEL_TOKEN = 'f1f650cd2f800c43fc7b520990c1b226';
 

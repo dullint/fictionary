@@ -1,36 +1,31 @@
-import { Server } from 'socket.io';
 import { Player } from '../player';
-import { MAX_PLAYER_IN_ROOM } from '../room/constants';
+import { MAX_PLAYER_IN_ROOM, ROOM_DELETE_DELAY } from '../room/constants';
 import { RoomId } from '../room/types';
-import { Color } from '../player/type';
-import { GAME_DELETE_DELAY } from './constant';
-import { GameStore } from './gameStore';
+import { RoomStore } from '../room/roomStore';
 import { UserId } from '../socket/types';
 
-export class GamePlayers {
-  players: Map<UserId, Player>;
-
+export class RoomPlayers extends Map<UserId, Player> {
   constructor(creatorUserId: UserId) {
-    this.players = new Map();
+    super();
     this.addPlayer(creatorUserId);
   }
 
   getAllPlayers() {
-    return Array.from(this.players.values());
+    return Array.from(this.values());
   }
 
   getInGamePlayers() {
     return this.getAllPlayers().filter((player) => player.isInGame);
   }
 
-  deletePlayer(userId: UserId, roomId: RoomId, gameStore: GameStore) {
+  deletePlayer(userId: UserId, roomId: RoomId, roomStore: RoomStore) {
     const wasAdmin = this.getOnePlayer(userId)?.isAdmin;
-    this.players.delete(userId);
+    this.delete(userId);
     const remaningInGamePlayers = this.getInGamePlayers();
     if (remaningInGamePlayers.length === 0) {
       setTimeout(async () => {
-        if (this.getInGamePlayers().length === 0) gameStore.deleteGame(roomId);
-      }, GAME_DELETE_DELAY);
+        if (this.getInGamePlayers().length === 0) roomStore.deleteRoom(roomId);
+      }, ROOM_DELETE_DELAY);
       return;
     }
     if (wasAdmin) {
@@ -39,13 +34,13 @@ export class GamePlayers {
   }
 
   getOnePlayer(userId: UserId) {
-    return this.players.get(userId);
+    return this.get(userId);
   }
 
   addPlayer(userId: UserId) {
-    const isAdmin = this.players.size === 0;
+    const isAdmin = this.size === 0;
     const color = this._generateColor();
-    this.players.set(userId, new Player(userId, isAdmin, color));
+    this.set(userId, new Player(userId, isAdmin, color));
   }
 
   _generateColor = () => {

@@ -1,3 +1,5 @@
+import { DictionnaryEntry } from '../dictionary/types';
+
 export enum GameStep {
   WAIT,
   PROMPT,
@@ -5,13 +7,6 @@ export enum GameStep {
   REVEAL,
   RESULTS,
   FINISHED,
-}
-
-export interface GameSettings {
-  maxPromptTime: number;
-  roundNumber: number;
-  useExample: boolean;
-  showGuessVote: boolean;
 }
 
 export interface SelectedDefinitions {
@@ -29,4 +24,14 @@ export interface InputDictionaryEntry {
 }
 export interface InputDictionaryEntries {
   [userId: string]: InputDictionaryEntry;
+}
+
+export interface GameState {
+  round: number;
+  entry: DictionnaryEntry | null;
+  inputEntries: InputDictionaryEntries;
+  selections: SelectedDefinitions;
+  gameStep: GameStep;
+  scores: Scores;
+  wordSeen: string[];
 }

@@ -9,10 +9,6 @@ export interface SocketData {
 
 export type RoomIdPayload = { roomId: RoomId };
 
-export type UpdateUsernamePayload = RoomIdPayload & {
-  username: Username;
-};
-
 export interface ServerToClientEvents {
   room_joined: () => void;
   join_room_error: (type: JoinRoomError) => void;
@@ -22,7 +18,7 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  update_username: (payload: UpdateUsernamePayload) => void;
+  update_username: (payload: { username: Username }) => void;
   create_room: (payload: RoomIdPayload) => void;
   join_room: (payload: RoomIdPayload) => void;
   leave_room: (payload: RoomIdPayload) => void;

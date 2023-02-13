@@ -4,11 +4,11 @@ import { Game } from '../../../server/src/game';
 export const joinRoom = async (
   socket: Socket,
   roomId: string
-): Promise<boolean> => {
+): Promise<Game> => {
   return new Promise((rs, rj) => {
     socket.emit('join_room', { roomId });
-    socket.on('room_joined', () => {
-      rs(true);
+    socket.on('room_joined', (game: Game) => {
+      rs(game);
     });
     socket.on('join_room_error', (error) => {
       rj(error);
