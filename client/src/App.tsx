@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Home from './components/Home';
 import Room from './components/Room';
@@ -7,8 +7,6 @@ import { getTheme, palette } from './theme';
 import { Grid } from '@mui/material';
 import Div100vh from 'react-div-100vh';
 import socket from './socket';
-
-export const SocketContext = createContext(null);
 
 const App = () => {
   const theme = getTheme();
@@ -39,14 +37,12 @@ const App = () => {
       }}
     >
       <Grid container height={1} width={1} sx={{ padding: 2, maxWidth: 700 }}>
-        <SocketContext.Provider value={socket}>
-          <ThemeProvider theme={theme}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/room/:roomId" element={<Room />} />
-            </Routes>
-          </ThemeProvider>
-        </SocketContext.Provider>
+        <ThemeProvider theme={theme}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/room/:roomId" element={<Room />} />
+          </Routes>
+        </ThemeProvider>
       </Grid>
     </Div100vh>
   );

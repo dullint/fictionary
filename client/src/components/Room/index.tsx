@@ -1,6 +1,5 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import WaitingRoom from '../WaitingRoom';
-import { SocketContext } from '../../App';
 import { useParams } from 'react-router-dom';
 import WordPrompt from '../WordPrompt';
 import Leaderboard from '../Leaderboard';
@@ -9,7 +8,9 @@ import WordResult from '../WordResult';
 import { joinRoom } from '../../services/room';
 import LoadingPage from '../LoadingPage';
 import WordReveal from '../WordReveal';
-import { ClientRoom } from '../../../../server/src/room/types';
+import { ClientRoom, RoomId } from '../../../../server/src/room/types';
+import socket from '../../socket';
+import { Socket } from 'socket.io-client';
 
 export const RoomContext = createContext<ClientRoom>(null);
 
@@ -23,10 +24,9 @@ export enum GameStep {
 }
 
 const Room = () => {
-  const socket = useContext(SocketContext);
   const { roomId } = useParams();
   const [room, setRoom] = useState<ClientRoom>(null);
-  const [joinErrorMessage, setJoinErrorMessage] = useState(null);
+  const [roomErrorMessage, setRoomErrorMessage] = useState(null);
 
   useEffect(() => {
     const onRoomEnter = async () => {
@@ -34,19 +34,18 @@ const Room = () => {
       setRoom(room);
     };
 
-    if (socket && socket?.id) {
-      onRoomEnter().catch((err) => {
-        setJoinErrorMessage(err.message);
-      });
-    }
-  }, [roomId, socket, socket?.id]);
-
-  useEffect(() => {
-    if (socket && socket?.id) {
-      // socket.on('room', (game: Game) => setRoom(game));
-      return () => socket.emit('leave_room', { roomId });
-    }
-  }, [socket, roomId, socket?.id]);
+    onRoomEnter().catch((err) => {
+      setRoomErrorMessage(err.message);
+    });
+    socket.on('room_error', (errorMessage) => {
+      console.log('room_error');
+      setRoomErrorMessage(errorMessage);
+      setRoom(null);
+    });
+    return () => {
+      socket.emit('leave_room', { roomId });
+    };
+  }, [roomId]);
 
   const renderComponent = (gameStep: GameStep) => {
     if (room) {
@@ -64,10 +63,10 @@ const Room = () => {
         case GameStep.FINISHED:
           return <Leaderboard />;
         default:
-          return <LoadingPage joinErrorMessage={joinErrorMessage} />;
+          return <LoadingPage roomErrorMessage={roomErrorMessage} />;
       }
     }
-    return <LoadingPage joinErrorMessage={joinErrorMessage} />;
+    return <LoadingPage roomErrorMessage={roomErrorMessage} />;
   };
 
   return (

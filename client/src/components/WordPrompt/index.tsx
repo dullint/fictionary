@@ -10,7 +10,6 @@ import {
 import FindReplaceIcon from '@mui/icons-material/FindReplace';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { SocketContext } from '../../App';
 import { RoomContext } from '../Room';
 import {
   DEFINITION_CHARACTER_LIMIT,
@@ -21,6 +20,7 @@ import GameHeader from '../GameHeader';
 import { bottomPageButtonSx } from '../../constants/style';
 import DefinitionRender from '../DefinitionRender';
 import { cleanSentence } from './helpers';
+import socket from '../../socket';
 
 const WordPrompt = () => {
   const { gameState, gameSettings, players } = useContext(RoomContext);
@@ -30,7 +30,6 @@ const WordPrompt = () => {
   const ExRef = useRef(null);
   const [wordWidth, setWordWidth] = useState(0);
   const [ExWidth, setExWidth] = useState(0);
-  const socket = useContext(SocketContext);
   const [definition, setDefinition] = useState('');
   const [example, setExample] = useState('');
   const [hasSubmited, setHasSubmited] = useState(false);
@@ -72,7 +71,6 @@ const WordPrompt = () => {
     setExample(cleanSentence(example));
     setHasSubmited(true);
     socket.emit('submit_definition', {
-      roomId,
       definition: cleanSentence(definition),
       example: cleanSentence(example),
       autosave: false,
@@ -90,7 +88,6 @@ const WordPrompt = () => {
         setCounter(counter);
         if (counter === 1) {
           socket.emit('submit_definition', {
-            roomId,
             definition: cleanSentence(definition),
             example: cleanSentence(example),
             autosave: true,

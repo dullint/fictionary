@@ -25,16 +25,6 @@ export const checkRoomExistence = async (
   });
 };
 
-// export const getGame = async (
-//   socket: Socket,
-//   roomId: string
-// ): Promise<Game> => {
-//   return new Promise<Game>((rs, rj) => {
-//     socket.emit('game', { roomId });
-//     socket.on('game', (game: Game) => rs(game));
-//   });
-// };
-
 export const createRoom = async (
   socket: Socket,
   roomId: string

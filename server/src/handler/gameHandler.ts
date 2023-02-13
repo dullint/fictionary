@@ -2,20 +2,17 @@ import { Server, Socket } from 'socket.io';
 import mixpanel from '../mixpanel';
 import Mixpanel from '../mixpanel';
 import { getSocketRoom } from '../room/helpers';
-import roomStore, { RoomStore } from '../room/roomStore';
+import roomStore from '../room/roomStore';
 
 import { GameStep, Scores } from '../game/types';
+import { SubmitDefinitionPayload } from '../socket/types';
 
 export const gameHandler = (io: Server, socket: Socket) => {
   const submitDefinition = async ({
     definition,
     example,
     autosave,
-  }: {
-    definition: string;
-    example: string;
-    autosave: boolean;
-  }) => {
+  }: SubmitDefinitionPayload) => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(io, roomId);
     if (!room) return;

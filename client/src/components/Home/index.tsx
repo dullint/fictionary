@@ -1,7 +1,6 @@
 import { Button, Grid, Input, Typography } from '@mui/material';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SocketContext } from '../../App';
 import { createRoom, joinRoom } from '../../services/room';
 import { theme } from '../../theme';
 import { generateRandomRoomId } from '../GameSettingsDialog/helpers';
@@ -9,12 +8,11 @@ import { Box } from '@mui/system';
 import { TypeAnimation } from 'react-type-animation';
 import { getTypingSequence } from './helpers';
 import HowToPlay from '../HowToPlay';
+import socket from '../../socket';
 
 const Home = () => {
   const navigate = useNavigate();
-  const socket = useContext(SocketContext);
   const [roomId, setRoomId] = useState('');
-  // const [isHowToPlayDialogOpen, setIsHowToPlayDialogOpen] = useState(false);
   const [joinRoomErrorMessage, setJoinRoomErrorMessage] = useState(null);
 
   const handleCreateGame = async (event) => {

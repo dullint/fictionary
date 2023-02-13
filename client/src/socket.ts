@@ -10,16 +10,17 @@ const server =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:3020/'
     : 'https://fictionary.io/';
+
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(server, {
   autoConnect: false,
   forceNew: true,
 });
-var userId = localStorage.getItem('fictionaryUserId');
-if (!userId) {
-  userId = uuidv4();
-  localStorage.setItem('fictionaryUserId', userId);
+export var localSocketUserId = localStorage.getItem('fictionaryUserId');
+if (!localSocketUserId) {
+  localSocketUserId = uuidv4();
+  localStorage.setItem('fictionaryUserId', localSocketUserId);
 }
-socket.auth = { userId };
+socket.auth = { userId: localSocketUserId };
 socket.connect();
 
 export default socket;

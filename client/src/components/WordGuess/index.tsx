@@ -1,15 +1,15 @@
 import { Grid, Typography } from '@mui/material';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { SocketContext } from '../../App';
 import GameHeader from '../GameHeader';
 import DefinitionList from '../DefinitionList';
 import { getNumberOfDefinitionToDisplay } from '../DefinitionList/helpers';
 import { RoomContext } from '../Room';
 import { Box } from '@mui/system';
+import socket from '../../socket';
+import { UserId } from '../../../../server/src/socket/types';
 
 const WordGuess = () => {
-  const [selectedUsernameDef, setSelectedUsernameDef] = useState(null);
-  const socket = useContext(SocketContext);
+  const [selectedUsernameDef, setSelectedUserIdDef] = useState(null);
   const { gameState, gameSettings, players } = useContext(RoomContext);
   const { selections } = gameState;
 
@@ -22,9 +22,9 @@ const WordGuess = () => {
     definitionsRef.current = definitionsRef.current.slice(0, definitionsNumber);
   }, [definitionsNumber]);
 
-  const handleSelectDefinition = (username: string) => {
-    setSelectedUsernameDef(username);
-    socket.emit('select_definition', { username });
+  const handleSelectDefinition = (userId: UserId) => {
+    setSelectedUserIdDef(userId);
+    socket.emit('select_definition', { userId });
   };
 
   return (

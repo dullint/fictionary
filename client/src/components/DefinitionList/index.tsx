@@ -49,17 +49,17 @@ const DefinitionList = (props: PropsType) => {
 
   return (
     <Box display="flex" flexDirection="column">
-      {inputEntriesToDisplay.map(([username, inputEntry], index) => (
+      {inputEntriesToDisplay.map(([userId, inputEntry], index) => (
         <Box
           display="flex"
-          onClick={() => handleSelectDefinition(username)}
+          onClick={() => handleSelectDefinition(userId)}
           flexDirection={'column'}
-          key={`definition-${username}`}
+          key={`definition-${userId}`}
           ref={(el) => (definitionsRef.current[index] = el)}
           sx={{
             border: `2px solid`,
             borderColor:
-              username === selectedUsernameDef
+              userId === selectedUsernameDef
                 ? theme.palette.primary.main
                 : 'transparent',
             borderRadius: 2,
@@ -80,9 +80,9 @@ const DefinitionList = (props: PropsType) => {
           />
           {showVoteBanner && revealedBannerIndexes.includes(index) && (
             <VoteBanner
-              votingPlayers={votingPlayersByDefinitions[username] ?? []}
+              votingPlayers={votingPlayersByDefinitions[userId] ?? []}
               authorPlayer={extendedPlayers.find(
-                (player) => player?.username === username
+                (player) => player.userId === userId
               )}
               size={'small'}
               revealed={revealedAuthorIndexes.includes(index)}

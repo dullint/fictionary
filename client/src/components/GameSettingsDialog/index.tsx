@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import { SocketContext } from '../../App';
 import {
   Button,
   ButtonGroup,
@@ -17,6 +16,7 @@ import {
 } from './constants';
 import { RoomContext } from '../Room';
 import { GameSettings } from '../../../../server/src/room/types';
+import socket from '../../socket';
 
 export interface PropsType {
   open: boolean;
@@ -35,7 +35,6 @@ const GameSettingsDialog = (props: PropsType) => {
   const [showGuessVote, setShowGuessVote] = useState(
     gameSettings.showGuessVote
   );
-  const socket = useContext(SocketContext);
 
   const handleSubmit = () => {
     setOpen(false);

@@ -19,6 +19,9 @@ export const playerHandler = (io: Server, socket: Socket) => {
       return;
     }
     room.players.getOnePlayer(socket.data.userId)?.updateUsername(username);
+    logger.debug(
+      `User of id ${socket.data.userId} updated his username to ${username}`
+    );
     socket.emit('username_updated');
   };
 

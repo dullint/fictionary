@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { CONNECT_TIMEOUT, timeoutMessage } from './constants';
 
 interface PropsType {
-  joinErrorMessage: string | null;
+  roomErrorMessage: string | null;
 }
 const LoadingPage = (props: PropsType) => {
-  const { joinErrorMessage } = props;
+  const { roomErrorMessage } = props;
   const [timeoutError, setTimeoutError] = useState(false);
   const navigate = useNavigate();
 
@@ -15,7 +15,7 @@ const LoadingPage = (props: PropsType) => {
     setTimeout(() => setTimeoutError(true), CONNECT_TIMEOUT);
   });
 
-  const errorMessage = timeoutError ? timeoutMessage : joinErrorMessage;
+  const errorMessage = timeoutError ? timeoutMessage : roomErrorMessage;
 
   return (
     <Grid container alignItems="center" justifyContent="center" height="100%">

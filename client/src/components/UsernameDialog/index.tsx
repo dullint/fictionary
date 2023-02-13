@@ -2,12 +2,12 @@ import React, { useContext, useState } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
-import { SocketContext } from '../../App';
 import { useParams } from 'react-router';
 import { updateUsername } from '../../services/room';
 import { Grid, Input, Typography } from '@mui/material';
 import { palette, theme } from '../../theme';
 import { Box } from '@mui/system';
+import socket from '../../socket';
 
 export interface Propstype {
   open: boolean;
@@ -16,7 +16,6 @@ export interface Propstype {
 
 const UsernameDialog = (props: Propstype) => {
   const { open, setOpen } = props;
-  const socket = useContext(SocketContext);
   const { roomId } = useParams();
   const [username, setUsername] = useState<string>(null);
   const [usernameErrorMessage, setUsernameErrorMessage] = useState(null);

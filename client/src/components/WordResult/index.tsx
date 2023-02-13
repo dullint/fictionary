@@ -2,7 +2,7 @@ import { Box, Button, Grid, Tooltip, Typography } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { useParams } from 'react-router-dom';
-import { SocketContext } from '../../App';
+import socket from '../../socket';
 import Avatar from '../Avatar';
 import { RoomContext } from '../Room';
 import { isRoomAdmin } from '../WaitingRoom/helpers';
@@ -12,7 +12,6 @@ const WordResult = () => {
   const { gameState, players } = useContext(RoomContext);
   const scores = gameState.scores;
   const selections = gameState.selections;
-  const socket = useContext(SocketContext);
   const { roomId } = useParams();
   const isAdmin = isRoomAdmin(players, socket.id);
   const [displayNewScores, setDisplayNewScores] = useState(false);

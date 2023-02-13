@@ -6,7 +6,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { SocketContext } from '../../App';
 import { RoomContext } from '../Room';
 import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { Box } from '@mui/system';
@@ -16,11 +15,11 @@ import { bottomPageButtonSx } from '../../constants/style';
 import DefinitionList from '../DefinitionList';
 import { getPlayerIndexGenerator } from './helpers';
 import { getNumberOfDefinitionToDisplay } from '../DefinitionList/helpers';
+import socket from '../../socket';
 
 const WordReveal = () => {
   const { players, gameState } = useContext(RoomContext);
 
-  const socket = useContext(SocketContext);
   const isAdmin = isRoomAdmin(players, socket.id);
   const [revealedAuthorIndexes, setRevealedAuthorIndexes] = useState<number[]>(
     []

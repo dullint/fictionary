@@ -27,7 +27,7 @@ export const getVotingPlayersByDefinitions = (
 };
 
 export const getNumberOfDefinitionToDisplay = (gameState: GameState) =>
-  Object.values(gameState?.inputEntries)?.length + 1;
+  Object.values(gameState.inputEntries)?.length + 1;
 
 export const getEntriesWithUsernameToDisplay = (
   inputEntries: InputDictionaryEntries,

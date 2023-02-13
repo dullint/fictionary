@@ -8,7 +8,6 @@ import {
 } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { SocketContext } from '../../App';
 import { RoomContext } from '../Room';
 import UsernameDialog from '../UsernameDialog';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -19,13 +18,13 @@ import Avatar from '../Avatar';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { theme } from '../../theme';
 import { bottomPageButtonSx } from '../../constants/style';
+import socket, { localSocketUserId } from '../../socket';
 
 const WaitingRoom = () => {
-  const socket = useContext(SocketContext);
   const { players } = useContext(RoomContext);
 
   const myUsername = players.find(
-    (player) => player.username === socket.auth.user
+    (player) => player.userId === localSocketUserId
   )?.username;
   const [openUsernameDialog, setOpenUsernameDialog] = useState(!myUsername);
   const [openSettingsDialog, setOpenSettingsDialog] = useState(false);

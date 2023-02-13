@@ -1,7 +1,7 @@
 import { Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { useContext } from 'react';
-import { SocketContext } from '../../App';
+import { localSocketUserId } from '../../socket';
 import Avatar from '../Avatar';
 import { RoomContext } from '../Room';
 
@@ -10,11 +10,10 @@ interface PropsType {
 }
 
 const GameHeader = (props: PropsType) => {
-  const socket = useContext(SocketContext);
   const { gameState, gameSettings, players } = useContext(RoomContext);
   const roundNumber = gameSettings.roundNumber;
   const currentRound = gameState.round;
-  const player = players.find((player) => player.userId === socket.data.userId);
+  const player = players.find((player) => player.userId === localSocketUserId);
   return (
     <Grid
       container

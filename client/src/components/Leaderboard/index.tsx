@@ -1,7 +1,7 @@
 import { Button, Grid, Tooltip, Typography } from '@mui/material';
 import React, { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { SocketContext } from '../../App';
+import socket from '../../socket';
 import Avatar from '../Avatar';
 import { RoomContext } from '../Room';
 import { isRoomAdmin } from '../WaitingRoom/helpers';
@@ -11,7 +11,6 @@ const Leaderboard = () => {
   const { gameState, players } = useContext(RoomContext);
   const { scores, selections } = gameState;
 
-  const socket = useContext(SocketContext);
   const navigate = useNavigate();
   const { roomId } = useParams();
 
