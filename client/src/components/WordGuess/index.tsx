@@ -10,12 +10,13 @@ import { Box } from '@mui/system';
 const WordGuess = () => {
   const [selectedUsernameDef, setSelectedUsernameDef] = useState(null);
   const socket = useContext(SocketContext);
-  const game = useContext(RoomContext);
-  const players = game.players.getInGamePlayers();
+  const { gameState, gameSettings, players } = useContext(RoomContext);
+  const { selections } = gameState;
+
   const definitionsRef = useRef([]);
-  const definitionsNumber = getNumberOfDefinitionToDisplay(game);
-  const showGuessVote = game?.gameSettings?.showGuessVote;
-  const numberOfGuess = Object.values(game?.selectDefinition ?? {}).length;
+  const definitionsNumber = getNumberOfDefinitionToDisplay(gameState);
+  const showGuessVote = gameSettings?.showGuessVote;
+  const numberOfGuess = Object.values(selections).length;
 
   useEffect(() => {
     definitionsRef.current = definitionsRef.current.slice(0, definitionsNumber);

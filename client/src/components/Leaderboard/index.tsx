@@ -8,10 +8,9 @@ import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { calculatePlayerRoundScore } from '../WordResult/helpers';
 
 const Leaderboard = () => {
-  const game = useContext(RoomContext);
-  const players = game.players.getInGamePlayers();
-  const scores = game?.scores;
-  const selections = game?.selections;
+  const { gameState, players } = useContext(RoomContext);
+  const { scores, selections } = gameState;
+
   const socket = useContext(SocketContext);
   const navigate = useNavigate();
   const { roomId } = useParams();

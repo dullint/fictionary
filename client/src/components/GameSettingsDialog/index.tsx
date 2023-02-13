@@ -8,7 +8,6 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
-import { GameSettings } from '../../../../server/src/game/types';
 import { theme } from '../../theme';
 import {
   promptTimeOptions,
@@ -17,6 +16,7 @@ import {
   useExampleOptions,
 } from './constants';
 import { RoomContext } from '../Room';
+import { GameSettings } from '../../../../server/src/room/types';
 
 export interface PropsType {
   open: boolean;
@@ -26,8 +26,7 @@ export interface PropsType {
 
 const GameSettingsDialog = (props: PropsType) => {
   const { open, setOpen, isAdmin } = props;
-  const game = useContext(RoomContext);
-  const gameSettings = game.gameSettings;
+  const { gameSettings } = useContext(RoomContext);
   const [maxPromptTime, setMaxPromptTime] = useState(
     gameSettings.maxPromptTime
   );

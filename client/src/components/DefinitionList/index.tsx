@@ -29,13 +29,10 @@ const DefinitionList = (props: PropsType) => {
     showVoteBanner,
     revealedBannerIndexes,
   } = props;
-  const game = useContext(RoomContext);
-  const players = game.players;
-  const inputEntries = game?.inputEntries;
-  const entry = game?.entry;
-  const selections = game.selections;
+  const { gameState, players, gameSettings } = useContext(RoomContext);
+  const { inputEntries, entry, selections } = gameState;
   const { roomId } = useParams();
-  const isUsingExample = game.gameSettings.useExample;
+  const isUsingExample = gameSettings.useExample;
 
   const inputEntriesToDisplay = getEntriesWithUsernameToDisplay(
     inputEntries,

@@ -24,7 +24,7 @@ export class RoomStore extends Map<RoomId, Room> {
 
   createRoom(roomId: RoomId, creatorUserId: UserId) {
     this.set(roomId, new Room(roomId, creatorUserId));
-    logger.info(`Room ${roomId} created`);
+    logger.info(`User of id ${creatorUserId} created room ${roomId}`);
   }
 }
 

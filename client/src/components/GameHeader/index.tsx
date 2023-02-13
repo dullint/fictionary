@@ -11,10 +11,10 @@ interface PropsType {
 
 const GameHeader = (props: PropsType) => {
   const socket = useContext(SocketContext);
-  const game = useContext(RoomContext);
-  const roundNumber = game.gameSettings.roundNumber;
-  const currentRound = game.round;
-  const player = game.players.getOnePlayer(socket.auth.userId);
+  const { gameState, gameSettings, players } = useContext(RoomContext);
+  const roundNumber = gameSettings.roundNumber;
+  const currentRound = gameState.round;
+  const player = players.find((player) => player.userId === socket.data.userId);
   return (
     <Grid
       container

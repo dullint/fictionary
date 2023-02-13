@@ -22,10 +22,12 @@ import { bottomPageButtonSx } from '../../constants/style';
 
 const WaitingRoom = () => {
   const socket = useContext(SocketContext);
-  const game = useContext(RoomContext);
-  const players = game.players.getInGamePlayers();
-  const username = game.players.getOnePlayer(socket.auth.user)?.username;
-  const [openUsernameDialog, setOpenUsernameDialog] = useState(!username);
+  const { players } = useContext(RoomContext);
+
+  const myUsername = players.find(
+    (player) => player.username === socket.auth.user
+  )?.username;
+  const [openUsernameDialog, setOpenUsernameDialog] = useState(!myUsername);
   const [openSettingsDialog, setOpenSettingsDialog] = useState(false);
   const [copyToClipboardMsg, setCopyToClipboardMsg] = useState(false);
   const navigate = useNavigate();
@@ -51,7 +53,7 @@ const WaitingRoom = () => {
   };
 
   const allPlayersHaveAUsername = players
-    .map((player) => player?.username)
+    .map((player) => player.username)
     .every((username) => username);
 
   return (
@@ -118,33 +120,32 @@ const WaitingRoom = () => {
         }}
       >
         <Grid container spacing={2}>
-          {players &&
-            players.map((player) => (
-              <Grid item xs={4} sm={3} key={player.userId}>
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  justifyContent="center"
-                  alignItems="center"
+          {players.map((player) => (
+            <Grid item xs={4} sm={3} key={player.userId}>
+              <Box
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Avatar
+                  player={player}
+                  displayBadge={false}
+                  size="medium"
+                  showCrown={true}
+                />
+                <Typography
+                  variant="subtitle1"
+                  align="center"
+                  textOverflow="ellipsis"
+                  overflow={'hidden'}
+                  sx={{ flex: 1, width: 1 }}
                 >
-                  <Avatar
-                    player={player}
-                    displayBadge={false}
-                    size="medium"
-                    showCrown={true}
-                  />
-                  <Typography
-                    variant="subtitle1"
-                    align="center"
-                    textOverflow="ellipsis"
-                    overflow={'hidden'}
-                    sx={{ flex: 1, width: 1 }}
-                  >
-                    {player?.username}
-                  </Typography>
-                </Box>
-              </Grid>
-            ))}
+                  {player.username}
+                </Typography>
+              </Box>
+            </Grid>
+          ))}
         </Grid>
       </Box>
       <Tooltip

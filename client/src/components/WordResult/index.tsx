@@ -9,11 +9,10 @@ import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { calculatePlayerRoundScore } from './helpers';
 
 const WordResult = () => {
-  const game = useContext(RoomContext);
-  const scores = game?.scores;
-  const selections = game?.selections;
+  const { gameState, players } = useContext(RoomContext);
+  const scores = gameState.scores;
+  const selections = gameState.selections;
   const socket = useContext(SocketContext);
-  const players = game.players.getInGamePlayers();
   const { roomId } = useParams();
   const isAdmin = isRoomAdmin(players, socket.id);
   const [displayNewScores, setDisplayNewScores] = useState(false);

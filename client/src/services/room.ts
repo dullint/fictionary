@@ -1,14 +1,14 @@
 import { Socket } from 'socket.io-client';
-import { Game } from '../../../server/src/game';
+import { ClientRoom } from '../../../server/src/room/types';
 
 export const joinRoom = async (
   socket: Socket,
   roomId: string
-): Promise<Game> => {
+): Promise<ClientRoom> => {
   return new Promise((rs, rj) => {
     socket.emit('join_room', { roomId });
-    socket.on('room_joined', (game: Game) => {
-      rs(game);
+    socket.on('room_joined', (room: ClientRoom) => {
+      rs(room);
     });
     socket.on('join_room_error', (error) => {
       rj(error);
@@ -25,15 +25,15 @@ export const checkRoomExistence = async (
   });
 };
 
-export const getGame = async (
-  socket: Socket,
-  roomId: string
-): Promise<Game> => {
-  return new Promise<Game>((rs, rj) => {
-    socket.emit('game', { roomId });
-    socket.on('game', (game: Game) => rs(game));
-  });
-};
+// export const getGame = async (
+//   socket: Socket,
+//   roomId: string
+// ): Promise<Game> => {
+//   return new Promise<Game>((rs, rj) => {
+//     socket.emit('game', { roomId });
+//     socket.on('game', (game: Game) => rs(game));
+//   });
+// };
 
 export const createRoom = async (
   socket: Socket,

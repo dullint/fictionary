@@ -18,8 +18,8 @@ import { getPlayerIndexGenerator } from './helpers';
 import { getNumberOfDefinitionToDisplay } from '../DefinitionList/helpers';
 
 const WordReveal = () => {
-  const game = useContext(RoomContext);
-  const players = game.players.getInGamePlayers();
+  const { players, gameState } = useContext(RoomContext);
+
   const socket = useContext(SocketContext);
   const isAdmin = isRoomAdmin(players, socket.id);
   const [revealedAuthorIndexes, setRevealedAuthorIndexes] = useState<number[]>(
@@ -29,7 +29,7 @@ const WordReveal = () => {
     []
   );
   const definitionsRef = useRef([]);
-  const definitionsNumber = getNumberOfDefinitionToDisplay(game);
+  const definitionsNumber = getNumberOfDefinitionToDisplay(gameState);
   const allDefinitionsAreRevealed =
     revealedAuthorIndexes?.length >= definitionsNumber;
 

@@ -10,18 +10,17 @@ import { joinRoom } from '../../services/room';
 import LoadingPage from '../LoadingPage';
 import WordReveal from '../WordReveal';
 import { ClientRoom } from '../../../../server/src/room/types';
-import { GameStep } from '../../../../server/src/game/types';
 
 export const RoomContext = createContext<ClientRoom>(null);
 
-// export enum GameStep {
-//   WAIT,
-//   PROMPT,
-//   GUESS,
-//   REVEAL,
-//   RESULTS,
-//   FINISHED,
-// }
+export enum GameStep {
+  WAIT,
+  PROMPT,
+  GUESS,
+  REVEAL,
+  RESULTS,
+  FINISHED,
+}
 
 const Room = () => {
   const socket = useContext(SocketContext);

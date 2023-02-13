@@ -65,7 +65,6 @@ export const roomHandler = (io: Server, socket: Socket) => {
     await socket.join(roomId);
     roomStore.createRoom(roomId, socket.data.userId);
     socket.emit('room_created');
-    logger.info(`User of id ${socket.data.userId} created room ${roomId}`);
   };
 
   const leaveRoom = ({ roomId }: { roomId: string }) => {

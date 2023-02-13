@@ -23,8 +23,9 @@ import DefinitionRender from '../DefinitionRender';
 import { cleanSentence } from './helpers';
 
 const WordPrompt = () => {
-  const game = useContext(RoomContext);
-  const players = game.players.getInGamePlayers();
+  const { gameState, gameSettings, players } = useContext(RoomContext);
+  const { entry, inputEntries } = gameState;
+
   const wordRef = useRef(null);
   const ExRef = useRef(null);
   const [wordWidth, setWordWidth] = useState(0);
@@ -33,10 +34,9 @@ const WordPrompt = () => {
   const [definition, setDefinition] = useState('');
   const [example, setExample] = useState('');
   const [hasSubmited, setHasSubmited] = useState(false);
-  const [counter, setCounter] = useState(game.gameSettings.maxPromptTime * 60);
+  const [counter, setCounter] = useState(gameSettings.maxPromptTime * 60);
   const { roomId } = useParams();
-  const entry = game?.entry;
-  const isUsingExample = game.gameSettings.useExample ?? false;
+  const isUsingExample = gameSettings.useExample;
 
   useEffect(() => {
     setWordWidth(wordRef?.current?.clientWidth);
@@ -107,9 +107,9 @@ const WordPrompt = () => {
     }
   };
 
-  const numberOfSubmittedDefinition = Object.values(
-    game?.inputEntries ?? {}
-  ).filter((entry) => !entry.autosave).length;
+  const numberOfSubmittedDefinition = Object.values(inputEntries ?? {}).filter(
+    (entry) => !entry.autosave
+  ).length;
 
   const minutes = counter && Math.floor(counter / 60);
   const seconds = counter && counter - minutes * 60;

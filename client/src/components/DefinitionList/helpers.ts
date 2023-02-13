@@ -1,4 +1,5 @@
 import {
+  GameState,
   InputDictionaryEntries,
   InputDictionaryEntry,
   SelectedDefinitions,
@@ -7,7 +8,6 @@ import { shuffle } from 'shuffle-seed';
 
 import { DictionnaryEntry } from '../../../../server/src/dictionary/types';
 import { DICTIONARY_PLAYER } from './constants';
-import { Game } from '../../../../server/src/game';
 import { Player } from '../../../../server/src/player';
 
 export const getVotingPlayersByDefinitions = (
@@ -26,8 +26,8 @@ export const getVotingPlayersByDefinitions = (
   return votingPlayersByDefinitions;
 };
 
-export const getNumberOfDefinitionToDisplay = (game: Game) =>
-  Object.values(game?.inputEntries)?.length + 1;
+export const getNumberOfDefinitionToDisplay = (gameState: GameState) =>
+  Object.values(gameState?.inputEntries)?.length + 1;
 
 export const getEntriesWithUsernameToDisplay = (
   inputEntries: InputDictionaryEntries,
