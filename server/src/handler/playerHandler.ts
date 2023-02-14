@@ -17,7 +17,7 @@ export const playerHandler = (io: Server, socket: Socket) => {
       socket.emit('update_username_error', UpdateUsernameError.alreadyTaken);
       return;
     }
-    room.players.getOnePlayer(socket.data.userId)?.updateUsername(username);
+    room.players.updateUsername(socket.data.userId, username);
     room.updateClient(io);
     logger.info(
       `User of id ${socket.data.userId} updated his username to ${username}`
@@ -29,7 +29,7 @@ export const playerHandler = (io: Server, socket: Socket) => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(io, roomId);
     if (!room) return;
-    room.players.getOnePlayer(socket.data.userId)?.onDisconnect();
+    room.players.onPlayerDisconnect(socket.data.userId);
     logger.info(`User of id ${socket.data.userId} left room ${roomId}`);
   };
 

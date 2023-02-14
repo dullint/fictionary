@@ -7,7 +7,4 @@ export const DICTIONARY_PLAYER: Player = {
   isConnected: true,
   isInGame: true,
   username: 'dictionary',
-  onConnect: () => {},
-  updateUsername: () => {},
-  onDisconnect: () => {},
 };

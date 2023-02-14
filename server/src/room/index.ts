@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
 import { GameManager } from '../game';
-import { RoomPlayers } from '../roomPlayers';
+import { RoomPlayers } from '../player';
 
 import { DEFAULT_GAME_SETTINGS } from './constants';
 import { ClientRoom, GameSettings, RoomId } from './types';
