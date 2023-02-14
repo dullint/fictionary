@@ -10,19 +10,12 @@ import socket from './socket';
 
 const App = () => {
   const theme = getTheme();
-  const [connectCounter, setConnectCounter] = useState(0);
 
   useEffect(() => {
     return () => {
       socket.disconnect();
     };
   }, []);
-
-  useEffect(() => {
-    socket.on('connect', () => {
-      setConnectCounter((c) => c + 1);
-    });
-  }, [connectCounter]);
 
   return (
     <Div100vh

@@ -1,25 +1,17 @@
 import { Button, CircularProgress, Grid, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CONNECT_TIMEOUT, timeoutMessage } from './constants';
 
 interface PropsType {
-  roomErrorMessage: string | null;
+  error: string;
 }
 const LoadingPage = (props: PropsType) => {
-  const { roomErrorMessage } = props;
-  const [timeoutError, setTimeoutError] = useState(false);
+  const { error } = props;
   const navigate = useNavigate();
-
-  useEffect(() => {
-    setTimeout(() => setTimeoutError(true), CONNECT_TIMEOUT);
-  });
-
-  const errorMessage = timeoutError ? timeoutMessage : roomErrorMessage;
 
   return (
     <Grid container alignItems="center" justifyContent="center" height="100%">
-      {errorMessage ? (
+      {error ? (
         <Grid
           flexDirection={'column'}
           justifyContent="center"
@@ -27,7 +19,7 @@ const LoadingPage = (props: PropsType) => {
           container
         >
           <Typography variant="subtitle1" align={'center'}>
-            {errorMessage}
+            {error}
           </Typography>
           <Button
             onClick={() => navigate('/')}

@@ -8,9 +8,8 @@ import WordResult from '../WordResult';
 import { joinRoom } from '../../services/room';
 import LoadingPage from '../LoadingPage';
 import WordReveal from '../WordReveal';
-import { ClientRoom, RoomId } from '../../../../server/src/room/types';
 import socket from '../../socket';
-import { Socket } from 'socket.io-client';
+import { ClientRoom } from '../../../../server/src/room/types';
 
 export const RoomContext = createContext<ClientRoom>(null);
 
@@ -25,54 +24,64 @@ export enum GameStep {
 
 const Room = () => {
   const { roomId } = useParams();
-  const [room, setRoom] = useState<ClientRoom>(null);
-  const [roomErrorMessage, setRoomErrorMessage] = useState(null);
+  const [room, setRoom] = useState<ClientRoom | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const onRoomEnter = async () => {
-      const room = await joinRoom(socket, roomId);
-      setRoom(room);
+    const handleJoinRoom = async () => {
+      await joinRoom(roomId)
+        .then((room) => {
+          setRoom(room);
+        })
+        .catch((joinRoomError) => {
+          setError(joinRoomError);
+          setRoom(null);
+        });
     };
 
-    onRoomEnter().catch((err) => {
-      setRoomErrorMessage(err.message);
-    });
+    handleJoinRoom();
+
     socket.on('room_error', (errorMessage) => {
-      console.log('room_error');
-      setRoomErrorMessage(errorMessage);
+      setError(errorMessage);
       setRoom(null);
     });
+
+    socket.on('connect', () => {
+      handleJoinRoom();
+    });
+
     return () => {
       socket.emit('leave_room', { roomId });
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
-  const renderComponent = (gameStep: GameStep) => {
-    if (room) {
-      switch (gameStep) {
-        case GameStep.WAIT:
-          return <WaitingRoom />;
-        case GameStep.PROMPT:
-          return <WordPrompt />;
-        case GameStep.GUESS:
-          return <WordGuess />;
-        case GameStep.REVEAL:
-          return <WordReveal />;
-        case GameStep.RESULTS:
-          return <WordResult />;
-        case GameStep.FINISHED:
-          return <Leaderboard />;
-        default:
-          return <LoadingPage roomErrorMessage={roomErrorMessage} />;
-      }
+  const roomRenderer = (room: ClientRoom) => {
+    const gameStep = room.gameState.gameStep;
+    switch (gameStep) {
+      case GameStep.WAIT:
+        return <WaitingRoom />;
+      case GameStep.PROMPT:
+        return <WordPrompt />;
+      case GameStep.GUESS:
+        return <WordGuess />;
+      case GameStep.REVEAL:
+        return <WordReveal />;
+      case GameStep.RESULTS:
+        return <WordResult />;
+      case GameStep.FINISHED:
+        return <Leaderboard />;
+      default:
+        return <LoadingPage error={error} />;
     }
-    return <LoadingPage roomErrorMessage={roomErrorMessage} />;
   };
 
-  return (
+  return room ? (
     <RoomContext.Provider value={room}>
-      {renderComponent(room?.gameState.gameStep)}
+      {roomRenderer(room)}
     </RoomContext.Provider>
+  ) : (
+    <LoadingPage error={error} />
   );
 };
 

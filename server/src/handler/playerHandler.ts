@@ -3,6 +3,7 @@ import roomStore, { RoomStore } from '../room/roomStore';
 import logger from '../logging';
 import { getSocketRoom } from '../room/helpers';
 import { Username } from '../player/type';
+import { UpdateUsernameError } from '../player/errors';
 
 export const playerHandler = (io: Server, socket: Socket) => {
   const updateUsername = async ({ username }: { username: Username }) => {
@@ -13,9 +14,7 @@ export const playerHandler = (io: Server, socket: Socket) => {
       .getAllPlayers()
       .map((player) => player.username);
     if (usernamesInGame.includes(username)) {
-      socket.emit('update_username_error', {
-        message: 'Username already taken',
-      });
+      socket.emit('update_username_error', UpdateUsernameError.alreadyTaken);
       return;
     }
     room.players.getOnePlayer(socket.data.userId)?.updateUsername(username);

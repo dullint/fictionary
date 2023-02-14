@@ -13,7 +13,7 @@ import socket from '../../socket';
 const Home = () => {
   const navigate = useNavigate();
   const [roomId, setRoomId] = useState('');
-  const [joinRoomErrorMessage, setJoinRoomErrorMessage] = useState(null);
+  const [joinRoomError, setJoinRoomError] = useState<string | null>(null);
 
   const handleCreateGame = async (event) => {
     event.preventDefault();
@@ -24,10 +24,13 @@ const Home = () => {
 
   const handleJoinGame = async () => {
     if (roomId) {
-      const joined = await joinRoom(socket, roomId).catch((err) => {
-        setJoinRoomErrorMessage(err.message);
-      });
-      if (joined) navigate(`/room/${roomId}`);
+      await joinRoom(roomId)
+        .then((room) => {
+          navigate(`/room/${roomId}`);
+        })
+        .catch((error) => {
+          setJoinRoomError(error);
+        });
     }
   };
 
@@ -103,7 +106,7 @@ const Home = () => {
               placeholder="Room ID"
               onChange={(e) => {
                 setRoomId(e.target.value.toLocaleUpperCase());
-                setJoinRoomErrorMessage(null);
+                setJoinRoomError(null);
               }}
               sx={{
                 height: 60,
@@ -123,9 +126,9 @@ const Home = () => {
               Join game
             </Button>
           </Grid>
-          {joinRoomErrorMessage && (
+          {joinRoomError && (
             <Typography sx={{ color: theme.palette.secondary.main }}>
-              {joinRoomErrorMessage}
+              {joinRoomError}
             </Typography>
           )}
         </Grid>

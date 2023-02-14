@@ -16,9 +16,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
 
     // Room does not exist
     if (!room) {
-      socket.emit('join_room_error', {
-        type: JoinRoomError.roomNotFound,
-      });
+      socket.emit('join_room_error', JoinRoomError.roomNotFound);
       return;
     }
     const roomPlayers = room.players;
@@ -26,9 +24,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
     // Room already full
     const alreadyInGamePlayers = roomPlayers.getInGamePlayers();
     if (alreadyInGamePlayers.length >= MAX_PLAYER_IN_ROOM) {
-      socket.emit('join_room_error', {
-        type: JoinRoomError.roomFull,
-      });
+      socket.emit('join_room_error', JoinRoomError.roomFull);
       return;
     }
 
@@ -37,9 +33,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
       (room) => room != roomId && room != socket.id
     );
     if (socketOtherRooms.length > 0) {
-      socket.emit('join_room_error', {
-        type: JoinRoomError.inAnotherRoom,
-      });
+      socket.emit('join_room_error', JoinRoomError.inAnotherRoom);
       return;
     }
 
@@ -48,9 +42,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
       room.game.gameStep !== GameStep.WAIT &&
       !roomPlayers.getAllPlayers().includes(userId)
     ) {
-      socket.emit('join_room_error', {
-        type: JoinRoomError.gameAlreadyLaunched,
-      });
+      socket.emit('join_room_error', JoinRoomError.gameAlreadyLaunched);
       return;
     }
 

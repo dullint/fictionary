@@ -3,16 +3,13 @@ import { RoomId } from './types';
 import { UserId } from '../socket/types';
 import logger from '../logging';
 import { Room } from '.';
+import { RoomError } from './errors';
 
 export class RoomStore extends Map<RoomId, Room> {
   getRoom(io: Server, roomId: RoomId) {
     const room = this.get(roomId);
     if (!room) {
-      console.log('getRoom error');
-      io.to(roomId).emit('room_error', {
-        message:
-          'There was a problem with the server, your room does not exist anymore',
-      });
+      io.to(roomId).emit('room_error', RoomError.roomNotFound);
       return null;
     }
     return room;
