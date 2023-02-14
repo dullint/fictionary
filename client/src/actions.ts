@@ -1,7 +1,6 @@
-import { Socket } from 'socket.io-client';
-import { ClientRoom } from '../../../server/src/room/types';
-import { CONNECT_TIMEOUT } from '../components/Room/constants';
-import socket from '../socket';
+import { ClientRoom } from '../../server/src/room/types';
+import { CONNECT_TIMEOUT } from './components/Room/constants';
+import socket from './socket';
 
 export const joinRoom = async (roomId: string): Promise<ClientRoom> => {
   return new Promise((rs, rj) => {
@@ -17,20 +16,14 @@ export const joinRoom = async (roomId: string): Promise<ClientRoom> => {
     });
   });
 };
-export const checkRoomExistence = async (
-  socket: Socket,
-  roomId: string
-): Promise<boolean> => {
+export const checkRoomExistence = async (roomId: string): Promise<boolean> => {
   return new Promise((rs, rj) => {
     socket.emit('check_room_existence', { roomId });
     socket.on('room_existence', (existence) => rs(existence));
   });
 };
 
-export const createRoom = async (
-  socket: Socket,
-  roomId: string
-): Promise<boolean> => {
+export const createRoom = async (roomId: string): Promise<boolean> => {
   return new Promise((rs, rj) => {
     socket.emit('create_room', { roomId });
     socket.on('room_created', () => rs(true));
@@ -38,13 +31,9 @@ export const createRoom = async (
   });
 };
 
-export const updateUsername = async (
-  socket: Socket,
-  roomId: string,
-  username: string
-): Promise<boolean> => {
+export const updateUsername = async (username: string): Promise<boolean> => {
   return new Promise((rs, rj) => {
-    socket.emit('update_username', { roomId, username });
+    socket.emit('update_username', { username });
     socket.on('username_updated', () => rs(true));
     socket.on('update_username_error', (error) => rj(error));
   });

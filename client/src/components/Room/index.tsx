@@ -5,7 +5,7 @@ import WordPrompt from '../WordPrompt';
 import Leaderboard from '../Leaderboard';
 import WordGuess from '../WordGuess';
 import WordResult from '../WordResult';
-import { joinRoom } from '../../services/room';
+import { joinRoom } from '../../actions';
 import LoadingPage from '../LoadingPage';
 import WordReveal from '../WordReveal';
 import socket from '../../socket';

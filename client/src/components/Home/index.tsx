@@ -1,14 +1,13 @@
 import { Button, Grid, Input, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createRoom, joinRoom } from '../../services/room';
+import { createRoom, joinRoom } from '../../actions';
 import { theme } from '../../theme';
 import { generateRandomRoomId } from '../GameSettingsDialog/helpers';
 import { Box } from '@mui/system';
 import { TypeAnimation } from 'react-type-animation';
 import { getTypingSequence } from './helpers';
 import HowToPlay from '../HowToPlay';
-import socket from '../../socket';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -18,7 +17,7 @@ const Home = () => {
   const handleCreateGame = async (event) => {
     event.preventDefault();
     const newRoomId = generateRandomRoomId();
-    const created = await createRoom(socket, newRoomId);
+    const created = await createRoom(newRoomId);
     if (created) navigate(`/room/${newRoomId}`);
   };
 

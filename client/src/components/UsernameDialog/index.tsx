@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
-import { useParams } from 'react-router';
-import { updateUsername } from '../../services/room';
+import { updateUsername } from '../../actions';
 import { Grid, Input, Typography } from '@mui/material';
 import { palette, theme } from '../../theme';
 import { Box } from '@mui/system';
-import socket from '../../socket';
 
 export interface Propstype {
   open: boolean;
@@ -16,7 +14,6 @@ export interface Propstype {
 
 const UsernameDialog = (props: Propstype) => {
   const { open, setOpen } = props;
-  const { roomId } = useParams();
   const [username, setUsername] = useState<string>(null);
   const [usernameErrorMessage, setUsernameErrorMessage] = useState(null);
 
@@ -26,7 +23,7 @@ const UsernameDialog = (props: Propstype) => {
   };
 
   const handleSubmit = async () => {
-    const set = await updateUsername(socket, roomId, username).catch((err) => {
+    const set = await updateUsername(username).catch((err) => {
       setUsernameErrorMessage(err.message);
     });
     if (set) setOpen(false);

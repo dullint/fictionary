@@ -1,7 +1,7 @@
 import { Scores, SelectedDefinitions } from '../game/types';
 import { UpdateUsernameError } from '../player/errors';
 import { Username } from '../player/type';
-import { JoinRoomError, RoomError } from '../room/errors';
+import { CreateRoomError, JoinRoomError, RoomError } from '../room/errors';
 import { ClientRoom, GameSettings, RoomId } from '../room/types';
 
 export type UserId = string;
@@ -18,11 +18,14 @@ export interface ServerToClientEvents {
   room_created: () => void;
   username_updated: () => void;
   update_username_error: (error: UpdateUsernameError) => void;
+  create_room_error: (error: CreateRoomError) => void;
   timer: (counter: number) => void;
+  room_existence: (existence: boolean) => void;
 }
 
 export interface ClientToServerEvents {
-  update_username: (payload: { username: Username }) => void;
+  update_username: (payload: UpdateUsernamePayload) => void;
+  check_room_existence: (payload: RoomIdPayload) => void;
   create_room: (payload: RoomIdPayload) => void;
   join_room: (payload: RoomIdPayload) => void;
   leave_room: (payload: RoomIdPayload) => void;
@@ -48,6 +51,10 @@ export interface ClientToServerEvents {
 export interface UpdateScoresPayload {
   roomId: RoomId;
   scores: Scores;
+}
+
+export interface UpdateUsernamePayload {
+  username: Username;
 }
 
 export interface ChangeGameSettingsPayload {

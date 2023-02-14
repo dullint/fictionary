@@ -9,3 +9,5 @@ export enum JoinRoomError {
 export enum RoomError {
   roomNotFound = 'Your room does not exist anymore',
 }
+
+export enum CreateRoomError {}
