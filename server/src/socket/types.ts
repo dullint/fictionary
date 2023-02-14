@@ -1,6 +1,7 @@
-import { Scores, SelectedDefinitions } from '../game/types';
+import { Scores } from '../game/types';
 import { UpdateUsernameError } from '../player/errors';
 import { Username } from '../player/type';
+import { Player } from '../player';
 import { CreateRoomError, JoinRoomError, RoomError } from '../room/errors';
 import { ClientRoom, GameSettings, RoomId } from '../room/types';
 
@@ -21,6 +22,7 @@ export interface ServerToClientEvents {
   create_room_error: (error: CreateRoomError) => void;
   timer: (counter: number) => void;
   room_existence: (existence: boolean) => void;
+  room: (room: ClientRoom) => void;
 }
 
 export interface ClientToServerEvents {

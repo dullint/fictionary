@@ -2,12 +2,17 @@ import { ClientRoom } from '../../server/src/room/types';
 import { CONNECT_TIMEOUT } from './components/Room/constants';
 import socket from './socket';
 
+const timeout = (time: number, error: string) =>
+  new Promise((_, reject) => {
+    const id = setTimeout(() => {
+      clearTimeout(id);
+      reject(error);
+    }, time);
+  });
+
 export const joinRoom = async (roomId: string): Promise<ClientRoom> => {
-  return new Promise((rs, rj) => {
+  const joinPromise = new Promise<ClientRoom>((rs, rj) => {
     socket.emit('join_room', { roomId });
-    setTimeout(() => {
-      rj('Timout error when joining the room');
-    }, CONNECT_TIMEOUT);
     socket.on('room_joined', (room: ClientRoom) => {
       rs(room);
     });
@@ -15,7 +20,12 @@ export const joinRoom = async (roomId: string): Promise<ClientRoom> => {
       rj(error);
     });
   });
+  return Promise.race([
+    (timeout(CONNECT_TIMEOUT, 'Timout error when joining the room'),
+    joinPromise),
+  ]);
 };
+
 export const checkRoomExistence = async (roomId: string): Promise<boolean> => {
   return new Promise((rs, rj) => {
     socket.emit('check_room_existence', { roomId });

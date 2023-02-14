@@ -48,14 +48,15 @@ export const roomHandler = (io: Server, socket: Socket) => {
 
     await socket.join(roomId);
     roomPlayers.addPlayer(userId);
-    socket.emit('room_joined', room.getRoomAfterJoin());
+    room.updateClient(io);
     logger.info(`User ${userId} joined room ${roomId}`);
   };
 
   const createRoom = async (payload: RoomIdPayload) => {
     const { roomId } = payload;
     await socket.join(roomId);
-    roomStore.createRoom(roomId, socket.data.userId);
+    roomStore.createRoom(roomId);
+    logger.info(`User of id ${socket.data.userId} created room ${roomId}`);
     socket.emit('room_created');
   };
 

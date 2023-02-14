@@ -6,6 +6,7 @@ export const DICTIONARY_PLAYER: Player = {
   isAdmin: true,
   isConnected: true,
   isInGame: true,
+  username: 'dictionary',
   onConnect: () => {},
   updateUsername: () => {},
   onDisconnect: () => {},

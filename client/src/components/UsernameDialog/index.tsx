@@ -23,10 +23,10 @@ const UsernameDialog = (props: Propstype) => {
   };
 
   const handleSubmit = async () => {
-    const set = await updateUsername(username).catch((err) => {
+    const updated = await updateUsername(username).catch((err) => {
       setUsernameErrorMessage(err.message);
     });
-    if (set) setOpen(false);
+    if (updated) setOpen(false);
   };
 
   const handlePressKey = (event) => {

@@ -1,6 +1,7 @@
+import { Server } from 'socket.io';
 import { GameManager } from '../game';
 import { RoomPlayers } from '../roomPlayers';
-import { UserId } from '../socket/types';
+
 import { DEFAULT_GAME_SETTINGS } from './constants';
 import { ClientRoom, GameSettings, RoomId } from './types';
 
@@ -10,9 +11,9 @@ export class Room {
   players: RoomPlayers;
   gameSettings: GameSettings;
 
-  constructor(roomId: string, creatorUserId: UserId) {
+  constructor(roomId: string) {
     this.roomId = roomId;
-    this.players = new RoomPlayers(creatorUserId);
+    this.players = new RoomPlayers();
     this.gameSettings = DEFAULT_GAME_SETTINGS;
     this.game = new GameManager(roomId);
   }
@@ -21,11 +22,12 @@ export class Room {
     this.gameSettings = gameSettings;
   }
 
-  getRoomAfterJoin(): ClientRoom {
-    return {
+  updateClient(io: Server) {
+    const clientRoom: ClientRoom = {
       gameState: this.game.getState(),
       players: this.players.getInGamePlayers(),
       gameSettings: this.gameSettings,
     };
+    io.to(this.roomId).emit('room', clientRoom);
   }
 }

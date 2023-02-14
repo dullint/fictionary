@@ -20,9 +20,8 @@ export class RoomStore extends Map<RoomId, Room> {
     if (deleted) logger.info(`Room ${roomId} deleted.`);
   }
 
-  createRoom(roomId: RoomId, creatorUserId: UserId) {
-    this.set(roomId, new Room(roomId, creatorUserId));
-    logger.info(`User of id ${creatorUserId} created room ${roomId}`);
+  createRoom(roomId: RoomId) {
+    this.set(roomId, new Room(roomId));
   }
 }
 

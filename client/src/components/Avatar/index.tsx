@@ -29,7 +29,7 @@ const Avatar = (props: PropsType) => {
       overlap="circular"
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       badgeContent={
-        player?.isAdmin && showCrown ? (
+        player.isAdmin && showCrown ? (
           <img
             src={crownImage}
             alt={'test'}
@@ -74,11 +74,11 @@ const Avatar = (props: PropsType) => {
             border: `${borderSize}px solid black`,
           }}
         >
-          {player?.username ? (
+          {player.username ? (
             <img
               src={getAvatarString(player)}
               style={{ width: '140%', height: '140%' }}
-              alt={player?.username}
+              alt={player.username}
             />
           ) : (
             <CircularProgress />

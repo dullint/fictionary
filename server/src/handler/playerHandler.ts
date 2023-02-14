@@ -1,5 +1,5 @@
 import { Socket, Server } from 'socket.io';
-import roomStore, { RoomStore } from '../room/roomStore';
+import roomStore from '../room/roomStore';
 import logger from '../logging';
 import { getSocketRoom } from '../room/helpers';
 import { Username } from '../player/type';
@@ -18,7 +18,8 @@ export const playerHandler = (io: Server, socket: Socket) => {
       return;
     }
     room.players.getOnePlayer(socket.data.userId)?.updateUsername(username);
-    logger.debug(
+    room.updateClient(io);
+    logger.info(
       `User of id ${socket.data.userId} updated his username to ${username}`
     );
     socket.emit('username_updated');

@@ -50,6 +50,8 @@ const Room = () => {
       handleJoinRoom();
     });
 
+    socket.on('room', (room) => setRoom(room));
+
     return () => {
       socket.emit('leave_room', { roomId });
     };

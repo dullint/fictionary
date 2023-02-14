@@ -3,11 +3,11 @@ import { MAX_PLAYER_IN_ROOM, ROOM_DELETE_DELAY } from '../room/constants';
 import { RoomId } from '../room/types';
 import { RoomStore } from '../room/roomStore';
 import { UserId } from '../socket/types';
+import logger from '../logging';
 
 export class RoomPlayers extends Map<UserId, Player> {
-  constructor(creatorUserId: UserId) {
+  constructor() {
     super();
-    this.addPlayer(creatorUserId);
   }
 
   getAllPlayers() {
@@ -38,6 +38,10 @@ export class RoomPlayers extends Map<UserId, Player> {
   }
 
   addPlayer(userId: UserId) {
+    if (this.get(userId)) {
+      logger.warn(`user of id ${userId} is already in room`);
+      return;
+    }
     const isAdmin = this.size === 0;
     const color = this._generateColor();
     this.set(userId, new Player(userId, isAdmin, color));
