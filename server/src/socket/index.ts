@@ -34,9 +34,10 @@ export default (server: HTTPServer) => {
   });
 
   io.on('connection', (socket) => {
-    logger.info(
-      `User of id ${socket.data.userId} connected with socket of id: ${socket.id}`
-    );
+    logger.info('User connected', {
+      socketId: socket.id,
+      userId: socket.data.userId,
+    });
     mixpanel.userConnect(socket.data.userId, socket.data.ip);
 
     roomHandler(io, socket);
@@ -44,7 +45,7 @@ export default (server: HTTPServer) => {
     gameHandler(io, socket);
 
     socket.on('disconnect', async () => {
-      logger.info(`User of id ${socket.data.userId} disconnected`);
+      logger.info('User disconnected', { userId: socket.data.userId });
     });
   });
   return io;

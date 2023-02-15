@@ -49,14 +49,17 @@ export const roomHandler = (io: Server, socket: Socket) => {
     await socket.join(roomId);
     roomPlayers.addPlayer(userId);
     room.updateClient(io);
-    logger.info(`User ${userId} joined room ${roomId}`);
+    logger.info(`User joined room`, { userId, roomId });
   };
 
   const createRoom = async (payload: RoomIdPayload) => {
     const { roomId } = payload;
     await socket.join(roomId);
     roomStore.createRoom(roomId);
-    logger.info(`User of id ${socket.data.userId} created room ${roomId}`);
+    logger.info(`User created room ${roomId}`, {
+      userId: socket.data.userId,
+      roomId,
+    });
     socket.emit('room_created');
   };
 
@@ -65,7 +68,10 @@ export const roomHandler = (io: Server, socket: Socket) => {
     if (!room) return;
     room.players.deletePlayer(socket.data.userId, roomId, roomStore);
     socket.leave(roomId);
-    logger.info(`User of id ${socket.data.userId} left room ${roomId}`);
+    logger.info(`User left room `, {
+      userId: socket.data.userId,
+      roomId,
+    });
   };
 
   const changeGameSettings = ({

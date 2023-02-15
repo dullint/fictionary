@@ -58,7 +58,7 @@ export class RoomPlayers extends Map<UserId, Player> {
 
   addPlayer(userId: UserId) {
     if (this.get(userId)) {
-      logger.warn(`user of id ${userId} is already in room`);
+      logger.warn('user is already in room', { userId });
       return;
     }
     const isAdmin = this.size === 0;

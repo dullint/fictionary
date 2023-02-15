@@ -19,9 +19,9 @@ export const playerHandler = (io: Server, socket: Socket) => {
     }
     room.players.updateUsername(socket.data.userId, username);
     room.updateClient(io);
-    logger.info(
-      `User of id ${socket.data.userId} updated his username to ${username}`
-    );
+    logger.info(`User updated his username to ${username}`, {
+      userId: socket.data.userId,
+    });
     socket.emit('username_updated');
   };
 
@@ -30,7 +30,7 @@ export const playerHandler = (io: Server, socket: Socket) => {
     const room = roomStore.getRoom(io, roomId);
     if (!room) return;
     room.players.onPlayerDisconnect(socket.data.userId);
-    logger.info(`User of id ${socket.data.userId} left room ${roomId}`);
+    logger.info(`Left room`, { userId: socket.data.userId, roomId });
   };
 
   socket.on('update_username', updateUsername);
