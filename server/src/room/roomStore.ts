@@ -6,9 +6,9 @@ import { Room } from '.';
 import { RoomError } from './errors';
 
 export class RoomStore extends Map<RoomId, Room> {
-  getRoom(io: Server, roomId: RoomId) {
+  getRoom(roomId: RoomId, io?: Server) {
     const room = this.get(roomId);
-    if (!room) {
+    if (!room && io) {
       io.to(roomId).emit('room_error', RoomError.roomNotFound);
       return null;
     }

@@ -50,7 +50,10 @@ const Room = () => {
       handleJoinRoom();
     });
 
-    socket.on('room', (room) => setRoom(room));
+    socket.on('room', (room) => {
+      console.log('room update', { room });
+      setRoom(room);
+    });
 
     return () => {
       socket.emit('leave_room', { roomId });

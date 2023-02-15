@@ -1,6 +1,8 @@
 import { Server } from 'socket.io';
 import { DictionnaryEntry } from '../dictionary/types';
+import roomStore from '../room/roomStore';
 import { GameSettings } from '../room/types';
+import { UserId } from '../socket/types';
 import { get_random_entry } from './helpers';
 import {
   GameState,
@@ -38,9 +40,19 @@ export class GameManager {
   }
 
   selectDefinition(choosingUserId: string, definitionUserId: string) {
-    this.selections = {
-      ...this.selections,
-      [choosingUserId]: definitionUserId,
+    this.selections[choosingUserId] = definitionUserId;
+  }
+
+  submitDefinition(
+    userId: UserId,
+    definition: string,
+    example: string,
+    autosave: boolean
+  ) {
+    this.inputEntries[userId] = {
+      definition,
+      example,
+      autosave,
     };
   }
 

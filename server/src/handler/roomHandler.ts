@@ -64,10 +64,11 @@ export const roomHandler = (io: Server, socket: Socket) => {
   };
 
   const leaveRoom = ({ roomId }: { roomId: string }) => {
-    const room = roomStore.getRoom(io, roomId);
+    const room = roomStore.getRoom(roomId, io);
     if (!room) return;
     room.players.deletePlayer(socket.data.userId, roomId, roomStore);
     socket.leave(roomId);
+    room.updateClient(io);
     logger.info(`User left room `, {
       userId: socket.data.userId,
       roomId,
@@ -80,9 +81,10 @@ export const roomHandler = (io: Server, socket: Socket) => {
     gameSettings: GameSettings;
   }) => {
     const roomId = getSocketRoom(socket);
-    const room = roomStore.getRoom(io, roomId);
+    const room = roomStore.getRoom(roomId, io);
     if (!room) return;
     room.updateGameSettings(gameSettings);
+    room.updateClient(io);
   };
 
   socket.on('create_room', createRoom);

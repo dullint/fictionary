@@ -11,7 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { RoomContext } from '../Room';
 import UsernameDialog from '../UsernameDialog';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { getPlayTooltip, isRoomAdmin } from './helpers';
+import { getPlayTooltip } from './helpers';
 import GameSettingsDialog from '../GameSettingsDialog';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Avatar from '../Avatar';
@@ -23,15 +23,17 @@ import socket, { localSocketUserId } from '../../socket';
 const WaitingRoom = () => {
   const { players } = useContext(RoomContext);
 
-  const myUsername = players.find(
+  const myPlayer = players.find(
     (player) => player.userId === localSocketUserId
-  )?.username;
+  );
+  const myUsername = myPlayer?.username;
+  const isAdmin = myPlayer?.isAdmin;
+
   const [openUsernameDialog, setOpenUsernameDialog] = useState(!myUsername);
   const [openSettingsDialog, setOpenSettingsDialog] = useState(false);
   const [copyToClipboardMsg, setCopyToClipboardMsg] = useState(false);
   const navigate = useNavigate();
   const { roomId } = useParams();
-  const isAdmin = isRoomAdmin(players, socket.id);
 
   const handlePlay = () => {
     socket.emit('launch_game', { roomId });
