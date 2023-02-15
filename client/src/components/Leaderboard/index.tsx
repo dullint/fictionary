@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import socket from '../../socket';
 import Avatar from '../Avatar';
 import { RoomContext } from '../Room';
-import { isRoomAdmin } from '../WaitingRoom/helpers';
+import { getMyPlayer } from '../WaitingRoom/helpers';
 import { calculatePlayerRoundScore } from '../WordResult/helpers';
 
 const Leaderboard = () => {
@@ -22,21 +22,21 @@ const Leaderboard = () => {
   const handleGoToWaitingRoom = () => {
     socket.emit('reset_game', { roomId });
   };
-  const isAdmin = isRoomAdmin(players, socket.id);
+  const isAdmin = getMyPlayer(players)?.isAdmin;
 
-  const previousRoundScores = players.reduce((acc, { username }) => {
+  const previousRoundScores = players.reduce((acc, { userId }) => {
     return {
       ...acc,
-      [username]: calculatePlayerRoundScore(username, selections),
+      [userId]: calculatePlayerRoundScore(userId, selections),
     };
   }, {});
 
-  const finalScores = players.reduce((acc, { username }) => {
-    const previousScore = scores?.[username] ?? 0;
-    const roundScore = previousRoundScores?.[username];
+  const finalScores = players.reduce((acc, { userId }) => {
+    const previousScore = scores?.[userId] ?? 0;
+    const roundScore = previousRoundScores?.[userId];
     return {
       ...acc,
-      [username]: previousScore + roundScore,
+      [userId]: previousScore + roundScore,
     };
   }, {});
 
@@ -62,8 +62,7 @@ const Leaderboard = () => {
           players
             .sort(
               (player1, player2) =>
-                finalScores?.[player1.username] -
-                finalScores?.[player1.username]
+                finalScores?.[player1.userId] - finalScores?.[player1.userId]
             )
             .map((player) => (
               <Grid
@@ -72,16 +71,16 @@ const Leaderboard = () => {
                 justifyContent="center"
                 alignItems="center"
                 sx={{ maxWidth: 130 }}
-                key={player?.username}
+                key={player.userId}
               >
                 <Avatar
                   player={player}
                   size={'medium'}
                   displayBadge={true}
-                  badgeContent={finalScores?.[player?.username] ?? 0}
+                  badgeContent={finalScores?.[player.userId] ?? 0}
                 />
                 <Typography variant="subtitle1" align="center">
-                  {player?.username}
+                  {player.userId}
                 </Typography>
               </Grid>
             ))}

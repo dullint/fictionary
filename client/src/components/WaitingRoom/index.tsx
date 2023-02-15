@@ -11,21 +11,19 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { RoomContext } from '../Room';
 import UsernameDialog from '../UsernameDialog';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { getPlayTooltip } from './helpers';
+import { getMyPlayer, getPlayTooltip } from './helpers';
 import GameSettingsDialog from '../GameSettingsDialog';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Avatar from '../Avatar';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { theme } from '../../theme';
 import { bottomPageButtonSx } from '../../constants/style';
-import socket, { localSocketUserId } from '../../socket';
+import socket from '../../socket';
 
 const WaitingRoom = () => {
   const { players } = useContext(RoomContext);
 
-  const myPlayer = players.find(
-    (player) => player.userId === localSocketUserId
-  );
+  const myPlayer = getMyPlayer(players);
   const myUsername = myPlayer?.username;
   const isAdmin = myPlayer?.isAdmin;
 

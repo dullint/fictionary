@@ -7,7 +7,6 @@ import React, {
   useState,
 } from 'react';
 import { RoomContext } from '../Room';
-import { isRoomAdmin } from '../WaitingRoom/helpers';
 import { Box } from '@mui/system';
 import { BEFORE_AUTHOR_REVEAL_DELAY, BEFORE_NEXT_DEF_DELAY } from './constants';
 import GameHeader from '../GameHeader';
@@ -16,11 +15,12 @@ import DefinitionList from '../DefinitionList';
 import { getPlayerIndexGenerator } from './helpers';
 import { getNumberOfDefinitionToDisplay } from '../DefinitionList/helpers';
 import socket from '../../socket';
+import { getMyPlayer } from '../WaitingRoom/helpers';
 
 const WordReveal = () => {
   const { players, gameState } = useContext(RoomContext);
 
-  const isAdmin = isRoomAdmin(players, socket.id);
+  const isAdmin = getMyPlayer(players)?.isAdmin;
   const [revealedAuthorIndexes, setRevealedAuthorIndexes] = useState<number[]>(
     []
   );

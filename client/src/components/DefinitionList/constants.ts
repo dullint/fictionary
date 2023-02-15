@@ -1,10 +1,10 @@
 import { Player } from '../../../../server/src/player';
 
 export const DICTIONARY_PLAYER: Player = {
-  userId: 'dictionary',
+  userId: 'DICTIONARY_PLAYER',
   color: 'black',
   isAdmin: true,
   isConnected: true,
   isInGame: true,
-  username: 'dictionary',
+  username: 'DICTIONARY_PLAYER',
 };

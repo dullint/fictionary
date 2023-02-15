@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import socket from '../../socket';
 import Avatar from '../Avatar';
 import { RoomContext } from '../Room';
-import { isRoomAdmin } from '../WaitingRoom/helpers';
+import { getMyPlayer } from '../WaitingRoom/helpers';
 import { calculatePlayerRoundScore } from './helpers';
 
 const WordResult = () => {
@@ -13,7 +13,7 @@ const WordResult = () => {
   const scores = gameState.scores;
   const selections = gameState.selections;
   const { roomId } = useParams();
-  const isAdmin = isRoomAdmin(players, socket.id);
+  const isAdmin = getMyPlayer(players)?.isAdmin;
   const [displayNewScores, setDisplayNewScores] = useState(false);
 
   useEffect(() => {
@@ -25,19 +25,19 @@ const WordResult = () => {
     socket.emit('new_round', { roomId });
   };
 
-  const roundScores = players.reduce((acc, { username }) => {
+  const roundScores = players.reduce((acc, { userId }) => {
     return {
       ...acc,
-      [username]: calculatePlayerRoundScore(username, selections),
+      [userId]: calculatePlayerRoundScore(userId, selections),
     };
   }, {});
 
-  const newScores = players.reduce((acc, { username }) => {
-    const previousScore = scores?.[username] ?? 0;
-    const roundScore = roundScores?.[username];
+  const newScores = players.reduce((acc, { userId }) => {
+    const previousScore = scores?.[userId] ?? 0;
+    const roundScore = roundScores?.[userId];
     return {
       ...acc,
-      [username]: previousScore + roundScore,
+      [userId]: previousScore + roundScore,
     };
   }, {});
 
@@ -70,7 +70,7 @@ const WordResult = () => {
                   player={player}
                   size={'medium'}
                   displayBadge={true}
-                  badgeContent={displayedScores?.[player?.username] ?? 0}
+                  badgeContent={displayedScores?.[player.userId] ?? 0}
                 />
                 <Typography
                   variant="subtitle1"
@@ -79,7 +79,7 @@ const WordResult = () => {
                   overflow={'hidden'}
                   sx={{ flex: 1, width: 1 }}
                 >
-                  {player?.username}
+                  {player.username}
                 </Typography>
               </Box>
             </Grid>

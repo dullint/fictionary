@@ -1,7 +1,8 @@
 import { Player } from '../../../../server/src/player';
+import { localSocketUserId } from '../../socket';
 
-export const isRoomAdmin = (players: Player[], userId: string) =>
-  players.filter((player) => player?.userId === userId)?.[0]?.isAdmin;
+export const getMyPlayer = (players: Player[]) =>
+  players.find((player) => player.userId === localSocketUserId);
 
 export const getPlayTooltip = (
   isAdmin: boolean,

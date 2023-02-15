@@ -22,14 +22,12 @@ const VoteBanner = (props: PropsType) => {
     }, 400);
   }, [revealed]);
 
-  const isTrueDefinition = authorPlayer?.userId === 'dictionary';
+  const isTrueDefinition = authorPlayer?.userId === 'DICTIONARY_PLAYER';
   const voterPoints = Number(isTrueDefinition);
   const authorPoints =
-    authorPlayer?.username &&
-    authorPlayer?.userId !== 'dictionary' &&
-    votingPlayers.filter(
-      (player) => player?.username !== authorPlayer?.username
-    ).length;
+    authorPlayer.userId !== 'DICTIONARY_PLAYER' &&
+    votingPlayers.filter((player) => player.userId !== authorPlayer.userId)
+      .length;
   return (
     <Grid
       container
