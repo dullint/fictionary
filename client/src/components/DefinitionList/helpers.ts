@@ -14,14 +14,14 @@ export const getVotingPlayersByDefinitions = (
   players: Player[],
   selections: SelectedDefinitions
 ) => {
-  const votingPlayersByDefinitions = players.reduce((acc, { username }) => {
-    acc[username] = players.filter(
-      (player) => selections[player?.username] === username
+  const votingPlayersByDefinitions = players.reduce((acc, { userId }) => {
+    acc[userId] = players.filter(
+      (player) => selections[player.userId] === userId
     );
     return acc;
   }, {});
-  votingPlayersByDefinitions['REAL_DEFINITION'] = players.filter(
-    (player) => selections[player?.username] === 'REAL_DEFINITION'
+  votingPlayersByDefinitions['DICTIONARY_PLAYER'] = players.filter(
+    (player) => selections[player.userId] === 'DICTIONARY_PLAYER'
   );
   return votingPlayersByDefinitions;
 };
@@ -29,23 +29,21 @@ export const getVotingPlayersByDefinitions = (
 export const getNumberOfDefinitionToDisplay = (gameState: GameState) =>
   Object.values(gameState.inputEntries)?.length + 1;
 
-export const getEntriesWithUsernameToDisplay = (
+export const getEntriesWithUserIdToDisplay = (
   inputEntries: InputDictionaryEntries,
   entry: DictionnaryEntry,
   roomId: string
 ): [string, InputDictionaryEntry][] => {
-  const inputEntriesWithUsernameToDisplay = Object.entries(inputEntries).concat(
+  const inputEntriesWithUserIdToDisplay = Object.entries(inputEntries).concat([
     [
-      [
-        DICTIONARY_PLAYER.username,
-        {
-          definition: entry.definition,
-          example: entry.example,
-          autosave: false,
-        },
-      ],
-    ]
-  );
+      DICTIONARY_PLAYER.userId,
+      {
+        definition: entry.definition,
+        example: entry.example,
+        autosave: false,
+      },
+    ],
+  ]);
   const seed = `${entry.word}-${roomId}`;
-  return shuffle(inputEntriesWithUsernameToDisplay, seed);
+  return shuffle(inputEntriesWithUserIdToDisplay, seed);
 };

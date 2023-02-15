@@ -29,9 +29,9 @@ export const playerHandler = (io: Server, socket: Socket) => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
-    room.players.onPlayerDisconnect(socket.data.userId);
+    room.players.onPlayerDisconnect(socket.data.userId, room, io);
     room.updateClient(io);
-    logger.info(`Left room`, { userId: socket.data.userId, roomId });
+    logger.info(`User disconnecting`, { userId: socket.data.userId, roomId });
   };
 
   socket.on('update_username', updateUsername);

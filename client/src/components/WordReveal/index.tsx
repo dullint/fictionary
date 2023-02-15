@@ -101,7 +101,7 @@ const WordReveal = () => {
           handleSelectDefinition={() => {}}
           revealedAuthorIndexes={revealedAuthorIndexes}
           revealedBannerIndexes={revealedBannerIndexes}
-          selectedUsernameDef={null}
+          selectedUserIdDef={null}
           definitionHover={false}
           definitionsRef={definitionsRef}
         />

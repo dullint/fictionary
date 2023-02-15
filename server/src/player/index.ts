@@ -1,4 +1,7 @@
+import { Server } from 'socket.io';
+import { GameStep } from '../game/types';
 import logger from '../logging';
+import { Room } from '../room';
 import { MAX_PLAYER_IN_ROOM, ROOM_DELETE_DELAY } from '../room/constants';
 import { RoomStore } from '../room/roomStore';
 import { RoomId } from '../room/types';
@@ -90,16 +93,39 @@ export class RoomPlayers extends Map<UserId, Player> {
     player.username = username;
   }
 
-  onPlayerDisconnect(userId: UserId) {
+  onPlayerDisconnect(userId: UserId, room: Room, io: Server) {
     const player = this.getOnePlayer(userId);
     if (!player) return;
     player.isConnected = false;
     setTimeout(() => {
-      if (!player.isConnected) player.isInGame = false;
+      if (!player.isConnected) {
+        player.isInGame = false;
+        logger.debug('User ejected from game after disconnection', { userId });
+        const game = room.game;
+        if (game.gameStep == GameStep.PROMPT) {
+          const numberOfDefinitions = Object.values(game.inputEntries).filter(
+            (entry) => !entry?.autosave
+          ).length;
+          const numberOfPlayers = room.players.getInGamePlayers().length;
+          if (numberOfDefinitions == numberOfPlayers) {
+            game.goToNextStep(room.gameSettings);
+          }
+        }
+        if (game.gameStep == GameStep.GUESS) {
+          const numberOfPlayers = room.players.getInGamePlayers().length;
+          const numberOfSelectedDefinitions = Object.keys(
+            game.selections
+          ).length;
+          if (numberOfSelectedDefinitions == numberOfPlayers) {
+            game.goToNextStep(room.gameSettings);
+          }
+        }
+        room.updateClient(io);
+      }
     }, DISCONNECT_FROM_GAME_DELAY);
   }
 
-  onPlayerConnect(userId: UserId) {
+  onPlayerRejoinRoom(userId: UserId) {
     const player = this.getOnePlayer(userId);
     if (!player) return;
     player.isConnected = true;

@@ -9,7 +9,7 @@ import socket from '../../socket';
 import { UserId } from '../../../../server/src/socket/types';
 
 const WordGuess = () => {
-  const [selectedUsernameDef, setSelectedUserIdDef] = useState(null);
+  const [selectedUserIdDef, setSelectedUserIdDef] = useState(null);
   const { gameState, gameSettings, players } = useContext(RoomContext);
   const { selections } = gameState;
 
@@ -48,7 +48,7 @@ const WordGuess = () => {
           showVoteBanner={showGuessVote}
           handleSelectDefinition={handleSelectDefinition}
           revealedAuthorIndexes={[]}
-          selectedUsernameDef={selectedUsernameDef}
+          selectedUserIdDef={selectedUserIdDef}
           definitionHover={true}
           definitionsRef={definitionsRef}
           revealedBannerIndexes={[]}

@@ -80,7 +80,7 @@ const Leaderboard = () => {
                   badgeContent={finalScores?.[player.userId] ?? 0}
                 />
                 <Typography variant="subtitle1" align="center">
-                  {player.userId}
+                  {player.username}
                 </Typography>
               </Grid>
             ))}

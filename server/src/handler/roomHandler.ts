@@ -37,19 +37,27 @@ export const roomHandler = (io: Server, socket: Socket) => {
       return;
     }
 
+    const userIsAlreadyInRoom = roomPlayers
+      .getAllPlayers()
+      .map((player) => player.userId)
+      .includes(userId);
+
     // The game is already launched and he was not part of it
-    if (
-      room.game.gameStep !== GameStep.WAIT &&
-      !roomPlayers.getAllPlayers().includes(userId)
-    ) {
+    if (room.game.gameStep !== GameStep.WAIT && !userIsAlreadyInRoom) {
       socket.emit('join_room_error', JoinRoomError.gameAlreadyLaunched);
       return;
     }
 
+    if (userIsAlreadyInRoom) {
+      roomPlayers.onPlayerRejoinRoom(userId);
+      logger.info(`User rejoined room`, { userId, roomId });
+    } else {
+      roomPlayers.addPlayer(userId);
+      logger.info(`User joined room`, { userId, roomId });
+    }
+
     await socket.join(roomId);
-    roomPlayers.addPlayer(userId);
     room.updateClient(io);
-    logger.info(`User joined room`, { userId, roomId });
   };
 
   const createRoom = async (payload: RoomIdPayload) => {

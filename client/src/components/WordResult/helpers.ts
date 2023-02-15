@@ -9,6 +9,8 @@ export const calculatePlayerRoundScore = (
       acc + Number(votedUserId === userId && voterUserId !== userId),
     0
   );
-  const findRightDefPoint = Number(selections?.[userId] === 'dictionary');
+  const findRightDefPoint = Number(
+    selections?.[userId] === 'DICTIONARY_PLAYER'
+  );
   return voteForHimPoints + findRightDefPoint;
 };

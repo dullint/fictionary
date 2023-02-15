@@ -3,7 +3,7 @@ import { RoomContext } from '../Room';
 import { useParams } from 'react-router-dom';
 import { getVotingPlayersByDefinitions } from './helpers';
 import VoteBanner from '../VoteBanner';
-import { getEntriesWithUsernameToDisplay } from './helpers';
+import { getEntriesWithUserIdToDisplay } from './helpers';
 import { Box } from '@mui/system';
 import DefinitionRender from '../DefinitionRender';
 import { DICTIONARY_PLAYER } from './constants';
@@ -12,7 +12,7 @@ import { theme } from '../../theme';
 interface PropsType {
   handleSelectDefinition: (string) => void;
   revealedAuthorIndexes: number[];
-  selectedUsernameDef: string | null;
+  selectedUserIdDef: string | null;
   definitionHover: boolean;
   definitionsRef: MutableRefObject<unknown[]>;
   showVoteBanner: boolean;
@@ -23,7 +23,7 @@ const DefinitionList = (props: PropsType) => {
   const {
     handleSelectDefinition,
     revealedAuthorIndexes,
-    selectedUsernameDef,
+    selectedUserIdDef,
     definitionHover,
     definitionsRef,
     showVoteBanner,
@@ -34,7 +34,7 @@ const DefinitionList = (props: PropsType) => {
   const { roomId } = useParams();
   const isUsingExample = gameSettings.useExample;
 
-  const inputEntriesToDisplay = getEntriesWithUsernameToDisplay(
+  const inputEntriesToDisplay = getEntriesWithUserIdToDisplay(
     inputEntries,
     entry,
     roomId
@@ -59,7 +59,7 @@ const DefinitionList = (props: PropsType) => {
           sx={{
             border: `2px solid`,
             borderColor:
-              userId === selectedUsernameDef
+              userId === selectedUserIdDef
                 ? theme.palette.primary.main
                 : 'transparent',
             borderRadius: 2,
