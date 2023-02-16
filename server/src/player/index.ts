@@ -50,7 +50,6 @@ export class RoomPlayers extends Map<UserId, Player> {
     const remaningInGamePlayers = this.getInGamePlayers();
     if (wasAdmin && remaningInGamePlayers.length > 0) {
       remaningInGamePlayers[0].isAdmin = true;
-      console.log('new Admin', remaningInGamePlayers[0].username);
     }
     logger.debug('User ejected from game after disconnection', { userId });
     const game = room.game;
@@ -133,7 +132,6 @@ export class RoomPlayers extends Map<UserId, Player> {
       const remaningInGamePlayers = room.players.getInGamePlayers();
       if (player.isAdmin && remaningInGamePlayers.length > 0) {
         remaningInGamePlayers[0].isAdmin = true;
-        console.log('new Admin', remaningInGamePlayers[0].username);
       }
       logger.debug('User ejected from game after disconnection', { userId });
       const game = room.game;

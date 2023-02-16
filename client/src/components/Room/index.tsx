@@ -51,14 +51,12 @@ const Room = () => {
     });
 
     socket.on('room', (room) => {
-      console.log('room update', { room });
       setRoom(room);
     });
 
     return () => {
       socket.emit('leave_room', { roomId });
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
   const roomRenderer = (room: ClientRoom) => {
