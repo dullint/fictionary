@@ -2,7 +2,8 @@ import { Server } from 'socket.io';
 import { GameManager } from '../game';
 import { RoomPlayers } from '../player';
 
-import { DEFAULT_GAME_SETTINGS } from './constants';
+import { DEFAULT_GAME_SETTINGS, ROOM_DELETE_DELAY } from './constants';
+import roomStore from './roomStore';
 import { ClientRoom, GameSettings, RoomId } from './types';
 
 export class Room {
@@ -29,5 +30,16 @@ export class Room {
       gameSettings: this.gameSettings,
     };
     io.to(this.roomId).emit('room', clientRoom);
+  }
+
+  deleteIfNoPlayerLeft() {
+    const players = this.players.getInGamePlayers();
+    if (players.length === 0) {
+      setTimeout(async () => {
+        if (this.players.getInGamePlayers().length === 0)
+          roomStore.deleteRoom(this.roomId);
+      }, ROOM_DELETE_DELAY);
+      return;
+    }
   }
 }

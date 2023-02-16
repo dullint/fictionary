@@ -29,7 +29,10 @@ export const playerHandler = (io: Server, socket: Socket) => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
+    const player = room.players.getOnePlayer(socket.data.userId);
+    if (!player) return;
     room.players.onPlayerDisconnect(socket.data.userId, room, io);
+    room.deleteIfNoPlayerLeft();
     room.updateClient(io);
     logger.info(`User disconnecting`, { userId: socket.data.userId, roomId });
   };

@@ -3,7 +3,7 @@ import { GameStep } from '../game/types';
 import logger from '../logging';
 import { Room } from '../room';
 import { MAX_PLAYER_IN_ROOM, ROOM_DELETE_DELAY } from '../room/constants';
-import { RoomStore } from '../room/roomStore';
+import roomStore, { RoomStore } from '../room/roomStore';
 import { RoomId } from '../room/types';
 import { UserId } from '../socket/types';
 import { DISCONNECT_FROM_GAME_DELAY } from './constants';
@@ -40,19 +40,37 @@ export class RoomPlayers extends Map<UserId, Player> {
     return this.getAllPlayers().filter((player) => player.isInGame);
   }
 
-  deletePlayer(userId: UserId, roomId: RoomId, roomStore: RoomStore) {
-    const wasAdmin = this.getOnePlayer(userId)?.isAdmin;
+  deletePlayer(userId: UserId, room: Room, io: Server) {
+    const player = this.getOnePlayer(userId);
+    if (!player) return;
+    const wasAdmin = player.isAdmin;
     this.delete(userId);
+
+    //set him out of the game
     const remaningInGamePlayers = this.getInGamePlayers();
-    if (remaningInGamePlayers.length === 0) {
-      setTimeout(async () => {
-        if (this.getInGamePlayers().length === 0) roomStore.deleteRoom(roomId);
-      }, ROOM_DELETE_DELAY);
-      return;
-    }
-    if (wasAdmin) {
+    if (wasAdmin && remaningInGamePlayers.length > 0) {
       remaningInGamePlayers[0].isAdmin = true;
+      console.log('new Admin', remaningInGamePlayers[0].username);
     }
+    logger.debug('User ejected from game after disconnection', { userId });
+    const game = room.game;
+    if (game.gameStep == GameStep.PROMPT) {
+      const numberOfDefinitions = Object.values(game.inputEntries).filter(
+        (entry) => !entry?.autosave
+      ).length;
+      const numberOfPlayers = this.getInGamePlayers().length;
+      if (numberOfDefinitions == numberOfPlayers) {
+        game.goToNextStep(room.gameSettings);
+      }
+    }
+    if (game.gameStep == GameStep.GUESS) {
+      const numberOfPlayers = this.getInGamePlayers().length;
+      const numberOfSelectedDefinitions = Object.keys(game.selections).length;
+      if (numberOfSelectedDefinitions == numberOfPlayers) {
+        game.goToNextStep(room.gameSettings);
+      }
+    }
+    room.updateClient(io);
   }
 
   getOnePlayer(userId: UserId) {
@@ -97,31 +115,45 @@ export class RoomPlayers extends Map<UserId, Player> {
     const player = this.getOnePlayer(userId);
     if (!player) return;
     player.isConnected = false;
+
+    //delete room if he was the last one
+    const remaningInGamePlayers = this.getInGamePlayers();
+    if (remaningInGamePlayers.length === 0) {
+      setTimeout(async () => {
+        if (this.getInGamePlayers().length === 0)
+          roomStore.deleteRoom(room.roomId);
+      }, ROOM_DELETE_DELAY);
+      return;
+    }
+
+    //set him out of the game
     setTimeout(() => {
-      if (!player.isConnected) {
-        player.isInGame = false;
-        logger.debug('User ejected from game after disconnection', { userId });
-        const game = room.game;
-        if (game.gameStep == GameStep.PROMPT) {
-          const numberOfDefinitions = Object.values(game.inputEntries).filter(
-            (entry) => !entry?.autosave
-          ).length;
-          const numberOfPlayers = room.players.getInGamePlayers().length;
-          if (numberOfDefinitions == numberOfPlayers) {
-            game.goToNextStep(room.gameSettings);
-          }
-        }
-        if (game.gameStep == GameStep.GUESS) {
-          const numberOfPlayers = room.players.getInGamePlayers().length;
-          const numberOfSelectedDefinitions = Object.keys(
-            game.selections
-          ).length;
-          if (numberOfSelectedDefinitions == numberOfPlayers) {
-            game.goToNextStep(room.gameSettings);
-          }
-        }
-        room.updateClient(io);
+      if (player.isConnected) return;
+      player.isInGame = false;
+      const remaningInGamePlayers = room.players.getInGamePlayers();
+      if (player.isAdmin && remaningInGamePlayers.length > 0) {
+        remaningInGamePlayers[0].isAdmin = true;
+        console.log('new Admin', remaningInGamePlayers[0].username);
       }
+      logger.debug('User ejected from game after disconnection', { userId });
+      const game = room.game;
+      if (game.gameStep == GameStep.PROMPT) {
+        const numberOfDefinitions = Object.values(game.inputEntries).filter(
+          (entry) => !entry?.autosave
+        ).length;
+        const numberOfPlayers = room.players.getInGamePlayers().length;
+        if (numberOfDefinitions == numberOfPlayers) {
+          game.goToNextStep(room.gameSettings);
+        }
+      }
+      if (game.gameStep == GameStep.GUESS) {
+        const numberOfPlayers = room.players.getInGamePlayers().length;
+        const numberOfSelectedDefinitions = Object.keys(game.selections).length;
+        if (numberOfSelectedDefinitions == numberOfPlayers) {
+          game.goToNextStep(room.gameSettings);
+        }
+      }
+      room.updateClient(io);
     }, DISCONNECT_FROM_GAME_DELAY);
   }
 

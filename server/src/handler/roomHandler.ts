@@ -55,7 +55,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
       roomPlayers.addPlayer(userId);
       logger.info(`User joined room`, { userId, roomId });
     }
-
+    socket.emit('room_joined');
     await socket.join(roomId);
     room.updateClient(io);
   };
@@ -74,7 +74,8 @@ export const roomHandler = (io: Server, socket: Socket) => {
   const leaveRoom = ({ roomId }: { roomId: string }) => {
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
-    room.players.deletePlayer(socket.data.userId, roomId, roomStore);
+    room.players.deletePlayer(socket.data.userId, room, io);
+    room.deleteIfNoPlayerLeft();
     socket.leave(roomId);
     room.updateClient(io);
     logger.info(`User left room `, {
