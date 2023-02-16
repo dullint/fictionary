@@ -46,19 +46,11 @@ const generateColor = (playersInRoom: Player[]) => {
 };
 
 export const haveAllPlayerPromptDefinition = (room: Room) => {
-  console.log({ room });
   const game = room.game;
   const numberOfDefinitions = Object.values(game.inputEntries).filter(
     (entry) => !entry?.autosave
   ).length;
   const numberOfPlayers = room.getInGamePlayers().length;
-  console.log({
-    inGamePlayers: room.getInGamePlayers(),
-    definitions: Object.values(game.inputEntries).filter(
-      (entry) => !entry?.autosave
-    ),
-    equality: numberOfDefinitions === numberOfPlayers,
-  });
   return numberOfDefinitions === numberOfPlayers;
 };
 
