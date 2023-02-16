@@ -37,7 +37,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
     const game = room.game;
-    game.removeDefinition(socket.data.username);
+    game.removeDefinition(socket.data.userId);
     room.updateClient(io);
   };
 

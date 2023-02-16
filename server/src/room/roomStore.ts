@@ -1,6 +1,5 @@
 import { Server } from 'socket.io';
 import { RoomId } from './types';
-import { UserId } from '../socket/types';
 import logger from '../logging';
 import { Room } from '.';
 import { RoomError } from './errors';
