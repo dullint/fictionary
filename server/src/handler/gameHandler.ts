@@ -23,7 +23,6 @@ import { UpdateUsernameError } from './errors';
 
 export const gameHandler = (io: Server, socket: Socket) => {
   const submitDefinition = async (payload: SubmitDefinitionPayload) => {
-    console.log('submitDefinition');
     const { definition, example, autosave } = payload;
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
@@ -34,11 +33,9 @@ export const gameHandler = (io: Server, socket: Socket) => {
       example,
       autosave,
     };
-    console.log({ room });
     if (haveAllPlayerPromptDefinition(room)) {
       game.gameStep = GameStep.GUESS;
     }
-    console.log({ game: room.game });
     room.updateClient(io);
   };
 
