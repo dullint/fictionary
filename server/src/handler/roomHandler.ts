@@ -19,6 +19,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
     const { roomId } = payload;
     const userId = socket.data.userId;
     const room = roomStore.get(roomId);
+    console.log({ roomId, room, player: room?.players });
 
     // Room does not exist
     if (!room) {
@@ -43,6 +44,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
     }
 
     const userAlreadyInRoom = room.getOnePlayer(userId);
+    console.log({ userAlreadyInRoom, gameStep: room.game.gameStep });
 
     // The game is already launched and he was not part of it
     if (room.game.gameStep !== GameStep.WAIT && !userAlreadyInRoom) {
