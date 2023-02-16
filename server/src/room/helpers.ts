@@ -46,14 +46,20 @@ const generateColor = (playersInRoom: Player[]) => {
 };
 
 export const haveAllPlayerPromptDefinition = (room: Room) => {
+  console.log({ room });
   const game = room.game;
-  if (game.gameStep == GameStep.PROMPT) {
-    const numberOfDefinitions = Object.values(game.inputEntries).filter(
+  const numberOfDefinitions = Object.values(game.inputEntries).filter(
+    (entry) => !entry?.autosave
+  ).length;
+  const numberOfPlayers = room.getInGamePlayers().length;
+  console.log({
+    inGamePlayers: room.getInGamePlayers(),
+    definitions: Object.values(game.inputEntries).filter(
       (entry) => !entry?.autosave
-    ).length;
-    const numberOfPlayers = room.getInGamePlayers().length;
-    return numberOfDefinitions == numberOfPlayers;
-  }
+    ),
+    equality: numberOfDefinitions === numberOfPlayers,
+  });
+  return numberOfDefinitions === numberOfPlayers;
 };
 
 export const haveAllPlayerGuessedDefinition = (room: Room) => {
@@ -64,10 +70,16 @@ export const haveAllPlayerGuessedDefinition = (room: Room) => {
 
 export const goToNextGameStepIfNeededAfterPlayerLeave = (room: Room) => {
   const game = room.game;
-  if (game.gameStep == GameStep.PROMPT && haveAllPlayerPromptDefinition(room)) {
+  if (
+    game.gameStep === GameStep.PROMPT &&
+    haveAllPlayerPromptDefinition(room)
+  ) {
     game.gameStep = GameStep.GUESS;
   }
-  if (game.gameStep == GameStep.GUESS && haveAllPlayerGuessedDefinition(room)) {
+  if (
+    game.gameStep === GameStep.GUESS &&
+    haveAllPlayerGuessedDefinition(room)
+  ) {
     game.gameStep = GameStep.REVEAL;
   }
 };

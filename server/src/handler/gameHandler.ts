@@ -23,6 +23,7 @@ import { UpdateUsernameError } from './errors';
 
 export const gameHandler = (io: Server, socket: Socket) => {
   const submitDefinition = async (payload: SubmitDefinitionPayload) => {
+    console.log('submitDefinition');
     const { definition, example, autosave } = payload;
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
@@ -33,9 +34,11 @@ export const gameHandler = (io: Server, socket: Socket) => {
       example,
       autosave,
     };
+    console.log({ room });
     if (haveAllPlayerPromptDefinition(room)) {
-      game.gameStep === GameStep.GUESS;
+      game.gameStep = GameStep.GUESS;
     }
+    console.log({ game: room.game });
     room.updateClient(io);
   };
 
@@ -54,7 +57,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     if (!room) return;
     room.game.selections[socket.data.userId] = userId;
     if (haveAllPlayerGuessedDefinition(room)) {
-      room.game.gameStep === GameStep.REVEAL;
+      room.game.gameStep = GameStep.REVEAL;
     }
     room.updateClient(io);
   };
@@ -113,10 +116,10 @@ export const gameHandler = (io: Server, socket: Socket) => {
 
   const runTimer = (room: Room, time: number) => {
     var counter = time * 60;
-    const timer = setInterval(() => {
+    room.timer = setInterval(() => {
       io.to(room.roomId).emit('timer', counter);
-      if (counter === 0 && timer) {
-        clearInterval(timer);
+      if (counter === 0 && room.timer) {
+        clearInterval(room.timer);
         room.game.gameStep = GameStep.GUESS;
         room.updateClient(io);
       }
@@ -140,7 +143,6 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
-    const game = room.game;
     const gamePlayers = room.getInGamePlayers();
     Mixpanel.launchGame(
       socket.data?.userId,
