@@ -96,7 +96,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
     }
 
     goToNextGameStepIfNeededAfterPlayerLeave(room);
-    room.deleteIfNoPlayerLeft();
+    room.deleteIfNoPlayerLeft(io);
 
     room.updateClient(io);
   };
@@ -139,7 +139,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
       room.updateClient(io);
     }, DISCONNECT_FROM_GAME_DELAY);
 
-    room.deleteIfNoPlayerLeft();
+    room.deleteIfNoPlayerLeft(io);
     room.updateClient(io);
 
     logger.info(`User disconnecting`, { userId: socket.data.userId, roomId });
