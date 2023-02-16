@@ -1,7 +1,6 @@
 import { ResponsiveBar } from '@nivo/bar';
 import React from 'react';
-import { Scores } from '../../../../server/src/game/types';
-import { Player } from '../../../../server/src/player';
+import { Player, Scores } from '../../../../server/src/room/types';
 
 interface PropsType {
   players: Player[];

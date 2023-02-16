@@ -1,6 +1,6 @@
 import { Box, Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Player } from '../../../../server/src/player';
+import { Player } from '../../../../server/src/room/types';
 import Avatar from '../Avatar';
 import { getAuthorUsernameToDisplay } from './helpers';
 

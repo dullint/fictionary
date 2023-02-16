@@ -1,4 +1,4 @@
-import { SelectedDefinitions } from '../../../../server/src/game/types';
+import { SelectedDefinitions } from '../../../../server/src/room/types';
 
 export const calculatePlayerRoundScore = (
   userId: string,

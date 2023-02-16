@@ -1,5 +1,9 @@
-import { UpdateUsernameError } from '../player/errors';
-import { CreateRoomError, JoinRoomError, RoomError } from '../room/errors';
+import {
+  CreateRoomError,
+  JoinRoomError,
+  RoomError,
+  UpdateUsernameError,
+} from '../handler/errors';
 import { ClientRoom, GameSettings, RoomId } from '../room/types';
 import { Socket as DefaultSocket } from 'socket.io';
 import { Username, Scores } from '../room/types';

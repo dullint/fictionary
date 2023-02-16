@@ -3,7 +3,7 @@ import React from 'react';
 import { theme } from '../../theme';
 import { getAvatarString } from './helpers';
 import crownImage from '../../img/coloredCrown.png';
-import { Player } from '../../../../server/src/player';
+import { Player } from '../../../../server/src/room/types';
 
 interface PropsType {
   player: Player;

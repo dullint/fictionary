@@ -2,13 +2,13 @@ import {
   GameState,
   InputDictionaryEntries,
   InputDictionaryEntry,
+  Player,
   SelectedDefinitions,
-} from '../../../../server/src/game/types';
+} from '../../../../server/src/room/types';
 import { shuffle } from 'shuffle-seed';
 
 import { DictionnaryEntry } from '../../../../server/src/dictionary/types';
 import { DICTIONARY_PLAYER } from './constants';
-import { Player } from '../../../../server/src/player';
 
 export const getVotingPlayersByDefinitions = (
   players: Player[],

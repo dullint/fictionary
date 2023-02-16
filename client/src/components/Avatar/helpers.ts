@@ -1,6 +1,6 @@
 import { createAvatar } from '@dicebear/avatars';
 import * as style from '@dicebear/croodles';
-import { Player } from '../../../../server/src/player';
+import { Player } from '../../../../server/src/room/types';
 import dictionaryImage from '../../img/dictionary.jpg';
 
 export const getAvatarString = (player: Player) => {

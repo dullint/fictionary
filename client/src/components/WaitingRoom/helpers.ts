@@ -1,4 +1,4 @@
-import { Player } from '../../../../server/src/player';
+import { Player } from '../../../../server/src/room/types';
 import { localSocketUserId } from '../../socket';
 
 export const getMyPlayer = (players: Player[]) =>

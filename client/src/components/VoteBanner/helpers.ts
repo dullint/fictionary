@@ -1,4 +1,4 @@
-import { Player } from '../../../../server/src/player';
+import { Player } from '../../../../server/src/room/types';
 
 export const getAuthorUsernameToDisplay = (
   isTrueDefinition: boolean,
