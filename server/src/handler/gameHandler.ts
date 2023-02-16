@@ -1,4 +1,4 @@
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 import mixpanel from '../mixpanel';
 import Mixpanel from '../mixpanel';
 import { getSocketRoom } from '../room/helpers';
@@ -7,8 +7,12 @@ import roomStore from '../room/roomStore';
 import { GameStep, Scores } from '../game/types';
 import {
   SelectDefinitionPayload,
+  Socket,
   SubmitDefinitionPayload,
 } from '../socket/types';
+import { Username } from '../player/type';
+import { UpdateUsernameError } from '../player/errors';
+import logger from '../logging';
 
 export const gameHandler = (io: Server, socket: Socket) => {
   const submitDefinition = async (payload: SubmitDefinitionPayload) => {
@@ -119,6 +123,25 @@ export const gameHandler = (io: Server, socket: Socket) => {
     launchNewRound();
   };
 
+  const updateUsername = async ({ username }: { username: Username }) => {
+    const roomId = getSocketRoom(socket);
+    const room = roomStore.getRoom(roomId, io);
+    if (!room) return;
+    const usernamesInGame = room.players
+      .getAllPlayers()
+      .map((player) => player.username);
+    if (usernamesInGame.includes(username)) {
+      socket.emit('update_username_error', UpdateUsernameError.alreadyTaken);
+      return;
+    }
+    room.players.updateUsername(socket.data.userId, username);
+    room.updateClient(io);
+    logger.info(`User updated his username to ${username}`, {
+      userId: socket.data.userId,
+    });
+    socket.emit('username_updated');
+  };
+
   socket.on('reset_game', resetGame);
   socket.on('launch_game', launchGame);
   socket.on('update_scores', updateScores);
@@ -128,4 +151,5 @@ export const gameHandler = (io: Server, socket: Socket) => {
   socket.on('remove_definition', removeDefinition);
   socket.on('get_new_word', getNewWord);
   socket.on('show_results', showResults);
+  socket.on('update_username', updateUsername);
 };

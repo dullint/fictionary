@@ -1,9 +1,9 @@
 import { Scores } from '../game/types';
 import { UpdateUsernameError } from '../player/errors';
 import { Username } from '../player/type';
-import { Player } from '../player';
 import { CreateRoomError, JoinRoomError, RoomError } from '../room/errors';
 import { ClientRoom, GameSettings, RoomId } from '../room/types';
+import { Socket as DefaultSocket } from 'socket.io';
 
 export type UserId = string;
 export interface SocketData {
@@ -11,6 +11,12 @@ export interface SocketData {
 }
 
 export type RoomIdPayload = { roomId: RoomId };
+
+export type Socket = DefaultSocket<
+  ClientToServerEvents,
+  ServerToClientEvents,
+  SocketData
+>;
 
 export interface ServerToClientEvents {
   //join room

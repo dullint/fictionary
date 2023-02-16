@@ -1,6 +1,5 @@
 import { Server } from 'socket.io';
 import { Server as HTTPServer } from 'http';
-import { playerHandler } from '../handler/playerHandler';
 import { PING_INTERVAL, PING_TIMEOUT } from './constants';
 import mixpanel from '../mixpanel';
 import {
@@ -41,7 +40,6 @@ export default (server: HTTPServer) => {
     mixpanel.userConnect(socket.data.userId, socket.data.ip);
 
     roomHandler(io, socket);
-    playerHandler(io, socket);
     gameHandler(io, socket);
 
     socket.on('disconnect', async () => {
