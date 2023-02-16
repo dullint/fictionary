@@ -1,3 +1,7 @@
+export enum UpdateUsernameError {
+  alreadyTaken = 'Username already taken',
+}
+
 export enum JoinRoomError {
   roomNotFound = 'The room does not exist',
   roomFull = `The room is full`,

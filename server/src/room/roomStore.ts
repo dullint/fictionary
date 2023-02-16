@@ -2,7 +2,7 @@ import { Server } from 'socket.io';
 import { RoomId } from './types';
 import logger from '../logging';
 import { Room } from '.';
-import { RoomError } from './errors';
+import { RoomError } from '../handler/errors';
 
 export class RoomStore extends Map<RoomId, Room> {
   getRoom(roomId: RoomId, io?: Server) {

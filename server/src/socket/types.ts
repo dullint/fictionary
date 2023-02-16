@@ -1,9 +1,8 @@
-import { Scores } from '../game/types';
 import { UpdateUsernameError } from '../player/errors';
-import { Username } from '../player/type';
 import { CreateRoomError, JoinRoomError, RoomError } from '../room/errors';
 import { ClientRoom, GameSettings, RoomId } from '../room/types';
 import { Socket as DefaultSocket } from 'socket.io';
+import { Username, Scores } from '../room/types';
 
 export type UserId = string;
 export interface SocketData {

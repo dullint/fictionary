@@ -1,12 +1,18 @@
 import { Socket, Server } from 'socket.io';
 import roomStore, { RoomStore } from '../room/roomStore';
-import { JoinRoomError } from '../room/errors';
-import { MAX_PLAYER_IN_ROOM } from '../room/constants';
-import { GameStep } from '../game/types';
+import {
+  DISCONNECT_FROM_GAME_DELAY,
+  MAX_PLAYER_IN_ROOM,
+} from '../room/constants';
 import { RoomIdPayload } from '../socket/types';
 import logger from '../logging';
-import { GameSettings } from '../room/types';
-import { getSocketRoom } from '../room/helpers';
+import { GameSettings, GameStep } from '../room/types';
+import {
+  generateNewPlayer,
+  getSocketRoom,
+  goToNextGameStepIfNeededAfterPlayerLeave,
+} from '../room/helpers';
+import { JoinRoomError } from './errors';
 
 export const roomHandler = (io: Server, socket: Socket) => {
   const joinRoom = async (payload: RoomIdPayload) => {
@@ -19,10 +25,9 @@ export const roomHandler = (io: Server, socket: Socket) => {
       socket.emit('join_room_error', JoinRoomError.roomNotFound);
       return;
     }
-    const roomPlayers = room.players;
 
     // Room already full
-    const alreadyInGamePlayers = roomPlayers.getInGamePlayers();
+    const alreadyInGamePlayers = room.getInGamePlayers();
     if (alreadyInGamePlayers.length >= MAX_PLAYER_IN_ROOM) {
       socket.emit('join_room_error', JoinRoomError.roomFull);
       return;
@@ -37,22 +42,20 @@ export const roomHandler = (io: Server, socket: Socket) => {
       return;
     }
 
-    const userIsAlreadyInRoom = roomPlayers
-      .getAllPlayers()
-      .map((player) => player.userId)
-      .includes(userId);
+    const userAlreadyInRoom = room.getOnePlayer(userId);
 
     // The game is already launched and he was not part of it
-    if (room.game.gameStep !== GameStep.WAIT && !userIsAlreadyInRoom) {
+    if (room.game.gameStep !== GameStep.WAIT && !userAlreadyInRoom) {
       socket.emit('join_room_error', JoinRoomError.gameAlreadyLaunched);
       return;
     }
 
-    if (userIsAlreadyInRoom) {
-      roomPlayers.onPlayerRejoinRoom(userId);
+    if (userAlreadyInRoom) {
+      userAlreadyInRoom.isConnected = true;
+      userAlreadyInRoom.isInGame = true;
       logger.info(`User rejoined room`, { userId, roomId });
     } else {
-      roomPlayers.addPlayer(userId);
+      room.players.push(generateNewPlayer(userId, room.players));
       logger.info(`User joined room`, { userId, roomId });
     }
     socket.emit('room_joined');
@@ -74,14 +77,28 @@ export const roomHandler = (io: Server, socket: Socket) => {
   const leaveRoom = ({ roomId }: { roomId: string }) => {
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
-    room.players.deletePlayer(socket.data.userId, room, io);
-    room.deleteIfNoPlayerLeft();
-    socket.leave(roomId);
-    room.updateClient(io);
+    const userId = socket.data.userId;
+    const player = room.getOnePlayer(userId);
+    if (!player) return;
+    const wasAdmin = player.isAdmin;
+
     logger.info(`User left room `, {
       userId: socket.data.userId,
       roomId,
     });
+    room.players = room.players.filter((player) => player.userId != userId);
+    socket.leave(roomId);
+
+    //find New admin
+    const remaningInGamePlayers = room.getInGamePlayers();
+    if (wasAdmin && remaningInGamePlayers.length > 0) {
+      remaningInGamePlayers[0].isAdmin = true;
+    }
+
+    goToNextGameStepIfNeededAfterPlayerLeave(room);
+    room.deleteIfNoPlayerLeft();
+
+    room.updateClient(io);
   };
 
   const changeGameSettings = ({
@@ -92,19 +109,39 @@ export const roomHandler = (io: Server, socket: Socket) => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
-    room.updateGameSettings(gameSettings);
+    room.gameSettings = gameSettings;
     room.updateClient(io);
   };
 
   const disconnecting = () => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
+    const userId = socket.data.userId;
     if (!room) return;
-    const player = room.players.getOnePlayer(socket.data.userId);
+    const player = room.getOnePlayer(userId);
     if (!player) return;
-    room.players.onPlayerDisconnect(socket.data.userId, room, io);
+    player.isConnected = false;
+
+    setTimeout(() => {
+      if (player.isConnected) return;
+      player.isInGame = false;
+      //find New admin
+      const remaningInGamePlayers = room.getInGamePlayers();
+      if (player.isAdmin && remaningInGamePlayers.length > 0) {
+        player.isAdmin = false;
+        remaningInGamePlayers[0].isAdmin = true;
+      }
+      goToNextGameStepIfNeededAfterPlayerLeave(room);
+      logger.info('User out of game after disconnection', {
+        userId,
+        roomId,
+      });
+      room.updateClient(io);
+    }, DISCONNECT_FROM_GAME_DELAY);
+
     room.deleteIfNoPlayerLeft();
     room.updateClient(io);
+
     logger.info(`User disconnecting`, { userId: socket.data.userId, roomId });
   };
 

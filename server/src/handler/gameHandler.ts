@@ -1,18 +1,25 @@
 import { Server } from 'socket.io';
 import mixpanel from '../mixpanel';
 import Mixpanel from '../mixpanel';
-import { getSocketRoom } from '../room/helpers';
+import {
+  getSocketRoom,
+  haveAllPlayerGuessedDefinition,
+  haveAllPlayerPromptDefinition,
+} from '../room/helpers';
 import roomStore from '../room/roomStore';
 
-import { GameStep, Scores } from '../game/types';
 import {
   SelectDefinitionPayload,
   Socket,
   SubmitDefinitionPayload,
+  UpdateUsernamePayload,
 } from '../socket/types';
-import { Username } from '../player/type';
-import { UpdateUsernameError } from '../player/errors';
 import logger from '../logging';
+import { DEFAULT_GAME_STATE } from '../room/constants';
+import { get_random_entry } from '../room/helpers';
+import { Room } from '../room';
+import { GameStep, Scores } from '../room/types';
+import { UpdateUsernameError } from './errors';
 
 export const gameHandler = (io: Server, socket: Socket) => {
   const submitDefinition = async (payload: SubmitDefinitionPayload) => {
@@ -21,13 +28,13 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
     const game = room.game;
-    game.submitDefinition(socket.data.userId, definition, example, autosave);
-    const numberOfPlayers = room.players.getInGamePlayers().length;
-    const numberOfDefinitions = Object.values(game.inputEntries).filter(
-      (entry) => !entry?.autosave
-    ).length;
-    if (numberOfDefinitions == numberOfPlayers) {
-      game.goToNextStep(room.gameSettings);
+    game.inputEntries[socket.data.userId] = {
+      definition,
+      example,
+      autosave,
+    };
+    if (haveAllPlayerPromptDefinition(room)) {
+      game.gameStep === GameStep.GUESS;
     }
     room.updateClient(io);
   };
@@ -37,7 +44,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
     const game = room.game;
-    game.removeDefinition(socket.data.userId);
+    delete game.inputEntries?.[socket.data.userId];
     room.updateClient(io);
   };
 
@@ -45,13 +52,9 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
-    const game = room.game;
-    const roomPlayers = room.players;
-    game.selectDefinition(socket.data.userId, userId);
-    const numberOfPlayers = roomPlayers.getInGamePlayers().length;
-    const numberOfSelectedDefinitions = Object.keys(game.selections).length;
-    if (numberOfSelectedDefinitions == numberOfPlayers) {
-      game.goToNextStep(room.gameSettings);
+    room.game.selections[socket.data.userId] = userId;
+    if (haveAllPlayerGuessedDefinition(room)) {
+      room.game.gameStep === GameStep.REVEAL;
     }
     room.updateClient(io);
   };
@@ -69,8 +72,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
-    const game = room.game;
-    game.reset();
+    room.game = DEFAULT_GAME_STATE;
     room.updateClient(io);
   };
 
@@ -84,7 +86,11 @@ export const gameHandler = (io: Server, socket: Socket) => {
       room.updateClient(io);
       return;
     }
-    game.newRound(io, room.gameSettings);
+    game.round++;
+    game.gameStep = GameStep.PROMPT;
+    game.selections = {};
+    game.inputEntries = {};
+    getNewWord();
     room.updateClient(io);
   };
 
@@ -94,8 +100,28 @@ export const gameHandler = (io: Server, socket: Socket) => {
     if (!room) return;
     const game = room.game;
     mixpanel.changeWord(socket.data?.userId, socket.data?.ip, game.entry?.word);
-    game.newWord(io, room.gameSettings);
+    if (room.timer) clearInterval(room.timer);
+    room.game.inputEntries = {};
+    var entry = get_random_entry();
+    while (room.wordSeen.includes(entry.word)) {
+      entry = get_random_entry();
+    }
+    room.game.entry = entry;
+    runTimer(room, room.gameSettings.maxPromptTime);
     room.updateClient(io);
+  };
+
+  const runTimer = (room: Room, time: number) => {
+    var counter = time * 60;
+    const timer = setInterval(() => {
+      io.to(room.roomId).emit('timer', counter);
+      if (counter === 0 && timer) {
+        clearInterval(timer);
+        room.game.gameStep = GameStep.GUESS;
+        room.updateClient(io);
+      }
+      counter--;
+    }, 1000);
   };
 
   const showResults = () => {
@@ -103,7 +129,10 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
     const game = room.game;
-    game.goToNextStep(room.gameSettings);
+    const gameSettings = room.gameSettings;
+    const isInLastRound = game.round >= gameSettings.roundNumber;
+    game.gameStep = isInLastRound ? GameStep.FINISHED : GameStep.RESULTS;
+
     room.updateClient(io);
   };
 
@@ -112,7 +141,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
     const game = room.game;
-    const gamePlayers = room.players.getInGamePlayers();
+    const gamePlayers = room.getInGamePlayers();
     Mixpanel.launchGame(
       socket.data?.userId,
       socket.data?.ip,
@@ -123,18 +152,18 @@ export const gameHandler = (io: Server, socket: Socket) => {
     launchNewRound();
   };
 
-  const updateUsername = async ({ username }: { username: Username }) => {
+  const updateUsername = async ({ username }: UpdateUsernamePayload) => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
-    const usernamesInGame = room.players
-      .getAllPlayers()
-      .map((player) => player.username);
+    const usernamesInGame = room.players.map((player) => player.username);
     if (usernamesInGame.includes(username)) {
       socket.emit('update_username_error', UpdateUsernameError.alreadyTaken);
       return;
     }
-    room.players.updateUsername(socket.data.userId, username);
+    const player = room.getOnePlayer(socket.data.userId);
+    if (!player) return;
+    player.username = username;
     room.updateClient(io);
     logger.info(`User updated his username to ${username}`, {
       userId: socket.data.userId,
