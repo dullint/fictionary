@@ -110,6 +110,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
     room.gameSettings = gameSettings;
+    logger.info(`Game settings changed in ${roomId}`, { gameSettings });
     room.updateClient(io);
   };
 
@@ -142,7 +143,7 @@ export const roomHandler = (io: Server, socket: Socket) => {
     room.deleteIfNoPlayerLeft();
     room.updateClient(io);
 
-    logger.info(`User disconnecting`, { userId: socket.data.userId, roomId });
+    logger.info(`User disconnecting`, { userId, roomId });
   };
 
   socket.on('disconnecting', disconnecting);

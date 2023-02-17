@@ -62,16 +62,19 @@ export const haveAllPlayerGuessedDefinition = (room: Room) => {
 
 export const goToNextGameStepIfNeededAfterPlayerLeave = (room: Room) => {
   const game = room.game;
+  const inGamePlayers = room.getInGamePlayers();
   if (
     game.gameStep === GameStep.PROMPT &&
-    haveAllPlayerPromptDefinition(room)
+    haveAllPlayerPromptDefinition(room) &&
+    inGamePlayers.length > 0
   ) {
     game.gameStep = GameStep.GUESS;
     console.log('guess in goToNextGameStepIfNeededAfterPlayerLeave');
   }
   if (
     game.gameStep === GameStep.GUESS &&
-    haveAllPlayerGuessedDefinition(room)
+    haveAllPlayerGuessedDefinition(room) &&
+    inGamePlayers.length > 0
   ) {
     game.gameStep = GameStep.REVEAL;
   }

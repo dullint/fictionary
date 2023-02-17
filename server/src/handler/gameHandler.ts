@@ -26,16 +26,20 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const { definition, example, autosave } = payload;
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
+    const userId = socket.data.userId;
     if (!room) return;
     const game = room.game;
-    game.inputEntries[socket.data.userId] = {
+    game.inputEntries[userId] = {
       definition,
       example,
       autosave,
     };
+    logger.info(`User submited a new definition in ${roomId}`, { userId });
     if (haveAllPlayerPromptDefinition(room)) {
-      console.log('guess in submit def');
       game.gameStep = GameStep.GUESS;
+      logger.info(
+        `All definitions submitted in ${roomId}, moving forward to the GUESS step`
+      );
     }
     room.updateClient(io);
   };
@@ -45,7 +49,9 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
     const game = room.game;
-    delete game.inputEntries?.[socket.data.userId];
+    const userId = socket.data.userId;
+    delete game.inputEntries?.[userId];
+    logger.info(`User removed his definition in ${roomId}`, { userId });
     room.updateClient(io);
   };
 
@@ -56,6 +62,9 @@ export const gameHandler = (io: Server, socket: Socket) => {
     room.game.selections[socket.data.userId] = userId;
     if (haveAllPlayerGuessedDefinition(room)) {
       room.game.gameStep = GameStep.REVEAL;
+      logger.info(
+        `All definitions guessed in ${roomId}, moving forward to the REVEAL step`
+      );
     }
     room.updateClient(io);
   };
@@ -66,6 +75,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     if (!room) return;
     const game = room.game;
     game.scores = scores;
+    logger.info(`Scores updated in room ${roomId}`);
     room.updateClient(io);
   };
 
@@ -73,7 +83,8 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
-    room.game = DEFAULT_GAME_STATE;
+    room.game = Object.assign({}, DEFAULT_GAME_STATE);
+    logger.info(`Game reseted in ${roomId}`, { userId: socket.data.userId });
     room.updateClient(io);
   };
 
@@ -84,6 +95,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const game = room.game;
     if (game.round >= room.gameSettings.roundNumber) {
       game.gameStep = GameStep.FINISHED;
+      logger.info(`Game finished in room ${roomId}`);
       room.updateClient(io);
       return;
     }
@@ -91,6 +103,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     game.gameStep = GameStep.PROMPT;
     game.selections = {};
     game.inputEntries = {};
+    logger.info(`Round ${game.round} launched in room ${roomId}`);
     getNewWord();
     room.updateClient(io);
   };
@@ -108,6 +121,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
       entry = get_random_entry();
     }
     room.game.entry = entry;
+    logger.info(`New word in room ${roomId}`);
     runTimer(room, room.gameSettings.maxPromptTime);
     room.updateClient(io);
   };
@@ -118,8 +132,10 @@ export const gameHandler = (io: Server, socket: Socket) => {
       io.to(room.roomId).emit('timer', counter);
       if (counter === 0 && room.timer) {
         clearInterval(room.timer);
-        console.log('guess in run timer');
         room.game.gameStep = GameStep.GUESS;
+        logger.info(
+          `Timer ran out of time in ${room.roomId}, moving forward to the GUESS step`
+        );
         room.updateClient(io);
       }
       counter--;
@@ -134,6 +150,12 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const gameSettings = room.gameSettings;
     const isInLastRound = game.round >= gameSettings.roundNumber;
     game.gameStep = isInLastRound ? GameStep.FINISHED : GameStep.RESULTS;
+    logger.info(`Results showed in ${room.roomId}`);
+    if (game.gameStep === GameStep.FINISHED) {
+      logger.info(`Game finished in room ${roomId}`);
+    } else {
+      logger.info(`Results showed in ${room.roomId}`);
+    }
 
     room.updateClient(io);
   };
@@ -143,13 +165,15 @@ export const gameHandler = (io: Server, socket: Socket) => {
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
     const gamePlayers = room.getInGamePlayers();
+    const userId = socket.data?.userId;
     Mixpanel.launchGame(
-      socket.data?.userId,
+      userId,
       socket.data?.ip,
       gamePlayers,
       room.gameSettings,
       roomId
     );
+    logger.info('User launched game', { userId, roomId });
     launchNewRound();
   };
 

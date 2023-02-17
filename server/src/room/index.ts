@@ -20,8 +20,8 @@ export class Room {
   constructor(roomId: string) {
     this.roomId = roomId;
     this.players = [];
-    this.gameSettings = DEFAULT_GAME_SETTINGS;
-    this.game = DEFAULT_GAME_STATE;
+    this.gameSettings = Object.assign({}, DEFAULT_GAME_SETTINGS);
+    this.game = Object.assign({}, DEFAULT_GAME_STATE);
     this.wordSeen = [];
     this.timer = null;
   }
