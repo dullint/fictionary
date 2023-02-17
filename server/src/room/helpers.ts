@@ -67,6 +67,7 @@ export const goToNextGameStepIfNeededAfterPlayerLeave = (room: Room) => {
     haveAllPlayerPromptDefinition(room)
   ) {
     game.gameStep = GameStep.GUESS;
+    console.log('guess in goToNextGameStepIfNeededAfterPlayerLeave');
   }
   if (
     game.gameStep === GameStep.GUESS &&

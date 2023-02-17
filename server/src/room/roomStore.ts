@@ -20,8 +20,11 @@ export class RoomStore extends Map<RoomId, Room> {
   }
 
   createRoom(roomId: RoomId) {
-    this.set(roomId, new Room(roomId));
+    const room = new Room(roomId);
+    this.set(roomId, room);
     logger.info('Room created', { roomId });
+    console.log(room.game);
+    return room;
   }
 }
 

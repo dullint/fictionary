@@ -34,6 +34,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
       autosave,
     };
     if (haveAllPlayerPromptDefinition(room)) {
+      console.log('guess in submit def');
       game.gameStep = GameStep.GUESS;
     }
     room.updateClient(io);
@@ -117,6 +118,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
       io.to(room.roomId).emit('timer', counter);
       if (counter === 0 && room.timer) {
         clearInterval(room.timer);
+        console.log('guess in run timer');
         room.game.gameStep = GameStep.GUESS;
         room.updateClient(io);
       }

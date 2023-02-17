@@ -43,12 +43,11 @@ export class Room {
     io.to(this.roomId).emit('room', clientRoom);
   }
 
-  deleteIfNoPlayerLeft(io: Server) {
+  deleteIfNoPlayerLeft() {
     const players = this.getInGamePlayers();
     if (players.length === 0) {
       setTimeout(async () => {
         if (this.getInGamePlayers().length === 0) {
-          io.socketsLeave(this.roomId);
           roomStore.deleteRoom(this.roomId);
         }
       }, ROOM_DELETE_DELAY);
