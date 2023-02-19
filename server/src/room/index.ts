@@ -34,13 +34,16 @@ export class Room {
     return this.players.find((player) => player.userId === userId);
   }
 
-  updateClient(io: Server) {
-    const clientRoom: ClientRoom = {
+  getRoomClient(): ClientRoom {
+    return {
       gameState: this.game,
       players: this.getInGamePlayers(),
       gameSettings: this.gameSettings,
     };
-    io.to(this.roomId).emit('room', clientRoom);
+  }
+
+  updateClient(io: Server) {
+    io.to(this.roomId).emit('room', this.getRoomClient());
   }
 
   deleteIfNoPlayerLeft() {

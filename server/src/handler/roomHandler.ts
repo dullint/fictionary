@@ -4,7 +4,12 @@ import {
   DISCONNECT_FROM_GAME_DELAY,
   MAX_PLAYER_IN_ROOM,
 } from '../room/constants';
-import { CallbackResponse, RoomIdPayload, ServerSocket } from '../socket/types';
+import {
+  EventCallback,
+  JoinRoomEventCallback,
+  RoomIdPayload,
+  ServerSocket,
+} from '../socket/types';
 import logger from '../logging';
 import { GameSettings, GameStep, RoomId } from '../room/types';
 import {
@@ -16,21 +21,26 @@ import { JoinRoomError } from './errors';
 import { Room } from '../room';
 
 export const roomHandler = (io: Server, socket: ServerSocket) => {
-  const joinRoom = async (payload: RoomIdPayload) => {
-    const { roomId } = payload;
+  const joinRoom = async (roomId: RoomId, callback: JoinRoomEventCallback) => {
     const userId = socket.data.userId;
     const room = roomStore.get(roomId);
 
     // Room does not exist
     if (!room) {
-      socket.emit('join_room_error', JoinRoomError.roomNotFound);
+      callback({
+        room: null,
+        error: JoinRoomError.roomNotFound,
+      });
       return;
     }
 
     // Room already full
     const alreadyInGamePlayers = room.getInGamePlayers();
     if (alreadyInGamePlayers.length >= MAX_PLAYER_IN_ROOM) {
-      socket.emit('join_room_error', JoinRoomError.roomFull);
+      callback({
+        room: null,
+        error: JoinRoomError.roomFull,
+      });
       return;
     }
 
@@ -39,7 +49,10 @@ export const roomHandler = (io: Server, socket: ServerSocket) => {
       (room) => room != roomId && room != socket.id
     );
     if (socketOtherRooms.length > 0) {
-      socket.emit('join_room_error', JoinRoomError.inAnotherRoom);
+      callback({
+        room: null,
+        error: JoinRoomError.inAnotherRoom,
+      });
       return;
     }
 
@@ -47,27 +60,29 @@ export const roomHandler = (io: Server, socket: ServerSocket) => {
 
     // The game is already launched and he was not part of it
     if (room.game.gameStep !== GameStep.WAIT && !userAlreadyInRoom) {
-      socket.emit('join_room_error', JoinRoomError.gameAlreadyLaunched);
+      callback({
+        room: null,
+        error: JoinRoomError.gameAlreadyLaunched,
+      });
       return;
     }
 
     if (userAlreadyInRoom) {
+      if (!userAlreadyInRoom.isConnected)
+        logger.info(`User rejoined room`, { userId, roomId });
       userAlreadyInRoom.isConnected = true;
       userAlreadyInRoom.isInGame = true;
-      logger.info(`User rejoined room`, { userId, roomId });
     } else {
       room.players.push(generateNewPlayer(userId, room.players));
       logger.info(`User joined room`, { userId, roomId });
     }
-    socket.emit('room_joined', {
-      gameState: room.game,
-      players: room.getInGamePlayers(),
-      gameSettings: room.gameSettings,
-    });
     await socket.join(roomId);
+    callback({
+      room: room.getRoomClient(),
+    });
   };
 
-  const createRoom = async (roomId: RoomId, callback: CallbackResponse) => {
+  const createRoom = async (roomId: RoomId, callback: EventCallback) => {
     await socket.join(roomId);
     const room = new Room(roomId);
     roomStore.set(roomId, room);
@@ -107,11 +122,7 @@ export const roomHandler = (io: Server, socket: ServerSocket) => {
     room.updateClient(io);
   };
 
-  const changeGameSettings = ({
-    gameSettings,
-  }: {
-    gameSettings: GameSettings;
-  }) => {
+  const changeGameSettings = (gameSettings: GameSettings) => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;

@@ -22,9 +22,9 @@ const WordGuess = () => {
     definitionsRef.current = definitionsRef.current.slice(0, definitionsNumber);
   }, [definitionsNumber]);
 
-  const handleSelectDefinition = (userId: UserId) => {
-    setSelectedUserIdDef(userId);
-    socket.emit('select_definition', { userId });
+  const handleSelectDefinition = (selectedUserId: UserId) => {
+    setSelectedUserIdDef(selectedUserId);
+    socket.emit('select_definition', selectedUserId);
   };
 
   return (

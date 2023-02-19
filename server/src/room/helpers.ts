@@ -68,7 +68,6 @@ export const goToNextGameStepIfNeededAfterPlayerLeave = (room: Room) => {
     inGamePlayers.length > 0
   ) {
     game.gameStep = GameStep.GUESS;
-    console.log('guess in goToNextGameStepIfNeededAfterPlayerLeave');
   }
   if (
     game.gameStep === GameStep.GUESS &&

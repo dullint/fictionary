@@ -5,7 +5,6 @@ import WordPrompt from '../WordPrompt';
 import Leaderboard from '../Leaderboard';
 import WordGuess from '../WordGuess';
 import WordResult from '../WordResult';
-import { joinRoom } from '../../actions';
 import LoadingPage from '../LoadingPage';
 import WordReveal from '../WordReveal';
 import socket from '../../socket';
@@ -27,19 +26,22 @@ const Room = () => {
   const [room, setRoom] = useState<ClientRoom | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const handleJoinRoom = async () => {
-      await joinRoom(roomId)
-        .then((room) => {
-          setRoom(room);
-        })
-        .catch((joinRoomError) => {
-          setError(joinRoomError);
-          setRoom(null);
-        });
-    };
+  const handleJoinRoom = (roomId: string) => {
+    if (roomId) {
+      const callback = (response: {
+        room: ClientRoom | null;
+        error?: string;
+      }) => {
+        const { error, room } = response;
+        if (error) setError(error);
+        setRoom(room);
+      };
+      socket.emit('join_room', roomId, callback);
+    }
+  };
 
-    handleJoinRoom();
+  useEffect(() => {
+    handleJoinRoom(roomId);
 
     socket.on('room_error', (errorMessage) => {
       setError(errorMessage);
@@ -47,7 +49,7 @@ const Room = () => {
     });
 
     socket.on('connect', () => {
-      handleJoinRoom();
+      handleJoinRoom(roomId);
     });
 
     socket.on('room', (room) => {

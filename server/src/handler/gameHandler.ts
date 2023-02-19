@@ -9,16 +9,16 @@ import {
 import roomStore from '../room/roomStore';
 
 import {
-  SelectDefinitionPayload,
+  EventCallback,
   ServerSocket,
   SubmitDefinitionPayload,
-  UpdateUsernamePayload,
+  UserId,
 } from '../socket/types';
 import logger from '../logging';
 import { DEFAULT_GAME_STATE } from '../room/constants';
 import { get_random_entry } from '../room/helpers';
 import { Room } from '../room';
-import { GameStep, Scores } from '../room/types';
+import { GameStep, Scores, Username } from '../room/types';
 import { UpdateUsernameError } from './errors';
 
 export const gameHandler = (io: Server, socket: ServerSocket) => {
@@ -55,11 +55,11 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     room.updateClient(io);
   };
 
-  const selectDefinition = async ({ userId }: SelectDefinitionPayload) => {
+  const selectDefinition = async (selectedUserId: UserId) => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
-    room.game.selections[socket.data.userId] = userId;
+    room.game.selections[socket.data.userId] = selectedUserId;
     if (haveAllPlayerGuessedDefinition(room)) {
       room.game.gameStep = GameStep.REVEAL;
       logger.info(
@@ -69,7 +69,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     room.updateClient(io);
   };
 
-  const updateScores = ({ scores }: { scores: Scores }) => {
+  const updateScores = (scores: Scores) => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
@@ -177,23 +177,31 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     launchNewRound();
   };
 
-  const updateUsername = async ({ username }: UpdateUsernamePayload) => {
+  const updateUsername = async (
+    username: Username,
+    callback: EventCallback
+  ) => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
     const usernamesInGame = room.players.map((player) => player.username);
     if (usernamesInGame.includes(username)) {
-      socket.emit('update_username_error', UpdateUsernameError.alreadyTaken);
+      callback({
+        success: false,
+        error: UpdateUsernameError.alreadyTaken,
+      });
       return;
     }
     const player = room.getOnePlayer(socket.data.userId);
     if (!player) return;
     player.username = username;
+    callback({
+      success: true,
+    });
     room.updateClient(io);
     logger.info(`User updated his username to ${username}`, {
       userId: socket.data.userId,
     });
-    socket.emit('username_updated');
   };
 
   socket.on('reset_game', resetGame);

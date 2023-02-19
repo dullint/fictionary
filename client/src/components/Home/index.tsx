@@ -1,7 +1,6 @@
 import { Button, Grid, Input, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { joinRoom } from '../../actions';
 import { theme } from '../../theme';
 import { generateRandomRoomId } from '../GameSettingsDialog/helpers';
 import { Box } from '@mui/system';
@@ -10,6 +9,7 @@ import { getTypingSequence } from './helpers';
 import HowToPlay from '../HowToPlay';
 import socket from '../../socket';
 import { ServerResponse } from '../../../../server/src/socket/types';
+import { ClientRoom } from '../../../../server/src/room/types';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -20,7 +20,6 @@ const Home = () => {
     event.preventDefault();
     const newRoomId = generateRandomRoomId();
     const callback = (response: ServerResponse) => {
-      console.log(response);
       if (response.success) navigate(`/room/${newRoomId}`);
     };
     socket.emit('create_room', newRoomId, callback);
@@ -28,13 +27,15 @@ const Home = () => {
 
   const handleJoinGame = async () => {
     if (roomId) {
-      await joinRoom(roomId)
-        .then((room) => {
-          navigate(`/room/${roomId}`);
-        })
-        .catch((error) => {
-          setJoinRoomError(error);
-        });
+      const callback = (response: {
+        room: ClientRoom | null;
+        error?: string;
+      }) => {
+        const { error, room } = response;
+        if (room) navigate(`/room/${roomId}`);
+        if (error) setJoinRoomError(error);
+      };
+      socket.emit('join_room', roomId, callback);
     }
   };
 

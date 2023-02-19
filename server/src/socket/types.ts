@@ -6,6 +6,7 @@ import {
 import { ClientRoom, GameSettings, RoomId } from '../room/types';
 import { Socket } from 'socket.io';
 import { Username, Scores } from '../room/types';
+import { Client } from 'socket.io/dist/client';
 
 export type UserId = string;
 export interface SocketData {
@@ -21,15 +22,10 @@ export type ServerSocket = Socket<
 >;
 
 export type ServerResponse = { success: boolean; error?: string };
-export type CallbackResponse = (response: ServerResponse) => void;
+export type EventCallback = (response: ServerResponse) => void;
 
 export interface ServerToClientEvents {
-  //join room
-  join_room_error: (error: JoinRoomError) => void;
-  room_joined: (room: ClientRoom) => void;
-
   //get room
-  room_existence: (existence: boolean) => void;
   room_error: (error: RoomError) => void;
 
   //update username
@@ -43,54 +39,37 @@ export interface ServerToClientEvents {
   room: (room: ClientRoom) => void;
 }
 
+export type JoinRoomEventCallback = (response: {
+  room: ClientRoom | null;
+  error?: string;
+}) => void;
+
 export interface ClientToServerEvents {
   //in Home
-  check_room_existence: (payload: RoomIdPayload) => void;
-  create_room: (roomId: RoomId, callback: CallbackResponse) => void;
-  join_room: (payload: RoomIdPayload) => void;
+  create_room: (roomId: RoomId, callback: EventCallback) => void;
+  join_room: (roomId: RoomId, callback: JoinRoomEventCallback) => void;
 
   //in waiting room
   leave_room: (payload: RoomIdPayload) => void;
-  update_username: (payload: UpdateUsernamePayload) => void;
+  update_username: (username: Username, callback: EventCallback) => void;
   room_joined: () => void;
-  change_game_settings: (payload: ChangeGameSettingsPayload) => void;
+  change_game_settings: (gameSettings: GameSettings) => void;
   launch_game: (payload: RoomIdPayload) => void;
 
   // *** In game
   //in Prompt
   get_new_word: () => void;
   submit_definition: (payload: SubmitDefinitionPayload) => void;
-  remove_definition: (payload: RemoveDefinition) => void;
+  remove_definition: () => void;
   show_results: () => void;
 
   //in guess
-  update_scores: (payload: UpdateScoresPayload) => void;
+  update_scores: (scores: Scores) => void;
 
   //in result
   new_round: (payload: RoomIdPayload) => void;
   reset_game: (payload: RoomIdPayload) => void;
-  select_definition: (payload: SelectDefinitionPayload) => void;
-}
-
-export interface UpdateScoresPayload {
-  roomId: RoomId;
-  scores: Scores;
-}
-
-export interface UpdateUsernamePayload {
-  username: Username;
-}
-
-export interface ChangeGameSettingsPayload {
-  gameSettings: GameSettings;
-}
-export interface SelectDefinitionPayload {
-  userId: UserId;
-}
-
-export interface RemoveDefinition {
-  roomId: RoomId;
-  word: string;
+  select_definition: (selectedUserId: UserId) => void;
 }
 
 export interface SubmitDefinitionPayload {

@@ -34,7 +34,6 @@ const WordPrompt = () => {
   const [example, setExample] = useState('');
   const [hasSubmited, setHasSubmited] = useState(false);
   const [counter, setCounter] = useState(gameSettings.maxPromptTime * 60);
-  const { roomId } = useParams();
   const isUsingExample = gameSettings.useExample;
 
   useEffect(() => {
@@ -79,7 +78,7 @@ const WordPrompt = () => {
 
   const handleModify = () => {
     setHasSubmited(false);
-    socket.emit('remove_definition', { roomId, word: entry.word });
+    socket.emit('remove_definition');
   };
 
   useEffect(() => {

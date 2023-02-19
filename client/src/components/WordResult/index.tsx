@@ -21,7 +21,7 @@ const WordResult = () => {
   }, []);
 
   const handleNextStep = () => {
-    socket.emit('update_scores', { roomId, scores: newScores });
+    socket.emit('update_scores', newScores);
     socket.emit('new_round', { roomId });
   };
 

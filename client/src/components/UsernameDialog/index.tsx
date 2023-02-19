@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
-import { updateUsername } from '../../actions';
 import { Grid, Input, Typography } from '@mui/material';
 import { palette, theme } from '../../theme';
 import { Box } from '@mui/system';
+import { ServerResponse } from '../../../../server/src/socket/types';
+import socket from '../../socket';
 
 export interface Propstype {
   open: boolean;
@@ -23,10 +24,12 @@ const UsernameDialog = (props: Propstype) => {
   };
 
   const handleSubmit = async () => {
-    const updated = await updateUsername(username).catch((err) => {
-      setUsernameErrorMessage(err.message);
-    });
-    if (updated) setOpen(false);
+    const callback = (response: ServerResponse) => {
+      const { error, success } = response;
+      if (success) setOpen(false);
+      else setUsernameErrorMessage(error);
+    };
+    socket.emit('update_username', username, callback);
   };
 
   const handlePressKey = (event) => {

@@ -44,7 +44,7 @@ const GameSettingsDialog = (props: PropsType) => {
       useExample,
       showGuessVote,
     };
-    socket.emit('change_game_settings', { gameSettings: newGameSettings });
+    socket.emit('change_game_settings', newGameSettings);
   };
 
   return (
