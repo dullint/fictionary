@@ -1,8 +1,4 @@
-import {
-  JoinRoomError,
-  RoomError,
-  UpdateUsernameError,
-} from '../handler/errors';
+import { RoomError, UpdateUsernameError } from '../handler/errors';
 import { ClientRoom, GameSettings, RoomId } from '../room/types';
 import { Socket } from 'socket.io';
 import { Username, Scores } from '../room/types';
@@ -39,15 +35,10 @@ export interface ServerToClientEvents {
   room: (room: ClientRoom) => void;
 }
 
-export type JoinRoomEventCallback = (response: {
-  room: ClientRoom | null;
-  error?: string;
-}) => void;
-
 export interface ClientToServerEvents {
   //in Home
   create_room: (roomId: RoomId, callback: EventCallback) => void;
-  join_room: (roomId: RoomId, callback: JoinRoomEventCallback) => void;
+  join_room: (roomId: RoomId, callback: EventCallback) => void;
 
   //in waiting room
   leave_room: (payload: RoomIdPayload) => void;

@@ -27,12 +27,9 @@ const Home = () => {
 
   const handleJoinGame = async () => {
     if (roomId) {
-      const callback = (response: {
-        room: ClientRoom | null;
-        error?: string;
-      }) => {
-        const { error, room } = response;
-        if (room) navigate(`/room/${roomId}`);
+      const callback = (response: ServerResponse) => {
+        const { error, success } = response;
+        if (success) navigate(`/room/${roomId}`);
         if (error) setJoinRoomError(error);
       };
       socket.emit('join_room', roomId, callback);

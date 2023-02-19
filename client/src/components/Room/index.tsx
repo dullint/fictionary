@@ -9,6 +9,7 @@ import LoadingPage from '../LoadingPage';
 import WordReveal from '../WordReveal';
 import socket from '../../socket';
 import { ClientRoom } from '../../../../server/src/room/types';
+import { ServerResponse } from '../../../../server/src/socket/types';
 
 export const RoomContext = createContext<ClientRoom>(null);
 
@@ -28,13 +29,9 @@ const Room = () => {
 
   const handleJoinRoom = (roomId: string) => {
     if (roomId) {
-      const callback = (response: {
-        room: ClientRoom | null;
-        error?: string;
-      }) => {
-        const { error, room } = response;
-        if (error) setError(error);
-        setRoom(room);
+      const callback = (response: ServerResponse) => {
+        const { error, success } = response;
+        if (!success) setError(error);
       };
       socket.emit('join_room', roomId, callback);
     }

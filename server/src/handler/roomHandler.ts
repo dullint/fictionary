@@ -4,12 +4,7 @@ import {
   DISCONNECT_FROM_GAME_DELAY,
   MAX_PLAYER_IN_ROOM,
 } from '../room/constants';
-import {
-  EventCallback,
-  JoinRoomEventCallback,
-  RoomIdPayload,
-  ServerSocket,
-} from '../socket/types';
+import { EventCallback, RoomIdPayload, ServerSocket } from '../socket/types';
 import logger from '../logging';
 import { GameSettings, GameStep, RoomId } from '../room/types';
 import {
@@ -21,14 +16,14 @@ import { JoinRoomError } from './errors';
 import { Room } from '../room';
 
 export const roomHandler = (io: Server, socket: ServerSocket) => {
-  const joinRoom = async (roomId: RoomId, callback: JoinRoomEventCallback) => {
+  const joinRoom = async (roomId: RoomId, callback: EventCallback) => {
     const userId = socket.data.userId;
     const room = roomStore.get(roomId);
 
     // Room does not exist
     if (!room) {
       callback({
-        room: null,
+        success: false,
         error: JoinRoomError.roomNotFound,
       });
       return;
@@ -38,7 +33,7 @@ export const roomHandler = (io: Server, socket: ServerSocket) => {
     const alreadyInGamePlayers = room.getInGamePlayers();
     if (alreadyInGamePlayers.length >= MAX_PLAYER_IN_ROOM) {
       callback({
-        room: null,
+        success: false,
         error: JoinRoomError.roomFull,
       });
       return;
@@ -50,7 +45,7 @@ export const roomHandler = (io: Server, socket: ServerSocket) => {
     );
     if (socketOtherRooms.length > 0) {
       callback({
-        room: null,
+        success: false,
         error: JoinRoomError.inAnotherRoom,
       });
       return;
@@ -61,7 +56,7 @@ export const roomHandler = (io: Server, socket: ServerSocket) => {
     // The game is already launched and he was not part of it
     if (room.game.gameStep !== GameStep.WAIT && !userAlreadyInRoom) {
       callback({
-        room: null,
+        success: false,
         error: JoinRoomError.gameAlreadyLaunched,
       });
       return;
@@ -78,8 +73,9 @@ export const roomHandler = (io: Server, socket: ServerSocket) => {
     }
     await socket.join(roomId);
     callback({
-      room: room.getRoomClient(),
+      success: true,
     });
+    room.updateClient(io);
   };
 
   const createRoom = async (roomId: RoomId, callback: EventCallback) => {
