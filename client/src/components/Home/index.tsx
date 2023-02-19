@@ -9,7 +9,6 @@ import { getTypingSequence } from './helpers';
 import HowToPlay from '../HowToPlay';
 import socket from '../../socket';
 import { ServerResponse } from '../../../../server/src/socket/types';
-import { ClientRoom } from '../../../../server/src/room/types';
 
 const Home = () => {
   const navigate = useNavigate();

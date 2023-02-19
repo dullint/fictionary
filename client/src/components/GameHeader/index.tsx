@@ -4,6 +4,7 @@ import React, { useContext } from 'react';
 import { localSocketUserId } from '../../socket';
 import Avatar from '../Avatar';
 import { RoomContext } from '../Room';
+import { getMyPlayer } from '../WaitingRoom/helpers';
 
 interface PropsType {
   children?: React.ReactNode;
@@ -13,7 +14,7 @@ const GameHeader = (props: PropsType) => {
   const { gameState, gameSettings, players } = useContext(RoomContext);
   const roundNumber = gameSettings.roundNumber;
   const currentRound = gameState.round;
-  const player = players.find((player) => player.userId === localSocketUserId);
+  const player = getMyPlayer(players);
   return (
     <Grid
       container

@@ -19,9 +19,11 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { theme } from '../../theme';
 import { bottomPageButtonSx } from '../../constants/style';
 import socket from '../../socket';
+import { getInGamePlayers } from '../Room/helpers';
 
 const WaitingRoom = () => {
   const { players } = useContext(RoomContext);
+  const inGamePlayers = getInGamePlayers(players);
 
   const myPlayer = getMyPlayer(players);
   const myUsername = myPlayer?.username;
@@ -51,7 +53,7 @@ const WaitingRoom = () => {
     navigator.clipboard.writeText(window.location.href);
   };
 
-  const allPlayersHaveAUsername = players
+  const allInGamePlayersHaveAUsername = inGamePlayers
     .map((player) => player.username)
     .every((username) => username);
 
@@ -119,7 +121,7 @@ const WaitingRoom = () => {
         }}
       >
         <Grid container spacing={2}>
-          {players.map((player) => (
+          {inGamePlayers.map((player) => (
             <Grid item xs={4} sm={3} key={player.userId}>
               <Box
                 display="flex"
@@ -148,7 +150,7 @@ const WaitingRoom = () => {
         </Grid>
       </Box>
       <Tooltip
-        title={getPlayTooltip(isAdmin, allPlayersHaveAUsername)}
+        title={getPlayTooltip(isAdmin, allInGamePlayersHaveAUsername)}
         placement="top"
         arrow
       >
@@ -157,7 +159,7 @@ const WaitingRoom = () => {
             onClick={handlePlay}
             variant="contained"
             sx={bottomPageButtonSx}
-            disabled={!isAdmin || !allPlayersHaveAUsername}
+            disabled={!isAdmin || !allInGamePlayersHaveAUsername}
           >
             Play
           </Button>

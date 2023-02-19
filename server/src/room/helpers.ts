@@ -2,7 +2,7 @@ import { Room } from '.';
 import dictionary from '../dictionary';
 import { ServerSocket, UserId } from '../socket/types';
 import { MAX_PLAYER_IN_ROOM } from './constants';
-import { GameStep, Player } from './types';
+import { GameStep, InputDictionaryEntries, Player } from './types';
 
 export const get_random_entry = () =>
   dictionary.entries[Math.floor(Math.random() * dictionary.entries.length)];
@@ -46,17 +46,24 @@ const generateColor = (playersInRoom: Player[]) => {
 
 export const haveAllPlayerPromptDefinition = (room: Room) => {
   const game = room.game;
-  const numberOfDefinitions = Object.values(game.inputEntries).filter(
-    (entry) => !entry?.autosave
-  ).length;
-  const numberOfPlayers = room.getInGamePlayers().length;
-  return numberOfDefinitions === numberOfPlayers;
+  const usersWhoSubmittedDefinition = Object.entries(
+    room.game.inputEntries
+  ).reduce((acc, [userId, entry]) => {
+    if (!entry?.autosave) acc.push(userId);
+    return acc;
+  }, [] as string[]);
+  const missingInGamePlayersDefinitions = room
+    .getInGamePlayers()
+    .filter((player) => !usersWhoSubmittedDefinition.includes(player.userId));
+  return missingInGamePlayersDefinitions.length === 0;
 };
 
 export const haveAllPlayerGuessedDefinition = (room: Room) => {
-  const numberOfPlayers = room.getInGamePlayers().length;
-  const numberOfSelectedDefinitions = Object.keys(room.game.selections).length;
-  return numberOfSelectedDefinitions == numberOfPlayers;
+  const usersWhoSelectedDefinition = Object.keys(room.game.selections);
+  const missingInGamePlayersGuesses = room
+    .getInGamePlayers()
+    .filter((player) => !usersWhoSelectedDefinition.includes(player.userId));
+  return missingInGamePlayersGuesses.length === 0;
 };
 
 export const goToNextGameStepIfNeededAfterPlayerLeave = (room: Room) => {

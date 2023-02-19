@@ -9,7 +9,6 @@ import {
 } from '@mui/material';
 import FindReplaceIcon from '@mui/icons-material/FindReplace';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { RoomContext } from '../Room';
 import {
   DEFINITION_CHARACTER_LIMIT,
@@ -19,12 +18,14 @@ import { theme } from '../../theme';
 import GameHeader from '../GameHeader';
 import { bottomPageButtonSx } from '../../constants/style';
 import DefinitionRender from '../DefinitionRender';
-import { cleanSentence } from './helpers';
+import { cleanSentence, numberOfMissingDefinitions } from './helpers';
 import socket from '../../socket';
+import { getInGamePlayers } from '../Room/helpers';
 
 const WordPrompt = () => {
   const { gameState, gameSettings, players } = useContext(RoomContext);
   const { entry, inputEntries } = gameState;
+  const inGamePlayers = getInGamePlayers(players);
 
   const wordRef = useRef(null);
   const ExRef = useRef(null);
@@ -103,9 +104,16 @@ const WordPrompt = () => {
     }
   };
 
-  const numberOfSubmittedDefinition = Object.values(inputEntries ?? {}).filter(
-    (entry) => !entry.autosave
-  ).length;
+  const usersWhoSubmittedDefinition = Object.entries(inputEntries).reduce(
+    (acc, [userId, entry]) => {
+      if (!entry?.autosave) acc.push(userId);
+      return acc;
+    },
+    [] as string[]
+  );
+  const missingInGamePlayersDefinitions = inGamePlayers.filter(
+    (player) => !usersWhoSubmittedDefinition.includes(player.userId)
+  );
 
   const minutes = counter && Math.floor(counter / 60);
   const seconds = counter && counter - minutes * 60;
@@ -115,14 +123,17 @@ const WordPrompt = () => {
         <GameHeader>
           <Box display="flex" flexDirection={'row'}>
             <Typography variant="h6">
-              {`${numberOfSubmittedDefinition} / ${players.length}`}
+              {`${usersWhoSubmittedDefinition.length} / ${
+                usersWhoSubmittedDefinition.length +
+                missingInGamePlayersDefinitions.length
+              }`}
             </Typography>
             <Typography
               variant="h6"
               display={{ xs: 'none', sm: 'block' }}
               sx={{ textIndent: 10 }}
             >
-              definitions
+              players
             </Typography>
           </Box>
         </GameHeader>

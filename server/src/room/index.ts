@@ -37,7 +37,7 @@ export class Room {
   getRoomClient(): ClientRoom {
     return {
       gameState: this.game,
-      players: this.getInGamePlayers(),
+      players: this.players,
       gameSettings: this.gameSettings,
     };
   }

@@ -79,7 +79,6 @@ describe('Room connection management', () => {
     );
     expect(player1?.isConnected).to.be.false;
     expect(player1?.isInGame).to.be.true;
-
     socketUser1.connect();
     clientRoomUser2 = await joinRoom(socketUser1, roomId, socketUser2);
     player1 = clientRoomUser2.players.find(
@@ -119,7 +118,8 @@ describe('Room connection management', () => {
     player1 = clientRoomUser2.players.find(
       (player) => player.userId === 'USER_ID_1'
     );
-    expect(player1).to.be.undefined;
+    expect(player1?.isConnected).to.be.false;
+    expect(player1?.isInGame).to.be.false;
 
     socketUser1.connect();
     clientRoomUser2 = await joinRoom(socketUser1, roomId, socketUser2);
