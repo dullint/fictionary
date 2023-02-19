@@ -1,11 +1,10 @@
-import { IconButton, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
 import Carousel from 'react-material-ui-carousel';
 import { TypeAnimation } from 'react-type-animation';
 import { theme } from '../../theme';
 import DefinitionRender from '../DefinitionRender';
-import FindReplaceIcon from '@mui/icons-material/FindReplace';
 import { WordGenre, WordNature } from '../DefinitionRender/helpers';
 
 const cardSx = {
@@ -49,42 +48,16 @@ const HowToPlay = () => {
               >
                 Invent a definition for it!
               </Typography>
-              <Box sx={{ minHeight: 50 }}>
-                <Typography
-                  component="span"
-                  fontFamily="bespoke-extrabold-italic"
-                  sx={{ marginRight: 0.5 }}
-                  fontSize={15}
-                >
-                  pétrichor
-                </Typography>
-                <Typography
-                  component="span"
-                  fontStyle={'italic'}
-                  fontSize={14}
-                  fontFamily="bespoke-light-italic"
-                  sx={{ marginRight: 0.5 }}
-                >
-                  {'n.m '}
-                </Typography>
-                <TypeAnimation
-                  sequence={[
-                    'Lance à trident utilisé par les gladiateurs',
-                    1000,
-                    '',
-                    0,
-                  ]}
-                  wrapper="span"
-                  cursor={true}
-                  repeat={Infinity}
-                  deletionSpeed={80}
-                  speed={60}
-                  style={{
-                    fontSize: 15,
-                    fontFamily: 'bespoke-regular',
-                  }}
-                />
-              </Box>
+              <DefinitionRender
+                entry={{
+                  word: 'pétrichor',
+                  example: '',
+                  nature: WordNature.NOUN,
+                  genre: WordGenre.MAS,
+                  definition: 'Lance à trident utilisé par les gladiateurs',
+                }}
+                small
+              />
             </Box>
           </Box>,
           <Box
@@ -121,23 +94,9 @@ const HowToPlay = () => {
                 >
                   Ex.
                 </Typography>
-                <TypeAnimation
-                  sequence={[
-                    'le pétrichor traversa le bouclier à plusieurs reprises',
-                    1000,
-                    '',
-                    0,
-                  ]}
-                  wrapper="span"
-                  cursor={true}
-                  repeat={Infinity}
-                  deletionSpeed={80}
-                  speed={60}
-                  style={{
-                    fontSize: 14,
-                    fontFamily: 'bespoke-regular',
-                  }}
-                />
+                <Typography component="span" fontSize={13}>
+                  le pétrichor traversa le bouclier à plusieurs reprises
+                </Typography>
               </Box>
             </Box>
             <Box></Box>
