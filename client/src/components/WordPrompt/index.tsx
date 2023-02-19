@@ -18,14 +18,16 @@ import { theme } from '../../theme';
 import GameHeader from '../GameHeader';
 import { bottomPageButtonSx } from '../../constants/style';
 import DefinitionRender from '../DefinitionRender';
-import { cleanSentence, numberOfMissingDefinitions } from './helpers';
+import { cleanSentence } from './helpers';
 import socket from '../../socket';
 import { getInGamePlayers } from '../Room/helpers';
+import { getMyPlayer } from '../WaitingRoom/helpers';
 
 const WordPrompt = () => {
   const { gameState, gameSettings, players } = useContext(RoomContext);
   const { entry, inputEntries } = gameState;
   const inGamePlayers = getInGamePlayers(players);
+  const isAdmin = getMyPlayer(players)?.isAdmin;
 
   const wordRef = useRef(null);
   const ExRef = useRef(null);
@@ -153,19 +155,29 @@ const WordPrompt = () => {
               '0'
             )}`}</Typography>
           )}
-          <Tooltip title="I know this word" arrow>
-            <IconButton
-              onClick={handleKnowWord}
-              sx={{
-                border: `2px solid ${theme.palette.primary.main}`,
-                width: 40,
-                height: 40,
-                borderRadius: 4,
-                color: theme.palette.primary.main,
-              }}
-            >
-              <FindReplaceIcon />
-            </IconButton>
+          <Tooltip
+            title={
+              isAdmin ? 'change word' : 'Only the admin change change the word'
+            }
+            arrow
+          >
+            <span>
+              <IconButton
+                onClick={handleKnowWord}
+                disabled={!isAdmin}
+                sx={{
+                  border: `2px solid ${
+                    isAdmin ? theme.palette.primary.main : 'rgba(0, 0, 0, 0.26)'
+                  }`,
+                  width: 40,
+                  height: 40,
+                  borderRadius: 4,
+                  color: theme.palette.primary.main,
+                }}
+              >
+                <FindReplaceIcon />
+              </IconButton>
+            </span>
           </Tooltip>
         </Grid>
       </Grid>
