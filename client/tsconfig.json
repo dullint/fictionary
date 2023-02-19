@@ -6,6 +6,7 @@
     "declaration": true,
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "lib": ["dom"]
   }
 }

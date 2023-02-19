@@ -13,16 +13,20 @@ const serverAddress =
 
 export type ClientSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
-const socket: ClientSocket = io(serverAddress, {
-  autoConnect: false,
-  forceNew: true,
-});
 export var localSocketUserId = localStorage.getItem('fictionaryUserId');
 if (!localSocketUserId) {
   localSocketUserId = uuidv4();
   localStorage.setItem('fictionaryUserId', localSocketUserId);
 }
-socket.auth = { userId: localSocketUserId };
-socket.connect();
 
-export default socket;
+const connectSocket = (serverAddress: string, userId: string): ClientSocket => {
+  const socket = io(serverAddress, {
+    autoConnect: false,
+    forceNew: true,
+  });
+  socket.auth = { userId };
+  socket.connect();
+  return socket;
+};
+
+export default connectSocket(serverAddress, localSocketUserId);

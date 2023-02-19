@@ -3,47 +3,61 @@ import { Server } from 'socket.io';
 import { io as Client, Socket as ClientSocket } from 'socket.io-client';
 import roomStore from '../src/room/roomStore';
 import server from '../src/socket';
-import {
-  ClientToServerEvents,
-  ServerToClientEvents,
-  Socket as ServerSocket,
-} from '../src/socket/types';
+import { ServerResponse, ServerSocket } from '../src/socket/types';
 import { expect } from 'chai';
+import { Room } from '../src/room';
+import { testConnectSocket, testCreateRoom, testJoinRoom } from './roomHelpers';
+import { JoinRoomError } from '../src/handler/errors';
 
 describe('Room connection management', () => {
-  let io: Server,
-    serverSocket: ServerSocket,
-    clientSocket: ClientSocket<ServerToClientEvents, ClientToServerEvents>;
+  let io: Server, serverSocket: ServerSocket;
   const httpServer = createServer();
+  const port = 3000;
+  const roomId = 'TESTS';
+  const serverAdress = `http://localhost:${port}`;
 
   beforeEach((done) => {
-    const port = 3000;
     io = server(httpServer);
-    // Object.keys(roomStore).forEach((roomId) => roomStore.delete(roomId));
     httpServer.listen(port, () => {
-      clientSocket = Client(`http://localhost:${port}`);
+      const socket = testConnectSocket(serverAdress, 'TEST_USER_ID');
       io.on('connection', (socket) => {
         serverSocket = socket;
       });
-      clientSocket.on('connect', done);
+      socket.on('connect', done);
     });
   });
 
-  //   afterEach((done) => {
-  //     clientSocket.disconnect();
-  //     io.close();
-  //     done();
-  //   });
+  afterEach((done) => {
+    io.close();
+    done();
+  });
 
   it('Should create a default room when called', async () => {
-    let clientReturn = false;
-    let createdRoom = null;
-    clientSocket.emit('create_room', { roomId: 'TESTS' });
-    clientSocket.on('room_created', async () => {
-      clientReturn = true;
-      createdRoom = await roomStore.get('TESTS');
-    });
-    expect(clientReturn).to.be.true;
-    expect(createdRoom).to.equal(0);
+    const socket = testConnectSocket(serverAdress, 'USER_ID');
+    const success = await testCreateRoom(socket, roomId);
+    expect(success).to.be.true;
+    expect(roomStore.get(roomId)).to.deep.equal(new Room(roomId));
+  });
+
+  it('Should join a room after having created it', async () => {
+    const socket = testConnectSocket(serverAdress, 'USER_ID');
+    socket.emit('create_room', roomId, (_: ServerResponse) => {});
+    const clientRoom = await testJoinRoom(socket, roomId);
+    expect(clientRoom).to.deep.equal(roomStore.get(roomId)?.getRoomClient());
+    expect(clientRoom.players[0].isAdmin).to.be.true;
+  });
+
+  it('Should get a join room error when the roomId does not exist', async () => {
+    const socket = testConnectSocket(serverAdress, 'USER_ID');
+    await testJoinRoom(socket, 'DOES_NOT_EXIST').catch((err) =>
+      expect(err).to.equal(JoinRoomError.roomNotFound)
+    );
+  });
+
+  it('Should be able to reconnect to a room', async () => {
+    const socket = testConnectSocket(serverAdress, 'USER_ID');
+    socket.emit('create_room', roomId, (_: ServerResponse) => {});
+    const clientRoom = await testJoinRoom(socket, roomId);
+    socket.emit('disconnect', roomId, (_: ServerResponse) => {});
   });
 });
