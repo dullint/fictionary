@@ -8,6 +8,7 @@ import { Box } from '@mui/system';
 import DefinitionRender from '../DefinitionRender';
 import { DICTIONARY_PLAYER } from './constants';
 import { theme } from '../../theme';
+import AnimateHeight from 'react-animate-height';
 
 interface PropsType {
   handleSelectDefinition: (string) => void;
@@ -78,15 +79,20 @@ const DefinitionList = (props: PropsType) => {
               example: isUsingExample ? inputEntry.example : '',
             }}
           />
-          {showVoteBanner && revealedBannerIndexes.includes(index) && (
-            <VoteBanner
-              votingPlayers={votingPlayersByDefinitions[userId] ?? []}
-              authorPlayer={extendedPlayers.find(
-                (player) => player.userId === userId
-              )}
-              size={'small'}
-              revealed={revealedAuthorIndexes.includes(index)}
-            />
+          {showVoteBanner && (
+            <AnimateHeight
+              height={revealedBannerIndexes.includes(index) ? 'auto' : 0}
+              duration={700}
+            >
+              <VoteBanner
+                votingPlayers={votingPlayersByDefinitions[userId] ?? []}
+                authorPlayer={extendedPlayers.find(
+                  (player) => player.userId === userId
+                )}
+                size={'small'}
+                revealed={revealedAuthorIndexes.includes(index)}
+              />
+            </AnimateHeight>
           )}
         </Box>
       ))}
