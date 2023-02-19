@@ -1,20 +1,21 @@
-import { Socket, Server } from 'socket.io';
-import roomStore, { RoomStore } from '../room/roomStore';
+import { Server } from 'socket.io';
+import roomStore from '../room/roomStore';
 import {
   DISCONNECT_FROM_GAME_DELAY,
   MAX_PLAYER_IN_ROOM,
 } from '../room/constants';
-import { RoomIdPayload } from '../socket/types';
+import { CallbackResponse, RoomIdPayload, ServerSocket } from '../socket/types';
 import logger from '../logging';
-import { GameSettings, GameStep } from '../room/types';
+import { GameSettings, GameStep, RoomId } from '../room/types';
 import {
   generateNewPlayer,
   getSocketRoom,
   goToNextGameStepIfNeededAfterPlayerLeave,
 } from '../room/helpers';
 import { JoinRoomError } from './errors';
+import { Room } from '../room';
 
-export const roomHandler = (io: Server, socket: Socket) => {
+export const roomHandler = (io: Server, socket: ServerSocket) => {
   const joinRoom = async (payload: RoomIdPayload) => {
     const { roomId } = payload;
     const userId = socket.data.userId;
@@ -58,20 +59,25 @@ export const roomHandler = (io: Server, socket: Socket) => {
       room.players.push(generateNewPlayer(userId, room.players));
       logger.info(`User joined room`, { userId, roomId });
     }
-    socket.emit('room_joined');
+    socket.emit('room_joined', {
+      gameState: room.game,
+      players: room.getInGamePlayers(),
+      gameSettings: room.gameSettings,
+    });
     await socket.join(roomId);
-    room.updateClient(io);
   };
 
-  const createRoom = async (payload: RoomIdPayload) => {
-    const { roomId } = payload;
+  const createRoom = async (roomId: RoomId, callback: CallbackResponse) => {
     await socket.join(roomId);
-    roomStore.createRoom(roomId);
+    const room = new Room(roomId);
+    roomStore.set(roomId, room);
     logger.info(`User created room ${roomId}`, {
       userId: socket.data.userId,
       roomId,
     });
-    socket.emit('room_created');
+    callback({
+      success: true,
+    });
   };
 
   const leaveRoom = ({ roomId }: { roomId: string }) => {

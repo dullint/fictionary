@@ -1,11 +1,10 @@
 import {
-  CreateRoomError,
   JoinRoomError,
   RoomError,
   UpdateUsernameError,
 } from '../handler/errors';
 import { ClientRoom, GameSettings, RoomId } from '../room/types';
-import { Socket as DefaultSocket } from 'socket.io';
+import { Socket } from 'socket.io';
 import { Username, Scores } from '../room/types';
 
 export type UserId = string;
@@ -15,11 +14,14 @@ export interface SocketData {
 
 export type RoomIdPayload = { roomId: RoomId };
 
-export type Socket = DefaultSocket<
+export type ServerSocket = Socket<
   ClientToServerEvents,
   ServerToClientEvents,
   SocketData
 >;
+
+export type ServerResponse = { success: boolean; error?: string };
+export type CallbackResponse = (response: ServerResponse) => void;
 
 export interface ServerToClientEvents {
   //join room
@@ -29,10 +31,6 @@ export interface ServerToClientEvents {
   //get room
   room_existence: (existence: boolean) => void;
   room_error: (error: RoomError) => void;
-
-  //create room
-  room_created: () => void;
-  create_room_error: (error: CreateRoomError) => void;
 
   //update username
   username_updated: () => void;
@@ -48,7 +46,7 @@ export interface ServerToClientEvents {
 export interface ClientToServerEvents {
   //in Home
   check_room_existence: (payload: RoomIdPayload) => void;
-  create_room: (payload: RoomIdPayload) => void;
+  create_room: (roomId: RoomId, callback: CallbackResponse) => void;
   join_room: (payload: RoomIdPayload) => void;
 
   //in waiting room

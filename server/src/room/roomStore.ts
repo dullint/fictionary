@@ -18,13 +18,6 @@ export class RoomStore extends Map<RoomId, Room> {
     const deleted = this.delete(roomId);
     if (deleted) logger.info('Room deleted', { roomId });
   }
-
-  createRoom(roomId: RoomId) {
-    const room = new Room(roomId);
-    this.set(roomId, room);
-    logger.info('Room created', { roomId });
-    return room;
-  }
 }
 
 const roomStore = new RoomStore();

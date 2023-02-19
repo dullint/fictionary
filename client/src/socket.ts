@@ -6,12 +6,14 @@ import {
   ServerToClientEvents,
 } from '../../server/src/socket/types';
 
-const server =
+const serverAddress =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:3020/'
     : 'https://fictionary.io/';
 
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(server, {
+export type ClientSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
+
+const socket: ClientSocket = io(serverAddress, {
   autoConnect: false,
   forceNew: true,
 });

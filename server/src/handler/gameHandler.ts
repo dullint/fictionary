@@ -10,7 +10,7 @@ import roomStore from '../room/roomStore';
 
 import {
   SelectDefinitionPayload,
-  Socket,
+  ServerSocket,
   SubmitDefinitionPayload,
   UpdateUsernamePayload,
 } from '../socket/types';
@@ -21,7 +21,7 @@ import { Room } from '../room';
 import { GameStep, Scores } from '../room/types';
 import { UpdateUsernameError } from './errors';
 
-export const gameHandler = (io: Server, socket: Socket) => {
+export const gameHandler = (io: Server, socket: ServerSocket) => {
   const submitDefinition = async (payload: SubmitDefinitionPayload) => {
     const { definition, example, autosave } = payload;
     const roomId = getSocketRoom(socket);
