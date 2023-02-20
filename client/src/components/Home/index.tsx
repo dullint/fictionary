@@ -1,4 +1,4 @@
-import { Button, Grid, Input, Typography } from '@mui/material';
+import { Button, Grid, Input, Typography, Divider } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { theme } from '../../theme';
@@ -9,11 +9,13 @@ import { getTypingSequence } from './helpers';
 import HowToPlay from '../HowToPlay';
 import socket from '../../socket';
 import { ServerResponse } from '../../../../server/src/socket/types';
+import CreditsDialog from '../CreditsDialog';
 
 const Home = () => {
   const navigate = useNavigate();
   const [roomId, setRoomId] = useState('');
   const [joinRoomError, setJoinRoomError] = useState<string | null>(null);
+  const [openCredits, setOpenCredits] = useState(false);
 
   const handleCreateGame = async (event) => {
     event.preventDefault();
@@ -113,6 +115,12 @@ const Home = () => {
                 height: 60,
                 flex: 1,
               }}
+              onKeyPress={(event) => {
+                if (event.key === 'Enter') {
+                  event.preventDefault();
+                  handleJoinGame();
+                }
+              }}
               value={roomId}
               inputProps={{
                 maxLength: 5,
@@ -134,26 +142,22 @@ const Home = () => {
           )}
         </Grid>
       </Grid>
-      {/* <Button
-        onClick={() => setIsHowToPlayDialogOpen(true)}
-        variant="outlined"
-        sx={{ width: { xs: 300, sm: 400 }, height: 60, marginTop: 5 }}
-      >
-        How to play ?
-      </Button> */}
-      {/* <Dialog
-        open={isHowToPlayDialogOpen}
-        onClose={() => setIsHowToPlayDialogOpen(false)}
-      >
-        <DialogContent
-          sx={{
-            backgroundColor: theme.palette.yellow.main,
-            border: '4px solid black',
-          }}
-        > */}
       <HowToPlay />
-      {/* </DialogContent> */}
-      {/* </Dialog> */}
+      <Grid
+        container
+        direction="row"
+        alignItems="center"
+        justifyContent={'space-between'}
+        sx={{
+          width: { xs: 200, sm: 300 },
+        }}
+      >
+        <Button size="small" href={'mailto:fictionary.io@gmail.com'}>
+          Contact
+        </Button>
+        <Button onClick={() => setOpenCredits(true)}>Credits</Button>
+      </Grid>
+      <CreditsDialog open={openCredits} setOpen={setOpenCredits} />
     </Grid>
   );
 };
