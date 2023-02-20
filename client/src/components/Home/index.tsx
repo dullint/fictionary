@@ -1,4 +1,4 @@
-import { Button, Grid, Input, Typography, Divider } from '@mui/material';
+import { Button, Grid, Input, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { theme } from '../../theme';
@@ -82,7 +82,7 @@ const Home = () => {
         direction="column"
         alignItems={'center'}
         width="auto"
-        sx={{ marginBottom: 5 }}
+        sx={{ marginBottom: 3 }}
       >
         <Button
           onClick={handleCreateGame}
@@ -97,7 +97,6 @@ const Home = () => {
         </Button>
         <Grid
           container
-          direction="row"
           alignItems="center"
           justifyContent="space-between"
           sx={{
