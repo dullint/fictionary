@@ -154,7 +154,9 @@ const Home = () => {
         <Button size="small" href={'mailto:fictionary.io@gmail.com'}>
           Contact
         </Button>
-        <Button onClick={() => setOpenCredits(true)}>Credits</Button>
+        <Button size="small" onClick={() => setOpenCredits(true)}>
+          Credits
+        </Button>
       </Grid>
       <CreditsDialog open={openCredits} setOpen={setOpenCredits} />
     </Grid>
