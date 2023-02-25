@@ -5,14 +5,14 @@ export enum WordNature {
 }
 
 export enum WordGenre {
-  MAS = 'mas',
-  FEM = 'fem',
+  MAS = 'masculin',
+  FEM = 'feminin',
   PROPRE = 'propre',
 }
 
 export const getNatureGenre = (nature: WordNature, genre: WordGenre) => {
   switch (nature) {
-    case 'adj':
+    case 'adjective':
       return 'adj.';
     case 'verb':
       return 'verbe';

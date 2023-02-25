@@ -1,20 +1,20 @@
 import path from 'path';
 import fs from 'fs';
 import { parse } from 'csv-parse';
-import { DictionnaryEntry } from './types';
+import { DictionaryLanguage, DictionnaryEntry } from './types';
 import logger from '../logging';
 
-const cleanDefinitions = (def: string) => {
-  const trimmedDef = def.trim();
-  return trimmedDef.endsWith('.') ? trimmedDef : trimmedDef + '.';
-};
-
 class Dictionary {
-  entries: DictionnaryEntry[];
+  french: DictionnaryEntry[];
+  english: DictionnaryEntry[];
 
-  parseDatabase = async () => {
-    this.entries = await new Promise<DictionnaryEntry[]>((resolve, reject) => {
-      const csvFilePath = path.resolve(__dirname, 'database.csv');
+  parseOneLanguageDatabase = async (language: DictionaryLanguage) => {
+    return new Promise<DictionnaryEntry[]>((resolve, reject) => {
+      const csvFilePath = path.resolve(
+        __dirname,
+        'database',
+        `${language}.csv`
+      );
       const headers = ['word', 'nature', 'genre', 'definition', 'example'];
       const stream = fs.createReadStream(csvFilePath, { encoding: 'utf-8' });
       const entries: DictionnaryEntry[] = [];
@@ -27,6 +27,7 @@ class Dictionary {
       stream.on('ready', () => {
         stream.pipe(parser);
       });
+
       parser.on('readable', function () {
         let entry;
         logger.info('Parsing Word CSV');
@@ -35,7 +36,7 @@ class Dictionary {
         }
       });
 
-      parser.on('error', function (err) {
+      parser.on('error', (err) => {
         logger.error('Error while parsing the Word CSV file', err.message);
         reject();
       });
@@ -47,8 +48,18 @@ class Dictionary {
     });
   };
 
+  setUp = async () => {
+    this.french = await this.parseOneLanguageDatabase(
+      DictionaryLanguage.French
+    );
+    this.english = await this.parseOneLanguageDatabase(
+      DictionaryLanguage.English
+    );
+  };
+
   constructor() {
-    this.entries = [];
+    this.french = [];
+    this.english = [];
   }
 }
 

@@ -15,7 +15,7 @@ if (process.env.NODE_ENV !== 'development') {
   });
 }
 
-dictionary.parseDatabase().then(() => {
+dictionary.setUp().then(() => {
   const server = http.createServer(app);
   const port = process.env.PORT || 3020;
   io(server);

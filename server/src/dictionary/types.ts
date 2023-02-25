@@ -16,3 +16,8 @@ export interface DictionnaryEntry {
   nature: WordNature;
   genre: WordGenre;
 }
+
+export enum DictionaryLanguage {
+  French = 'french',
+  English = 'english',
+}
