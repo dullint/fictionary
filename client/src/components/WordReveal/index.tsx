@@ -118,7 +118,7 @@ const WordReveal = () => {
             variant="contained"
             sx={bottomPageButtonSx}
           >
-            Continue
+            See scores
           </Button>
         </Box>
       </Tooltip>
