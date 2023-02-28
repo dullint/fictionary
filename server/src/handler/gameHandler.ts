@@ -18,10 +18,19 @@ import logger from '../logging';
 import { DEFAULT_GAME_STATE } from '../room/constants';
 import { get_random_entry } from '../room/helpers';
 import { Room } from '../room';
-import { GameStep, Scores, Username } from '../room/types';
+import { GameSettings, GameStep, Scores, Username } from '../room/types';
 import { UpdateUsernameError } from './errors';
 
 export const gameHandler = (io: Server, socket: ServerSocket) => {
+  const changeGameSettings = (gameSettings: GameSettings) => {
+    const roomId = getSocketRoom(socket);
+    const room = roomStore.getRoom(roomId, io);
+    if (!room) return;
+    room.gameSettings = gameSettings;
+    logger.info(`[ROOM ${roomId}] Game settings changed`);
+    room.updateClient(io);
+  };
+
   const submitDefinition = async (payload: SubmitDefinitionPayload) => {
     const { definition, example, autosave } = payload;
     const roomId = getSocketRoom(socket);
@@ -34,11 +43,11 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
       example,
       autosave,
     };
-    logger.info(`User submited a new definition in ${roomId}`, { userId });
+    logger.info(`[ROOM ${roomId}] Player submited a new definition`);
     if (haveAllPlayerPromptDefinition(room)) {
       game.gameStep = GameStep.GUESS;
       logger.info(
-        `All definitions submitted in ${roomId}, moving forward to the GUESS step`
+        `[ROOM ${roomId}] All definitions submitted, moving forward to the GUESS step`
       );
     }
     room.updateClient(io);
@@ -51,7 +60,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     const game = room.game;
     const userId = socket.data.userId;
     delete game.inputEntries?.[userId];
-    logger.info(`User removed his definition in ${roomId}`, { userId });
+    logger.info(`[ROOM ${roomId}] User removed his definition`);
     room.updateClient(io);
   };
 
@@ -63,7 +72,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     if (haveAllPlayerGuessedDefinition(room)) {
       room.game.gameStep = GameStep.REVEAL;
       logger.info(
-        `All definitions guessed in ${roomId}, moving forward to the REVEAL step`
+        `[ROOM ${roomId}] All definitions guessed, moving forward to the REVEAL step`
       );
     }
     room.updateClient(io);
@@ -75,7 +84,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     if (!room) return;
     const game = room.game;
     game.scores = scores;
-    logger.info(`Scores updated in room ${roomId}`);
+    logger.info(`[ROOM ${roomId}] Scores updated`);
     room.updateClient(io);
   };
 
@@ -84,7 +93,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
     room.game = Object.assign({}, DEFAULT_GAME_STATE);
-    logger.info(`Game reseted in ${roomId}`, { userId: socket.data.userId });
+    logger.info(`[ROOM ${roomId}] Game reseted`);
     room.updateClient(io);
   };
 
@@ -95,7 +104,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     const game = room.game;
     if (game.round >= room.gameSettings.roundNumber) {
       game.gameStep = GameStep.FINISHED;
-      logger.info(`Game finished in room ${roomId}`);
+      logger.info(`[ROOM ${roomId}] Game finished`);
       room.updateClient(io);
       return;
     }
@@ -103,7 +112,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     game.gameStep = GameStep.PROMPT;
     game.selections = {};
     game.inputEntries = {};
-    logger.info(`Round ${game.round} launched in room ${roomId}`);
+    logger.info(`[ROOM ${roomId}] Round ${game.round} launched`);
     getNewWord();
     room.updateClient(io);
   };
@@ -121,20 +130,21 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
       entry = get_random_entry();
     }
     room.game.entry = entry;
-    logger.info(`New word in room ${roomId}`);
+    logger.info(`[ROOM ${roomId}] New word`);
     runTimer(room, room.gameSettings.maxPromptTime);
     room.updateClient(io);
   };
 
   const runTimer = (room: Room, time: number) => {
     var counter = time * 60;
+    const roomId = room.roomId;
     room.timer = setInterval(() => {
-      io.to(room.roomId).emit('timer', counter);
+      io.to(roomId).emit('timer', counter);
       if (counter === 0 && room.timer) {
         clearInterval(room.timer);
         room.game.gameStep = GameStep.GUESS;
         logger.info(
-          `Timer ran out of time in ${room.roomId}, moving forward to the GUESS step`
+          `[ROOM ${roomId}] Timer ran out of time, moving forward to the GUESS step`
         );
         room.updateClient(io);
       }
@@ -150,11 +160,10 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     const gameSettings = room.gameSettings;
     const isInLastRound = game.round >= gameSettings.roundNumber;
     game.gameStep = isInLastRound ? GameStep.FINISHED : GameStep.RESULTS;
-    logger.info(`Results showed in ${room.roomId}`);
     if (game.gameStep === GameStep.FINISHED) {
-      logger.info(`Game finished in room ${roomId}`);
+      logger.info(`[ROOM ${roomId}] Game finished`);
     } else {
-      logger.info(`Results showed in ${room.roomId}`);
+      logger.info(`[ROOM ${roomId}] Results showed`);
     }
 
     room.updateClient(io);
@@ -173,7 +182,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
       room.gameSettings,
       roomId
     );
-    logger.info('User launched game', { userId, roomId });
+    logger.info(`[ROOM ${roomId}] User launched game`);
     launchNewRound();
   };
 
@@ -199,9 +208,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
       success: true,
     });
     room.updateClient(io);
-    logger.info(`User updated his username to ${username}`, {
-      userId: socket.data.userId,
-    });
+    logger.info(`[ROOM ${roomId}] User updated his username to ${username}`);
   };
 
   socket.on('reset_game', resetGame);
@@ -214,4 +221,5 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
   socket.on('get_new_word', getNewWord);
   socket.on('show_results', showResults);
   socket.on('update_username', updateUsername);
+  socket.on('change_game_settings', changeGameSettings);
 };

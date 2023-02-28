@@ -16,7 +16,7 @@ export class RoomStore extends Map<RoomId, Room> {
 
   deleteRoom(roomId: RoomId) {
     const deleted = this.delete(roomId);
-    if (deleted) logger.info('Room deleted', { roomId });
+    if (deleted) logger.info(`[ROOM ${roomId}] Room deleted`);
   }
 }
 

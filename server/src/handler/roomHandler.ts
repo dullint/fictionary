@@ -4,9 +4,9 @@ import {
   DISCONNECT_FROM_GAME_DELAY,
   MAX_PLAYER_IN_ROOM,
 } from '../room/constants';
-import { EventCallback, RoomIdPayload, ServerSocket } from '../socket/types';
+import { EventCallback, ServerSocket } from '../socket/types';
 import logger from '../logging';
-import { GameSettings, GameStep, RoomId } from '../room/types';
+import { GameStep, RoomId } from '../room/types';
 import {
   generateNewPlayer,
   getSocketRoom,
@@ -64,12 +64,12 @@ export const roomHandler = (io: Server, socket: ServerSocket) => {
 
     if (userAlreadyInRoom) {
       if (!userAlreadyInRoom.isConnected)
-        logger.info(`User rejoined room`, { userId, roomId });
+        logger.info(`[ROOM ${roomId}] User ${userId} rejoined room ${roomId}`);
       userAlreadyInRoom.isConnected = true;
       userAlreadyInRoom.isInGame = true;
     } else {
       room.players.push(generateNewPlayer(userId, room.players));
-      logger.info(`User joined room`, { userId, roomId });
+      logger.info(`[ROOM ${roomId}] User ${userId} joined room ${roomId}`);
     }
     await socket.join(roomId);
     callback({
@@ -80,12 +80,10 @@ export const roomHandler = (io: Server, socket: ServerSocket) => {
 
   const createRoom = async (roomId: RoomId, callback: EventCallback) => {
     await socket.join(roomId);
+    const userId = socket.data.userId;
     const room = new Room(roomId);
     roomStore.set(roomId, room);
-    logger.info(`User created room ${roomId}`, {
-      userId: socket.data.userId,
-      roomId,
-    });
+    logger.info(`[ROOM ${roomId}] User ${userId} created room`);
     callback({
       success: true,
     });
@@ -99,10 +97,7 @@ export const roomHandler = (io: Server, socket: ServerSocket) => {
     if (!player) return;
     const wasAdmin = player.isAdmin;
 
-    logger.info(`User left room `, {
-      userId: socket.data.userId,
-      roomId,
-    });
+    logger.info(`[ROOM ${roomId}] User ${userId} left room`);
     room.players = room.players.filter((player) => player.userId != userId);
     socket.leave(roomId);
 
@@ -115,15 +110,6 @@ export const roomHandler = (io: Server, socket: ServerSocket) => {
     goToNextGameStepIfNeededAfterPlayerLeave(room);
     room.deleteIfNoPlayerLeft();
 
-    room.updateClient(io);
-  };
-
-  const changeGameSettings = (gameSettings: GameSettings) => {
-    const roomId = getSocketRoom(socket);
-    const room = roomStore.getRoom(roomId, io);
-    if (!room) return;
-    room.gameSettings = gameSettings;
-    logger.info(`Game settings changed in ${roomId}`, { gameSettings });
     room.updateClient(io);
   };
 
@@ -146,22 +132,20 @@ export const roomHandler = (io: Server, socket: ServerSocket) => {
         remaningInGamePlayers[0].isAdmin = true;
       }
       goToNextGameStepIfNeededAfterPlayerLeave(room);
-      logger.info('User out of game after disconnection', {
-        userId,
-        roomId,
-      });
+      logger.info(
+        `[ROOM ${roomId}] User ${userId} out of game after disconnection`
+      );
       room.updateClient(io);
     }, DISCONNECT_FROM_GAME_DELAY);
 
     room.deleteIfNoPlayerLeft();
     room.updateClient(io);
 
-    logger.info(`User disconnecting`, { userId, roomId });
+    logger.info(`[ROOM ${roomId}] User ${userId} disconnecting`);
   };
 
   socket.on('disconnecting', disconnecting);
   socket.on('create_room', createRoom);
   socket.on('join_room', joinRoom);
   socket.on('leave_room', leaveRoom);
-  socket.on('change_game_settings', changeGameSettings);
 };

@@ -19,5 +19,7 @@ dictionary.parseDatabase().then(() => {
   const server = http.createServer(app);
   const port = process.env.PORT || 3020;
   io(server);
-  server.listen(port, () => logger.info(`SERVER IS RUNNING ON PORT ${port}`));
+  server.listen(port, () =>
+    logger.info(`[SET UP] SERVER IS RUNNING ON PORT ${port}`)
+  );
 });
