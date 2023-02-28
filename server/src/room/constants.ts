@@ -7,7 +7,7 @@ export const DISCONNECT_FROM_GAME_DELAY = 10 * 1000; //10 seconds
 export const DEFAULT_GAME_SETTINGS: GameSettings = {
   maxPromptTime: 4,
   roundNumber: 3,
-  useExample: true,
+  useExample: false,
   showGuessVote: false,
 };
 
