@@ -141,7 +141,14 @@ const Home = () => {
           )}
         </Grid>
       </Grid>
-      <Box sx={{ mb: 2 }}>
+      <Box
+        sx={{
+          mb: 2,
+          display: 'flex',
+          width: { xs: 300, sm: 'auto' },
+          flexDirection: 'column',
+        }}
+      >
         <Typography>
           🇫🇷 Only French dictionary is currently available
         </Typography>
