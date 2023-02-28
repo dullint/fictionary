@@ -78,6 +78,7 @@ const WordReveal = () => {
     const playerIndexGenerator = getPlayerIndexGenerator(
       definitionsNumber ?? 0
     );
+    scrollAndRevealNextDefinition(playerIndexGenerator, null);
     const interval = setInterval(async () => {
       scrollAndRevealNextDefinition(playerIndexGenerator, interval);
       return () => clearInterval(interval);
