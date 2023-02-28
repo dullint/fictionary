@@ -140,7 +140,7 @@ const GameSettingsDialog = (props: PropsType) => {
               );
             })}
           </ButtonGroup>
-          <Typography
+          {/* <Typography
             variant="subtitle1"
             sx={{ marginTop: 3, marginBottom: 1 }}
           >
@@ -164,7 +164,7 @@ const GameSettingsDialog = (props: PropsType) => {
                 </Button>
               );
             })}
-          </ButtonGroup>
+          </ButtonGroup> */}
           <Button
             onClick={isAdmin ? handleSubmit : () => setOpen(false)}
             variant="contained"
