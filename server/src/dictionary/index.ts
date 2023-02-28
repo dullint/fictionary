@@ -25,24 +25,27 @@ class Dictionary {
         fromLine: 2,
       });
       stream.on('ready', () => {
+        logger.info(`[SET UP] Parsing ${language} dictionary database`);
         stream.pipe(parser);
       });
 
       parser.on('readable', function () {
         let entry;
-        logger.info('Parsing Word CSV');
         while ((entry = parser.read())) {
           entries.push(entry);
         }
       });
 
       parser.on('error', (err) => {
-        logger.error('Error while parsing the Word CSV file', err.message);
+        logger.error(
+          '[SET UP] Error while parsing the Word CSV file',
+          err.message
+        );
         reject();
       });
 
       parser.on('end', function () {
-        logger.info('CSV Parsing complete');
+        logger.info(`[SET UP] ${language} dictionary parsing complete`);
         resolve(entries);
       });
     });

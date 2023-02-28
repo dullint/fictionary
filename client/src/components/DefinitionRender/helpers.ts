@@ -1,26 +1,36 @@
 export enum WordNature {
-  VERB = 'verb',
-  NOUN = 'noun',
-  ADJ = 'adj',
+  Verb = 'verb',
+  Noun = 'noun',
+  Adjective = 'adjective',
 }
 
 export enum WordGenre {
-  MAS = 'masculin',
-  FEM = 'feminin',
-  PROPRE = 'propre',
+  Masculin = 'masculin',
+  Feminin = 'feminin',
+  Propre = 'propre',
 }
 
-export const getNatureGenre = (nature: WordNature, genre: WordGenre) => {
+export enum DictionaryLanguage {
+  French = 'french',
+  English = 'english',
+}
+
+export const getNatureGenre = (
+  nature: WordNature,
+  genre: WordGenre,
+  language: DictionaryLanguage
+) => {
   switch (nature) {
     case 'adjective':
       return 'adj.';
     case 'verb':
-      return 'verbe';
+      return language === DictionaryLanguage.French ? 'verbe' : 'verb';
     case 'noun': {
+      if (language === DictionaryLanguage.English) return 'noun';
       switch (genre) {
-        case 'mas':
+        case 'masculin':
           return 'n.m.';
-        case 'fem':
+        case 'feminin':
           return 'n.f.';
         case 'propre':
           return 'n.propre';

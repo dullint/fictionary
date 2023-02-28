@@ -18,6 +18,10 @@ import { RoomContext } from '../Room';
 import { GameSettings } from '../../../../server/src/room/types';
 import socket from '../../socket';
 
+export enum DictionaryLanguage {
+  French = 'french',
+  English = 'english',
+}
 export interface PropsType {
   open: boolean;
   setOpen: (bool: boolean) => void;
@@ -35,6 +39,7 @@ const GameSettingsDialog = (props: PropsType) => {
   const [showGuessVote, setShowGuessVote] = useState(
     gameSettings.showGuessVote
   );
+  const [language, setLanguage] = useState(gameSettings.language);
 
   const handleSubmit = () => {
     setOpen(false);
@@ -43,6 +48,7 @@ const GameSettingsDialog = (props: PropsType) => {
       roundNumber,
       useExample,
       showGuessVote,
+      language,
     };
     socket.emit('change_game_settings', newGameSettings);
   };
@@ -69,6 +75,30 @@ const GameSettingsDialog = (props: PropsType) => {
               Only the admin can change the settings
             </Typography>
           )}
+          <Typography
+            variant="subtitle1"
+            sx={{ marginTop: 3, marginBottom: 1 }}
+          >
+            Dictionary Language
+          </Typography>
+          <ButtonGroup variant="outlined" disabled={!isAdmin}>
+            {Object.values(DictionaryLanguage).map((value) => {
+              return (
+                <Button
+                  sx={{
+                    '&:hover': {
+                      boxShadow: value === language ? '5px 5px black' : null,
+                    },
+                  }}
+                  key={`showGuessVoteOptions-${value}`}
+                  onClick={(e) => setLanguage(value)}
+                  variant={value === language ? 'contained' : 'outlined'}
+                >
+                  {value}
+                </Button>
+              );
+            })}
+          </ButtonGroup>
           <Typography variant={'subtitle1'} sx={{ m: 1 }}>
             Number of rounds:
           </Typography>

@@ -1,7 +1,9 @@
 import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import React from 'react';
+import React, { useContext } from 'react';
 import { DictionnaryEntry } from '../../../../server/src/dictionary/types';
+import { DictionaryLanguage } from '../GameSettingsDialog';
+import { RoomContext } from '../Room';
 import { cleanSentence } from '../WordPrompt/helpers';
 import { getNatureGenre } from './helpers';
 
@@ -12,6 +14,9 @@ interface PropsType {
 
 const DefinitionRender = (props: PropsType) => {
   const { word, definition, nature, genre, example } = props.entry;
+  const language =
+    useContext(RoomContext)?.gameSettings.language ??
+    DictionaryLanguage.English;
   return (
     <Box>
       <Typography
@@ -29,7 +34,7 @@ const DefinitionRender = (props: PropsType) => {
         fontFamily="bespoke-light-italic"
         sx={{ marginRight: 0.5 }}
       >
-        {getNatureGenre(nature, genre)}
+        {getNatureGenre(nature, genre, language)}
       </Typography>
       <Typography
         component="span"

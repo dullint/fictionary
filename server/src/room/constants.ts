@@ -1,3 +1,4 @@
+import { DictionaryLanguage } from '../dictionary/types';
 import { GameSettings, GameState, GameStep, Player } from './types';
 
 export const MAX_PLAYER_IN_ROOM = 10;
@@ -9,6 +10,7 @@ export const DEFAULT_GAME_SETTINGS: GameSettings = {
   roundNumber: 3,
   useExample: false,
   showGuessVote: false,
+  language: DictionaryLanguage.French,
 };
 
 export const DEFAULT_GAME_STATE: GameState = {

@@ -1,11 +1,12 @@
 import { Room } from '.';
 import dictionary from '../dictionary';
+import { DictionaryLanguage } from '../dictionary/types';
 import { ServerSocket, UserId } from '../socket/types';
 import { MAX_PLAYER_IN_ROOM } from './constants';
 import { GameStep, InputDictionaryEntries, Player } from './types';
 
-export const get_random_entry = () =>
-  dictionary.entries[Math.floor(Math.random() * dictionary.entries.length)];
+export const get_random_entry = (language: DictionaryLanguage) =>
+  dictionary[language][Math.floor(Math.random() * dictionary[language].length)];
 
 export const getSocketRoom = (socket: ServerSocket) =>
   Array.from(socket.rooms.values()).filter(

@@ -1,4 +1,4 @@
-import { DictionnaryEntry } from '../dictionary/types';
+import { DictionaryLanguage, DictionnaryEntry } from '../dictionary/types';
 import { UserId } from '../socket/types';
 
 export type RoomId = string;
@@ -10,6 +10,7 @@ export interface GameSettings {
   roundNumber: number;
   useExample: boolean;
   showGuessVote: boolean;
+  language: DictionaryLanguage;
 }
 
 export interface Player {

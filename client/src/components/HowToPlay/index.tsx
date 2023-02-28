@@ -2,7 +2,6 @@ import { Button, IconButton, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
 import Carousel from 'react-material-ui-carousel';
-import { TypeAnimation } from 'react-type-animation';
 import { theme } from '../../theme';
 import DefinitionRender from '../DefinitionRender';
 import { WordGenre, WordNature } from '../DefinitionRender/helpers';
