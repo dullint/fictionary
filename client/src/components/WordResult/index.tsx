@@ -98,7 +98,7 @@ const WordResult = () => {
             variant="contained"
             sx={{ marginTop: 1 }}
           >
-            Continue
+            Next round
           </Button>
         </span>
       </Tooltip>
