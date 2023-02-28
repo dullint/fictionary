@@ -90,7 +90,7 @@ const Home = () => {
           sx={{
             width: { xs: 300, sm: 400 },
             height: 60,
-            marginBottom: 4,
+            marginBottom: 3,
           }}
         >
           Create game
@@ -141,6 +141,12 @@ const Home = () => {
           )}
         </Grid>
       </Grid>
+      <Box sx={{ mb: 2 }}>
+        <Typography>
+          🇫🇷 Only French dictionary is currently available
+        </Typography>
+        <Typography>🇬🇧 English dictionary is coming soon...</Typography>
+      </Box>
       <HowToPlay />
       <Grid
         container
