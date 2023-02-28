@@ -143,7 +143,7 @@ const Home = () => {
       </Grid>
       <Box
         sx={{
-          mb: 2,
+          mb: 4,
           display: 'flex',
           width: { xs: 300, sm: 'auto' },
           flexDirection: 'column',
@@ -162,6 +162,7 @@ const Home = () => {
         justifyContent={'space-between'}
         sx={{
           width: { xs: 200, sm: 300 },
+          mt: 2,
         }}
       >
         <Button size="small" href={'mailto:fictionary.io@gmail.com'}>

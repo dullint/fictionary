@@ -146,10 +146,10 @@ const card4 = (
       Earn point by:
     </Typography>
     <Typography variant="subtitle2" fontSize={16}>
-      🤓 finding the true definition
+      - finding the true definition
     </Typography>
     <Typography variant="subtitle2" fontSize={16}>
-      👹 fooling players to vote for your definition
+      - fooling players to vote for your definition
     </Typography>
     <Typography textAlign={'end'} variant="h5" sx={{ mr: 1 }}>
       +1 point each
