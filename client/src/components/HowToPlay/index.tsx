@@ -104,7 +104,7 @@ const card2 = (
 const card3 = (
   <Box sx={cardSx}>
     <Typography variant="subtitle1" sx={{ mb: 1, lineHeight: 'normal' }}>
-      You are then anonymously given all players definitions; and the true one.
+      You are then anonymously given all players definitions and the true one.
       Guess the true one!
     </Typography>
     <DefinitionRender

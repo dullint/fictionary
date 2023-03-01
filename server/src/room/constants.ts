@@ -5,7 +5,7 @@ export const ROOM_DELETE_DELAY = 60 * 1000; // 1 minute
 export const DISCONNECT_FROM_GAME_DELAY = 10 * 1000; //10 seconds
 
 export const DEFAULT_GAME_SETTINGS: GameSettings = {
-  maxPromptTime: 4,
+  maxPromptTime: 3,
   roundNumber: 3,
   useExample: false,
   showGuessVote: false,
