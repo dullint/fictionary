@@ -10,7 +10,7 @@ export const DEFAULT_GAME_SETTINGS: GameSettings = {
   roundNumber: 3,
   useExample: false,
   showGuessVote: false,
-  language: DictionaryLanguage.French,
+  language: DictionaryLanguage.English,
 };
 
 export const DEFAULT_GAME_STATE: GameState = {
