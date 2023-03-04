@@ -145,14 +145,14 @@ const Home = () => {
         sx={{
           mb: 4,
           display: 'flex',
-          width: { xs: 300, sm: 'auto' },
+          width: { xs: 300, sm: 400 },
           flexDirection: 'column',
+          alignItems: 'center',
         }}
       >
-        <Typography>
-          🇫🇷 Only French dictionary is currently available
-        </Typography>
-        <Typography>🇬🇧 English dictionary is coming soon...</Typography>
+        <Typography variant="subtitle1">Available with words in:</Typography>
+        <Typography variant="h6">🇬🇧 English </Typography>
+        <Typography variant="h6">🇫🇷 French </Typography>
       </Box>
       <HowToPlay />
       <Grid
@@ -162,7 +162,7 @@ const Home = () => {
         justifyContent={'space-between'}
         sx={{
           width: { xs: 200, sm: 300 },
-          mt: 2,
+          mt: 1,
         }}
       >
         <Button size="small" href={'mailto:fictionary.io@gmail.com'}>

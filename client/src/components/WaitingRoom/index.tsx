@@ -20,9 +20,10 @@ import { theme } from '../../theme';
 import { bottomPageButtonSx } from '../../constants/style';
 import socket from '../../socket';
 import { getInGamePlayers } from '../Room/helpers';
+import { DictionaryLanguage } from '../../../../server/src/dictionary/types';
 
 const WaitingRoom = () => {
-  const { players } = useContext(RoomContext);
+  const { players, gameSettings } = useContext(RoomContext);
   const inGamePlayers = getInGamePlayers(players);
 
   const myPlayer = getMyPlayer(players);
@@ -86,7 +87,9 @@ const WaitingRoom = () => {
           variant="outlined"
           endIcon={<SettingsIcon />}
         >
-          Game settings
+          {`${
+            gameSettings.language === 'english' ? '🇬🇧 ' : '🇫🇷 '
+          } Game settings`}
         </Button>
       </Grid>
       <Typography variant="body1" align="center" sx={{ marginTop: 2 }}>

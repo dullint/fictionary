@@ -125,9 +125,10 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     mixpanel.changeWord(socket.data?.userId, socket.data?.ip, game.entry?.word);
     if (room.timer) clearInterval(room.timer);
     room.game.inputEntries = {};
-    var entry = get_random_entry(room.gameSettings.language);
+    const language = room.gameSettings.language;
+    var entry = get_random_entry(language);
     while (room.wordSeen.includes(entry.word)) {
-      entry = get_random_entry(room.gameSettings.language);
+      entry = get_random_entry(language);
     }
     room.game.entry = entry;
     logger.info(`[ROOM ${roomId}] New word`);

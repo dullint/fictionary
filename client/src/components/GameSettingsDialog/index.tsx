@@ -11,7 +11,6 @@ import { theme } from '../../theme';
 import {
   promptTimeOptions,
   roundNumberOptions,
-  showGuessVoteOptions,
   useExampleOptions,
 } from './constants';
 import { RoomContext } from '../Room';
@@ -81,7 +80,7 @@ const GameSettingsDialog = (props: PropsType) => {
           >
             Dictionary Language
           </Typography>
-          <ButtonGroup variant="outlined" disabled={!isAdmin}>
+          <ButtonGroup variant="outlined" disabled={!isAdmin} size="small">
             {Object.values(DictionaryLanguage).map((value) => {
               return (
                 <Button
@@ -102,7 +101,7 @@ const GameSettingsDialog = (props: PropsType) => {
           <Typography variant={'subtitle1'} sx={{ m: 1 }}>
             Number of rounds:
           </Typography>
-          <ButtonGroup variant="outlined" disabled={!isAdmin}>
+          <ButtonGroup variant="outlined" disabled={!isAdmin} size="small">
             {roundNumberOptions.map((value) => {
               return (
                 <Button
@@ -126,7 +125,7 @@ const GameSettingsDialog = (props: PropsType) => {
           >
             Max writing time (Min):
           </Typography>
-          <ButtonGroup variant="outlined" disabled={!isAdmin}>
+          <ButtonGroup variant="outlined" disabled={!isAdmin} size="small">
             {promptTimeOptions.map((value) => {
               return (
                 <Button
@@ -152,7 +151,7 @@ const GameSettingsDialog = (props: PropsType) => {
           >
             Examples in definitions
           </Typography>
-          <ButtonGroup variant="outlined" disabled={!isAdmin}>
+          <ButtonGroup variant="outlined" disabled={!isAdmin} size="small">
             {useExampleOptions.map((value) => {
               return (
                 <Button
