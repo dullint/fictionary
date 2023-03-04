@@ -8,6 +8,7 @@ import { WordGenre, WordNature } from '../DefinitionRender/helpers';
 import FindReplaceIcon from '@mui/icons-material/FindReplace';
 import PanToolAltIcon from '@mui/icons-material/PanToolAlt';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { TypeAnimation } from 'react-type-animation';
 
 const cardSx = {
   border: '1px solid black',

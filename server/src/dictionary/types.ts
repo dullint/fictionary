@@ -1,13 +1,18 @@
 export enum WordNature {
-  Verb = 'verb',
-  Noun = 'noun',
-  Adjective = 'adjective',
+  VERB = 'verb',
+  NOUN = 'noun',
+  ADJ = 'adj',
 }
 
 export enum WordGenre {
-  Masculin = 'masculin',
-  Feminin = 'feminin',
-  Propre = 'propre',
+  MAS = 'mas',
+  FEM = 'fem',
+  PROPRE = 'propre',
+}
+
+export enum DictionaryLanguage {
+  French = 'french',
+  English = 'english',
 }
 export interface DictionnaryEntry {
   word: string;
@@ -15,9 +20,4 @@ export interface DictionnaryEntry {
   example: string;
   nature: WordNature;
   genre?: WordGenre;
-}
-
-export enum DictionaryLanguage {
-  French = 'french',
-  English = 'english',
 }
