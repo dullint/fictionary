@@ -35,10 +35,6 @@ const GameSettingsDialog = (props: PropsType) => {
   );
   const [useExample, setUseExample] = useState(gameSettings.useExample);
   const [roundNumber, setRoundNumber] = useState(gameSettings.roundNumber);
-  const [showGuessVote, setShowGuessVote] = useState(
-    gameSettings.showGuessVote
-  );
-  const [language, setLanguage] = useState(gameSettings.language);
 
   const handleSubmit = () => {
     setOpen(false);
@@ -46,8 +42,8 @@ const GameSettingsDialog = (props: PropsType) => {
       maxPromptTime,
       roundNumber,
       useExample,
-      showGuessVote,
-      language,
+      showGuessVote: false,
+      language: DictionaryLanguage.French,
     };
     socket.emit('change_game_settings', newGameSettings);
   };
@@ -74,30 +70,6 @@ const GameSettingsDialog = (props: PropsType) => {
               Only the admin can change the settings
             </Typography>
           )}
-          <Typography
-            variant="subtitle1"
-            sx={{ marginTop: 3, marginBottom: 1 }}
-          >
-            Dictionary Language
-          </Typography>
-          <ButtonGroup variant="outlined" disabled={!isAdmin} size="small">
-            {Object.values(DictionaryLanguage).map((value) => {
-              return (
-                <Button
-                  sx={{
-                    '&:hover': {
-                      boxShadow: value === language ? '5px 5px black' : null,
-                    },
-                  }}
-                  key={`showGuessVoteOptions-${value}`}
-                  onClick={(e) => setLanguage(value)}
-                  variant={value === language ? 'contained' : 'outlined'}
-                >
-                  {value}
-                </Button>
-              );
-            })}
-          </ButtonGroup>
           <Typography variant={'subtitle1'} sx={{ m: 1 }}>
             Number of rounds:
           </Typography>
@@ -169,31 +141,6 @@ const GameSettingsDialog = (props: PropsType) => {
               );
             })}
           </ButtonGroup>
-          {/* <Typography
-            variant="subtitle1"
-            sx={{ marginTop: 3, marginBottom: 1 }}
-          >
-            Show live players vote
-          </Typography>
-          <ButtonGroup variant="outlined" disabled={!isAdmin}>
-            {showGuessVoteOptions.map((value) => {
-              return (
-                <Button
-                  sx={{
-                    '&:hover': {
-                      boxShadow:
-                        value === showGuessVote ? '5px 5px black' : null,
-                    },
-                  }}
-                  key={`showGuessVoteOptions-${value}`}
-                  onClick={(e) => setShowGuessVote(value)}
-                  variant={value === showGuessVote ? 'contained' : 'outlined'}
-                >
-                  {value ? 'Yes' : 'No'}
-                </Button>
-              );
-            })}
-          </ButtonGroup> */}
           <Button
             onClick={isAdmin ? handleSubmit : () => setOpen(false)}
             variant="contained"

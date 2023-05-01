@@ -150,9 +150,12 @@ const Home = () => {
           alignItems: 'center',
         }}
       >
-        <Typography variant="subtitle1">Available with words in:</Typography>
-        <Typography variant="h6">🇬🇧 English </Typography>
-        <Typography variant="h6">🇫🇷 French </Typography>
+        <Typography fontWeight={'bold'}>
+          🇫🇷 Only French dictionary is currently available
+        </Typography>
+        <Typography fontWeight={'bold'}>
+          🇬🇧 English dictionary is coming soon...
+        </Typography>
       </Box>
       <HowToPlay />
       <Grid

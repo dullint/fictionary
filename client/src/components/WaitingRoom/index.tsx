@@ -87,9 +87,7 @@ const WaitingRoom = () => {
           variant="outlined"
           endIcon={<SettingsIcon />}
         >
-          {`${
-            gameSettings.language === 'english' ? '🇬🇧 ' : '🇫🇷 '
-          } Game settings`}
+          Settings
         </Button>
       </Grid>
       <Typography variant="body1" align="center" sx={{ marginTop: 2 }}>
