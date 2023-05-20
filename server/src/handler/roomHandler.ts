@@ -107,7 +107,7 @@ export const roomHandler = (io: Server, socket: ServerSocket) => {
       remaningInGamePlayers[0].isAdmin = true;
     }
 
-    goToNextGameStepIfNeededAfterPlayerLeave(room);
+    goToNextGameStepIfNeededAfterPlayerLeave(io, room);
     room.deleteIfNoPlayerLeft();
 
     room.updateClient(io);
@@ -131,7 +131,7 @@ export const roomHandler = (io: Server, socket: ServerSocket) => {
         player.isAdmin = false;
         remaningInGamePlayers[0].isAdmin = true;
       }
-      goToNextGameStepIfNeededAfterPlayerLeave(room);
+      goToNextGameStepIfNeededAfterPlayerLeave(io, room);
       logger.info(
         `[ROOM ${roomId}] User ${userId} out of game after disconnection`
       );

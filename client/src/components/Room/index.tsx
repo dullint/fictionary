@@ -10,12 +10,14 @@ import WordReveal from '../WordReveal';
 import socket from '../../socket';
 import { ClientRoom } from '../../../../server/src/room/types';
 import { ServerResponse } from '../../../../server/src/socket/types';
+import WordCarousel from '../WordCarousel';
 
 export const RoomContext = createContext<ClientRoom>(null);
 
 export enum GameStep {
   WAIT,
   PROMPT,
+  SHOW,
   GUESS,
   REVEAL,
   RESULTS,
@@ -65,6 +67,8 @@ const Room = () => {
         return <WaitingRoom />;
       case GameStep.PROMPT:
         return <WordPrompt />;
+      case GameStep.SHOW:
+        return <WordCarousel />;
       case GameStep.GUESS:
         return <WordGuess />;
       case GameStep.REVEAL:

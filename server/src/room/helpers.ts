@@ -1,9 +1,11 @@
+import { Server } from 'socket.io';
 import { Room } from '.';
 import dictionary from '../dictionary';
 import { DictionaryLanguage } from '../dictionary/types';
 import { ServerSocket, UserId } from '../socket/types';
 import { MAX_PLAYER_IN_ROOM } from './constants';
 import { GameStep, InputDictionaryEntries, Player } from './types';
+import logger from '../logging';
 
 export const get_random_entry = (language: DictionaryLanguage) =>
   dictionary[language][Math.floor(Math.random() * dictionary[language].length)];
@@ -67,7 +69,10 @@ export const haveAllPlayerGuessedDefinition = (room: Room) => {
   return missingInGamePlayersGuesses.length === 0;
 };
 
-export const goToNextGameStepIfNeededAfterPlayerLeave = (room: Room) => {
+export const goToNextGameStepIfNeededAfterPlayerLeave = (
+  io: Server,
+  room: Room
+) => {
   const game = room.game;
   const inGamePlayers = room.getInGamePlayers();
   if (
@@ -75,7 +80,8 @@ export const goToNextGameStepIfNeededAfterPlayerLeave = (room: Room) => {
     haveAllPlayerPromptDefinition(room) &&
     inGamePlayers.length > 0
   ) {
-    game.gameStep = GameStep.GUESS;
+    game.gameStep = GameStep.SHOW;
+    runShowInterval(io, room);
   }
   if (
     game.gameStep === GameStep.GUESS &&
@@ -84,4 +90,20 @@ export const goToNextGameStepIfNeededAfterPlayerLeave = (room: Room) => {
   ) {
     game.gameStep = GameStep.REVEAL;
   }
+};
+
+export const runShowInterval = (io: Server, room: Room) => {
+  var definitionIndex = 0;
+  const numberOfDefinitions = Object.values(room.game.inputEntries).length + 1;
+  const roomId = room.roomId;
+  room.timer = setInterval(() => {
+    io.to(roomId).emit('show_next_def', definitionIndex);
+    if (definitionIndex === numberOfDefinitions && room.timer) {
+      clearInterval(room.timer);
+      room.game.gameStep = GameStep.GUESS;
+      logger.info(`[ROOM ${roomId}] Moving forward to the GUESS step`);
+      room.updateClient(io);
+    }
+    definitionIndex++;
+  }, 2000);
 };

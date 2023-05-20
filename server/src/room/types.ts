@@ -41,6 +41,7 @@ export interface ClientRoom {
 export enum GameStep {
   WAIT,
   PROMPT,
+  SHOW,
   GUESS,
   REVEAL,
   RESULTS,
