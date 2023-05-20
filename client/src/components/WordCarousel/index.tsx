@@ -1,30 +1,45 @@
-import { Grid, Tooltip, Button } from '@mui/material';
-import React, { useContext, useEffect, useRef } from 'react';
+import { Grid } from '@mui/material';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { RoomContext } from '../Room';
 import { Box } from '@mui/system';
 import GameHeader from '../GameHeader';
-import { bottomPageButtonSx } from '../../constants/style';
-import { getNumberOfDefinitionToDisplay } from '../DefinitionList/helpers';
+import {
+  getEntriesWithUserIdToDisplay,
+  getNumberOfDefinitionToDisplay,
+} from '../DefinitionList/helpers';
 import socket from '../../socket';
-import { getMyPlayer } from '../WaitingRoom/helpers';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import { useParams } from 'react-router-dom';
+import DefinitionRender from '../DefinitionRender';
 
 const WordCarousel = () => {
-  const { players, gameState } = useContext(RoomContext);
+  const { gameState, gameSettings } = useContext(RoomContext);
+  const [swiper, setSwiperInstance] = useState(null);
 
-  const isAdmin = getMyPlayer(players)?.isAdmin;
+  const isUsingExample = gameSettings.useExample;
   const definitionsRef = useRef([]);
+  const { inputEntries, entry } = gameState;
+  const { roomId } = useParams();
   const definitionsNumber = getNumberOfDefinitionToDisplay(gameState);
+  const inputEntriesToDisplay = getEntriesWithUserIdToDisplay(
+    inputEntries,
+    entry,
+    roomId
+  );
 
   useEffect(() => {
     definitionsRef.current = definitionsRef.current.slice(0, definitionsNumber);
   }, [definitionsNumber]);
 
-  const handleNextStep = () => {
-    socket.emit('show_results');
-  };
+  useEffect(() => {
+    if (swiper) {
+      socket.on('show_next_def', () => {
+        swiper.slideNext();
+      });
+    }
+  }, [swiper]);
 
   return (
     <Grid container flexDirection="column" height={1} width={1}>
@@ -39,37 +54,29 @@ const WordCarousel = () => {
         alignItems={'center'}
       >
         <Swiper
-          // showsPagination={false}
           direction="vertical"
           style={{ height: '100%' }}
+          onSwiper={setSwiperInstance}
         >
-          <SwiperSlide>Slide 1</SwiperSlide>
-          <SwiperSlide>Slide 2</SwiperSlide>
-          <SwiperSlide>Slide 3</SwiperSlide>
-          <SwiperSlide>Slide 4</SwiperSlide>
-          <SwiperSlide>Slide 5</SwiperSlide>
-          <SwiperSlide>Slide 6</SwiperSlide>
-          <SwiperSlide>Slide 7</SwiperSlide>
-          <SwiperSlide>Slide 8</SwiperSlide>
-          <SwiperSlide>Slide 9</SwiperSlide>
+          {inputEntriesToDisplay.map(([userId, inputEntry], index) => (
+            <SwiperSlide>
+              <Box
+                display={'flex'}
+                height={1}
+                sx={{ alignItems: 'center', justifyContent: 'left' }}
+              >
+                <DefinitionRender
+                  entry={{
+                    ...entry,
+                    definition: inputEntry.definition,
+                    example: isUsingExample ? inputEntry.example : '',
+                  }}
+                />
+              </Box>
+            </SwiperSlide>
+          ))}
         </Swiper>
       </Box>
-      <Tooltip
-        title={isAdmin ? null : 'Waiting for the admin to continue'}
-        placement="top"
-        sx={{ m: 1 }}
-      >
-        <Box display="flex" justifyContent={'center'}>
-          <Button
-            onClick={handleNextStep}
-            disabled={!isAdmin}
-            variant="contained"
-            sx={bottomPageButtonSx}
-          >
-            See scores
-          </Button>
-        </Box>
-      </Tooltip>
     </Grid>
   );
 };

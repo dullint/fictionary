@@ -93,17 +93,20 @@ export const goToNextGameStepIfNeededAfterPlayerLeave = (
 };
 
 export const runShowInterval = (io: Server, room: Room) => {
-  var definitionIndex = 0;
+  var definitionIndex = -1;
   const numberOfDefinitions = Object.values(room.game.inputEntries).length + 1;
   const roomId = room.roomId;
   room.timer = setInterval(() => {
-    io.to(roomId).emit('show_next_def', definitionIndex);
-    if (definitionIndex === numberOfDefinitions && room.timer) {
+    if (definitionIndex === numberOfDefinitions - 1 && room.timer) {
       clearInterval(room.timer);
       room.game.gameStep = GameStep.GUESS;
       logger.info(`[ROOM ${roomId}] Moving forward to the GUESS step`);
       room.updateClient(io);
+      return;
+    }
+    if (definitionIndex > -1) {
+      io.to(roomId).emit('show_next_def', definitionIndex);
     }
     definitionIndex++;
-  }, 2000);
+  }, 3000);
 };
