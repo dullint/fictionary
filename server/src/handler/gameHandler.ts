@@ -5,7 +5,7 @@ import {
   getSocketRoom,
   haveAllPlayerGuessedDefinition,
   haveAllPlayerPromptDefinition,
-  runShowInterval,
+  runCarouselInterval,
 } from '../room/helpers';
 import roomStore from '../room/roomStore';
 
@@ -47,7 +47,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     logger.info(`[ROOM ${roomId}] Player submited a new definition`);
     if (haveAllPlayerPromptDefinition(room)) {
       game.gameStep = GameStep.SHOW;
-      runShowInterval(io, room);
+      runCarouselInterval(io, room, GameStep.SHOW);
       logger.info(
         `[ROOM ${roomId}] All definitions submitted, moving forward to the SHOW step`
       );
@@ -73,6 +73,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     room.game.selections[socket.data.userId] = selectedUserId;
     if (haveAllPlayerGuessedDefinition(room)) {
       room.game.gameStep = GameStep.REVEAL;
+      runCarouselInterval(io, room, GameStep.REVEAL);
       logger.info(
         `[ROOM ${roomId}] All definitions guessed, moving forward to the REVEAL step`
       );
@@ -146,7 +147,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
       if (counter === 0 && room.timer) {
         clearInterval(room.timer);
         room.game.gameStep = GameStep.SHOW;
-        runShowInterval(io, room);
+        runCarouselInterval(io, room, GameStep.SHOW);
         logger.info(
           `[ROOM ${roomId}] Timer ran out of time, moving forward to the SHOW step`
         );

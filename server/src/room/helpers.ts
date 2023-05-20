@@ -81,7 +81,7 @@ export const goToNextGameStepIfNeededAfterPlayerLeave = (
     inGamePlayers.length > 0
   ) {
     game.gameStep = GameStep.SHOW;
-    runShowInterval(io, room);
+    runCarouselInterval(io, room, GameStep.SHOW);
   }
   if (
     game.gameStep === GameStep.GUESS &&
@@ -89,24 +89,26 @@ export const goToNextGameStepIfNeededAfterPlayerLeave = (
     inGamePlayers.length > 0
   ) {
     game.gameStep = GameStep.REVEAL;
+    runCarouselInterval(io, room, GameStep.REVEAL);
   }
 };
 
-export const runShowInterval = (io: Server, room: Room) => {
+export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
+  const interval = step == GameStep.SHOW ? 3000 : 5000;
+  const nextStep = step == GameStep.SHOW ? GameStep.GUESS : GameStep.RESULTS;
   var definitionIndex = -1;
   const numberOfDefinitions = Object.values(room.game.inputEntries).length + 1;
   const roomId = room.roomId;
   room.timer = setInterval(() => {
     if (definitionIndex === numberOfDefinitions - 1 && room.timer) {
       clearInterval(room.timer);
-      room.game.gameStep = GameStep.GUESS;
-      logger.info(`[ROOM ${roomId}] Moving forward to the GUESS step`);
+      room.game.gameStep = nextStep;
       room.updateClient(io);
       return;
     }
     if (definitionIndex > -1) {
-      io.to(roomId).emit('show_next_def', definitionIndex);
+      io.to(roomId).emit('show_next_def');
     }
     definitionIndex++;
-  }, 3000);
+  }, interval);
 };

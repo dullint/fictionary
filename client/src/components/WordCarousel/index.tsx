@@ -36,10 +36,12 @@ const WordCarousel = () => {
   useEffect(() => {
     if (swiper) {
       socket.on('show_next_def', () => {
+        console.log('show_next_def');
         swiper.slideNext();
       });
     }
   }, [swiper]);
+  console.log(swiper);
 
   return (
     <Grid container flexDirection="column" height={1} width={1}>
@@ -58,21 +60,24 @@ const WordCarousel = () => {
           style={{ height: '100%' }}
           onSwiper={setSwiperInstance}
         >
-          {inputEntriesToDisplay.map(([userId, inputEntry], index) => (
+          {inputEntriesToDisplay.map(([userId, inputEntry]) => (
             <SwiperSlide>
-              <Box
-                display={'flex'}
-                height={1}
-                sx={{ alignItems: 'center', justifyContent: 'left' }}
-              >
-                <DefinitionRender
-                  entry={{
-                    ...entry,
-                    definition: inputEntry.definition,
-                    example: isUsingExample ? inputEntry.example : '',
-                  }}
-                />
-              </Box>
+              {({ isActive }) => (
+                <Box
+                  display={'flex'}
+                  height={1}
+                  flexDirection={'column'}
+                  sx={{ alignItems: 'start', justifyContent: 'center' }}
+                >
+                  <DefinitionRender
+                    entry={{
+                      ...entry,
+                      definition: inputEntry.definition,
+                      example: isUsingExample ? inputEntry.example : '',
+                    }}
+                  />
+                </Box>
+              )}
             </SwiperSlide>
           ))}
         </Swiper>
