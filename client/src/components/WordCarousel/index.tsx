@@ -36,12 +36,10 @@ const WordCarousel = () => {
   useEffect(() => {
     if (swiper) {
       socket.on('show_next_def', () => {
-        console.log('show_next_def');
         swiper.slideNext();
       });
     }
   }, [swiper]);
-  console.log(swiper);
 
   return (
     <Grid container flexDirection="column" height={1} width={1}>

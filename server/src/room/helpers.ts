@@ -3,7 +3,11 @@ import { Room } from '.';
 import dictionary from '../dictionary';
 import { DictionaryLanguage } from '../dictionary/types';
 import { ServerSocket, UserId } from '../socket/types';
-import { MAX_PLAYER_IN_ROOM } from './constants';
+import {
+  MAX_PLAYER_IN_ROOM,
+  REVEAL_CAROUSEL_TIME,
+  SHOW_CAROUSEL_TIME,
+} from './constants';
 import { GameStep, InputDictionaryEntries, Player } from './types';
 import logger from '../logging';
 
@@ -94,7 +98,8 @@ export const goToNextGameStepIfNeededAfterPlayerLeave = (
 };
 
 export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
-  const interval = step == GameStep.SHOW ? 3000 : 5000;
+  const interval =
+    step == GameStep.SHOW ? SHOW_CAROUSEL_TIME : REVEAL_CAROUSEL_TIME;
   const nextStep = step == GameStep.SHOW ? GameStep.GUESS : GameStep.RESULTS;
   var definitionIndex = -1;
   const numberOfDefinitions = Object.values(room.game.inputEntries).length + 1;
