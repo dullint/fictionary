@@ -85,6 +85,7 @@ export const goToNextGameStepIfNeededAfterPlayerLeave = (
     inGamePlayers.length > 0
   ) {
     game.gameStep = GameStep.SHOW;
+    if (room.timer) clearInterval(room.timer);
     runCarouselInterval(io, room, GameStep.SHOW);
   }
   if (
@@ -101,9 +102,10 @@ export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
   const interval =
     step == GameStep.SHOW ? SHOW_CAROUSEL_TIME : REVEAL_CAROUSEL_TIME;
   const nextStep = step == GameStep.SHOW ? GameStep.GUESS : GameStep.RESULTS;
-  var definitionIndex = -1;
+  var definitionIndex = 0;
   const numberOfDefinitions = Object.values(room.game.inputEntries).length + 1;
   const roomId = room.roomId;
+  console.log('runCarouselInterval');
   const carouselTimer = setInterval(() => {
     if (definitionIndex === numberOfDefinitions - 1 && carouselTimer) {
       clearInterval(carouselTimer);
@@ -111,9 +113,7 @@ export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
       room.updateClient(io);
       return;
     }
-    if (definitionIndex > -1) {
-      io.to(roomId).emit('show_next_def');
-    }
+    io.to(roomId).emit('show_next_def');
     definitionIndex++;
   }, interval);
 };

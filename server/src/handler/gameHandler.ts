@@ -46,6 +46,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     };
     logger.info(`[ROOM ${roomId}] Player submited a new definition`);
     if (haveAllPlayerPromptDefinition(room)) {
+      if (room.timer) clearInterval(room.timer);
       game.gameStep = GameStep.SHOW;
       runCarouselInterval(io, room, GameStep.SHOW);
       logger.info(

@@ -23,5 +23,5 @@ export const DEFAULT_GAME_STATE: GameState = {
   timer: null,
 };
 
-export const SHOW_CAROUSEL_TIME = 4000;
+export const SHOW_CAROUSEL_TIME = 7000;
 export const REVEAL_CAROUSEL_TIME = 3000;
