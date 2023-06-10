@@ -26,11 +26,7 @@ const card1 = (
     justifyContent={'space-between'}
   >
     <Box>
-      <Typography
-        variant="subtitle1"
-        color={theme.palette.black.main}
-        sx={{ mb: 2, lineHeight: 'normal' }}
-      >
+      <Typography variant="subtitle1" sx={{ mb: 2, lineHeight: 'normal' }}>
         You are given an uncommon or archaic word. Invent a definition for it!
       </Typography>
 

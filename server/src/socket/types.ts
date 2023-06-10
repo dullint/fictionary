@@ -30,6 +30,7 @@ export interface ServerToClientEvents {
 
   //update timer
   timer: (counter: number) => void;
+  show_next_def: () => void;
 
   //update room to client
   room: (room: ClientRoom) => void;

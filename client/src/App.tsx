@@ -4,7 +4,7 @@ import Home from './components/Home';
 import Room from './components/Room';
 import { ThemeProvider } from '@mui/material/styles';
 import { getTheme, palette } from './theme';
-import { Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import Div100vh from 'react-div-100vh';
 import socket from './socket';
 
@@ -29,7 +29,12 @@ const App = () => {
         width: '100vw',
       }}
     >
-      <Grid container height={1} width={1} sx={{ padding: 2, maxWidth: 700 }}>
+      <Grid
+        container
+        width={1}
+        height={1}
+        sx={{ padding: 2, maxWidth: 700, justifyContent: 'center' }}
+      >
         <ThemeProvider theme={theme}>
           <Routes>
             <Route path="/" element={<Home />} />

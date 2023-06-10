@@ -1,4 +1,4 @@
-import { Button, Grid, Input, Typography } from '@mui/material';
+import { Button, Divider, Grid, Input, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { theme } from '../../theme';
@@ -38,29 +38,35 @@ const Home = () => {
   };
 
   return (
-    <Grid container direction="column" alignItems={'center'}>
+    <Box
+      display={'flex'}
+      flexDirection="column"
+      alignItems={'center'}
+      sx={{
+        marginBottom: 2,
+        maxWidth: {
+          xs: 300,
+          sm: 400,
+        },
+      }}
+      justifyContent={'space-between'}
+      height={1}
+    >
       <Box
         sx={{
           marginBottom: 2,
-          maxWidth: {
-            xs: 300,
-            sm: 400,
-            md: 450,
-            lg: 500,
-            xl: 500,
-          },
         }}
       >
         <Typography variant={'h1'}>Fictionary</Typography>
         <Box
           sx={{
-            minHeight: 90,
+            minHeight: 70,
           }}
         >
           <Typography
             component="span"
             fontStyle={'italic'}
-            fontSize={20}
+            fontSize={18}
             fontFamily="bespoke-light-italic"
             sx={{ marginRight: 0.5 }}
           >
@@ -73,88 +79,92 @@ const Home = () => {
             repeat={Infinity}
             deletionSpeed={70}
             speed={50}
-            style={{ fontSize: 20, fontFamily: 'bespoke-regular' }}
+            style={{
+              fontSize: 18,
+              fontFamily: 'bespoke-regular',
+            }}
           />
         </Box>
       </Box>
-      <Grid
-        container
-        direction="column"
-        alignItems={'center'}
-        width="auto"
-        sx={{ marginBottom: 3 }}
-      >
+      <Box display={'flex'} flexDirection="column" sx={{ marginBottom: 4 }}>
+        <Box display={'flex'}>
+          <Input
+            placeholder="Room ID"
+            onChange={(e) => {
+              setRoomId(e.target.value.toLocaleUpperCase());
+              setJoinRoomError(null);
+            }}
+            sx={{
+              height: 50,
+              flex: 1,
+              borderRadius: 30,
+              borderColor: '#555555',
+            }}
+            onKeyPress={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                handleJoinGame();
+              }
+            }}
+            value={roomId}
+            inputProps={{
+              maxLength: 5,
+              style: { textAlign: 'center', fontWeight: 900, fontSize: 24 },
+            }}
+          />
+          <Button
+            onClick={handleJoinGame}
+            variant="contained"
+            sx={{
+              marginLeft: 2,
+              width: { xs: 140, sm: 230 },
+              height: 50,
+            }}
+          >
+            Join game
+          </Button>
+        </Box>
+        <Box width={1}>
+          <Divider
+            sx={{
+              marginBottom: 1,
+              marginTop: 1,
+              width: 1,
+            }}
+          >
+            <Typography variant="subtitle1">OR</Typography>
+          </Divider>
+        </Box>
         <Button
           onClick={handleCreateGame}
           variant="contained"
           sx={{
-            width: { xs: 300, sm: 400 },
-            height: 60,
-            marginBottom: 3,
+            width: { xs: 300, sm: 400, md: 'auto' },
+            height: 50,
           }}
         >
           Create game
         </Button>
-        <Grid
-          container
-          alignItems="center"
-          justifyContent="space-between"
-          sx={{
-            width: { xs: 300, sm: 400 },
-          }}
-        >
-          <Grid container>
-            <Input
-              placeholder="Room ID"
-              onChange={(e) => {
-                setRoomId(e.target.value.toLocaleUpperCase());
-                setJoinRoomError(null);
-              }}
-              sx={{
-                height: 60,
-                flex: 1,
-              }}
-              onKeyPress={(event) => {
-                if (event.key === 'Enter') {
-                  event.preventDefault();
-                  handleJoinGame();
-                }
-              }}
-              value={roomId}
-              inputProps={{
-                maxLength: 5,
-                style: { textAlign: 'center', fontWeight: 900, fontSize: 24 },
-              }}
-            />
-            <Button
-              onClick={handleJoinGame}
-              variant="contained"
-              sx={{ marginLeft: 2, width: { xs: 'auto', sm: 200 }, height: 60 }}
-            >
-              Join game
-            </Button>
-          </Grid>
-          {joinRoomError && (
-            <Typography sx={{ color: theme.palette.secondary.main }}>
-              {joinRoomError}
-            </Typography>
-          )}
-        </Grid>
-      </Grid>
+        {joinRoomError && (
+          <Typography sx={{ color: theme.palette.secondary.main }}>
+            {joinRoomError}
+          </Typography>
+        )}
+      </Box>
       <Box
         sx={{
           mb: 4,
+          backgroundColor: theme.palette.yellow.darker,
+          borderRadius: 5,
           display: 'flex',
-          width: { xs: 300, sm: 400 },
+          width: 1,
           flexDirection: 'column',
           alignItems: 'center',
         }}
       >
-        <Typography fontWeight={'bold'}>
-          🇫🇷 Only French dictionary is currently available
-        </Typography>
-        <Typography fontWeight={'bold'}>
-          🇬🇧 English dictionary is coming soon...
+        <Typography margin={2} fontSize={15}>
+          🇫🇷 Available with French words. <br /> 🇬🇧 English words are coming
+          soon...
         </Typography>
       </Box>
       <HowToPlay />
@@ -176,7 +186,7 @@ const Home = () => {
         </Button>
       </Grid>
       <CreditsDialog open={openCredits} setOpen={setOpenCredits} />
-    </Grid>
+    </Box>
   );
 };
 

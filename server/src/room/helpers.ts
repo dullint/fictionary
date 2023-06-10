@@ -1,9 +1,15 @@
+import { Server } from 'socket.io';
 import { Room } from '.';
 import dictionary from '../dictionary';
 import { DictionaryLanguage } from '../dictionary/types';
 import { ServerSocket, UserId } from '../socket/types';
-import { MAX_PLAYER_IN_ROOM } from './constants';
+import {
+  MAX_PLAYER_IN_ROOM,
+  REVEAL_CAROUSEL_TIME,
+  SHOW_CAROUSEL_TIME,
+} from './constants';
 import { GameStep, InputDictionaryEntries, Player } from './types';
+import logger from '../logging';
 
 export const get_random_entry = (language: DictionaryLanguage) =>
   dictionary[language][Math.floor(Math.random() * dictionary[language].length)];
@@ -67,7 +73,10 @@ export const haveAllPlayerGuessedDefinition = (room: Room) => {
   return missingInGamePlayersGuesses.length === 0;
 };
 
-export const goToNextGameStepIfNeededAfterPlayerLeave = (room: Room) => {
+export const goToNextGameStepIfNeededAfterPlayerLeave = (
+  io: Server,
+  room: Room
+) => {
   const game = room.game;
   const inGamePlayers = room.getInGamePlayers();
   if (
@@ -75,7 +84,9 @@ export const goToNextGameStepIfNeededAfterPlayerLeave = (room: Room) => {
     haveAllPlayerPromptDefinition(room) &&
     inGamePlayers.length > 0
   ) {
-    game.gameStep = GameStep.GUESS;
+    game.gameStep = GameStep.SHOW;
+    if (room.timer) clearInterval(room.timer);
+    runCarouselInterval(io, room, GameStep.SHOW);
   }
   if (
     game.gameStep === GameStep.GUESS &&
@@ -83,5 +94,29 @@ export const goToNextGameStepIfNeededAfterPlayerLeave = (room: Room) => {
     inGamePlayers.length > 0
   ) {
     game.gameStep = GameStep.REVEAL;
+    runCarouselInterval(io, room, GameStep.REVEAL);
   }
+};
+
+export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
+  const interval =
+    step == GameStep.SHOW ? SHOW_CAROUSEL_TIME : REVEAL_CAROUSEL_TIME;
+  const nextStep = step == GameStep.SHOW ? GameStep.GUESS : GameStep.RESULTS;
+  var definitionIndex = 0;
+  const numberOfDefinitions = Object.values(room.game.inputEntries).length + 1;
+  const roomId = room.roomId;
+  console.log('runCarouselInterval');
+  const carouselTimer = setInterval(() => {
+    if (definitionIndex === numberOfDefinitions - 1 && carouselTimer) {
+      io.to(roomId).emit('show_next_def');
+      setTimeout(() => {
+        clearInterval(carouselTimer);
+        room.game.gameStep = nextStep;
+        room.updateClient(io);
+      }, 3000);
+      return;
+    }
+    io.to(roomId).emit('show_next_def');
+    definitionIndex++;
+  }, interval);
 };

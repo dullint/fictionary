@@ -10,7 +10,7 @@ export const DEFAULT_GAME_SETTINGS: GameSettings = {
   roundNumber: 3,
   useExample: false,
   showGuessVote: false,
-  language: DictionaryLanguage.English,
+  language: DictionaryLanguage.French,
 };
 
 export const DEFAULT_GAME_STATE: GameState = {
@@ -22,3 +22,6 @@ export const DEFAULT_GAME_STATE: GameState = {
   scores: {},
   timer: null,
 };
+
+export const SHOW_CAROUSEL_TIME = 7000;
+export const REVEAL_CAROUSEL_TIME = 3000;

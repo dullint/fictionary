@@ -94,32 +94,18 @@ export const palette: PaletteOptions = {
     main: '#86BAFE',
   },
   black: {
-    main: '#222222',
+    main: '#444444',
   },
 };
 
 const components = {
   MuiButton: {
     styleOverrides: {
-      contained: ({ ownerState }) => ({
-        borderRadius: 10,
-        boxShadow: '5px 5px black',
-        border: `2px solid ${ownerState.disabled ? 'grey' : 'black'}`,
-        '&:hover': {
-          backgroundColor: palette.primary.main,
-        },
-        '&:active': {
-          boxShadow: '5px 5px black',
-        },
-        color: palette.black.main,
-      }),
+      contained: {
+        borderRadius: 30,
+      },
       outlined: {
-        borderRadius: 10,
-        border: '2px solid black',
-        color: palette.black.main,
-        '&:hover': {
-          border: '2px solid',
-        },
+        borderRadius: 30,
       },
     },
   },

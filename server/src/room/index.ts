@@ -7,7 +7,14 @@ import {
   ROOM_DELETE_DELAY,
 } from './constants';
 import roomStore from './roomStore';
-import { ClientRoom, GameSettings, GameState, Player, RoomId } from './types';
+import {
+  ClientRoom,
+  GameSettings,
+  GameState,
+  GameStep,
+  Player,
+  RoomId,
+} from './types';
 
 export class Room {
   roomId: RoomId;
