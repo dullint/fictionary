@@ -73,7 +73,6 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     room.game.selections[socket.data.userId] = selectedUserId;
     if (haveAllPlayerGuessedDefinition(room)) {
       room.game.gameStep = GameStep.REVEAL;
-      runCarouselInterval(io, room, GameStep.REVEAL);
       logger.info(
         `[ROOM ${roomId}] All definitions guessed, moving forward to the REVEAL step`
       );
@@ -143,6 +142,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     var counter = time * 60;
     const roomId = room.roomId;
     room.timer = setInterval(() => {
+      console.log('prompt timer');
       io.to(roomId).emit('timer', counter);
       if (counter === 0 && room.timer) {
         clearInterval(room.timer);

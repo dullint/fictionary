@@ -104,9 +104,9 @@ export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
   var definitionIndex = -1;
   const numberOfDefinitions = Object.values(room.game.inputEntries).length + 1;
   const roomId = room.roomId;
-  room.timer = setInterval(() => {
-    if (definitionIndex === numberOfDefinitions - 1 && room.timer) {
-      clearInterval(room.timer);
+  const carouselTimer = setInterval(() => {
+    if (definitionIndex === numberOfDefinitions - 1 && carouselTimer) {
+      clearInterval(carouselTimer);
       room.game.gameStep = nextStep;
       room.updateClient(io);
       return;
