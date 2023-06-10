@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
@@ -7,6 +7,9 @@ import { palette, theme } from '../../theme';
 import { Box } from '@mui/system';
 import { ServerResponse } from '../../../../server/src/socket/types';
 import socket from '../../socket';
+import Avatar from '../Avatar';
+import { getMyPlayer } from '../WaitingRoom/helpers';
+import { RoomContext } from '../Room';
 
 export interface Propstype {
   open: boolean;
@@ -17,6 +20,8 @@ const UsernameDialog = (props: Propstype) => {
   const { open, setOpen } = props;
   const [username, setUsername] = useState<string>(null);
   const [usernameErrorMessage, setUsernameErrorMessage] = useState(null);
+  const { players } = useContext(RoomContext);
+  const player = getMyPlayer(players);
 
   const handleTextFieldChange = (event) => {
     setUsername(event.target.value);
@@ -53,26 +58,32 @@ const UsernameDialog = (props: Propstype) => {
           alignItems={'center'}
           justifyContent="center"
         >
-          <Box justifyContent={'left'} width={1}>
-            <Typography variant="h6" sx={{ marginBottom: 1 }} align="left">
+          <Box justifyContent={'left'} width={1} marginBottom={3}>
+            <Typography variant="h5" sx={{ marginBottom: 1 }} align="center">
               Choose your username:
             </Typography>
           </Box>
+          <Avatar
+            player={{ ...player, username }}
+            displayBadge={false}
+            size={'huge'}
+          />
           <Input
             onKeyPress={handlePressKey}
+            placeholder="Username"
             autoFocus
             fullWidth
             onChange={handleTextFieldChange}
             inputProps={{
               maxLength: 15,
               style: {
-                fontSize: 30,
+                fontSize: 25,
                 textAlign: 'center',
-                fontWeight: 900,
-                fontFamily: 'bespoke-medium',
+                fontWeight: 600,
+                fontFamily: 'bespoke-regular',
               },
             }}
-            sx={{ height: 60 }}
+            sx={{ height: 60, mt: 2, borderRadius: 30 }}
           />
           {usernameErrorMessage && (
             <Typography sx={{ color: palette.secondary.main }}>
@@ -82,7 +93,7 @@ const UsernameDialog = (props: Propstype) => {
           <Button
             onClick={handleSubmit}
             variant="contained"
-            sx={{ width: 100, marginTop: 2 }}
+            sx={{ width: 100, marginTop: 4 }}
           >
             OK
           </Button>

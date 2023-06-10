@@ -8,7 +8,7 @@ import { Player } from '../../../../server/src/room/types';
 interface PropsType {
   player: Player;
   showCrown?: boolean;
-  size?: 'big' | 'small' | 'medium';
+  size: 'big' | 'small' | 'medium' | 'huge';
   badgeContent?: string | number;
   displayBadge: boolean;
 }
@@ -20,10 +20,13 @@ const Avatar = (props: PropsType) => {
     displayBadge,
     showCrown = false,
   } = props;
-  const avatarSize = size === 'small' ? 35 : size === 'medium' ? 60 : 80;
-  const badgeSize = size === 'small' ? 18 : size === 'medium' ? 30 : 40;
-  const borderSize = size === 'small' ? 1 : size === 'medium' ? 2 : 2;
-  const fontSize = size === 'small' ? 12 : size === 'medium' ? 20 : 25;
+  const avatarSize =
+    size === 'small' ? 35 : size === 'medium' ? 60 : size === 'big' ? 80 : 120;
+  const badgeSize =
+    size === 'small' ? 18 : size === 'medium' ? 30 : size === 'big' ? 40 : 50;
+  const borderSize = size === 'small' ? 1 : 2;
+  const fontSize =
+    size === 'small' ? 12 : size === 'medium' ? 20 : size === 'big' ? 25 : 30;
   return (
     <Badge
       overlap="circular"
