@@ -58,6 +58,7 @@ const WordCarousel = () => {
           direction="vertical"
           style={{ height: '100%' }}
           onSwiper={setSwiperInstance}
+          allowTouchMove={false}
         >
           {inputEntriesToDisplay.map(([userId, inputEntry]) => (
             <SwiperSlide>

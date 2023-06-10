@@ -47,9 +47,6 @@ const Home = () => {
         maxWidth: {
           xs: 300,
           sm: 400,
-          md: 450,
-          lg: 500,
-          xl: 500,
         },
       }}
       justifyContent={'space-between'}
@@ -101,6 +98,7 @@ const Home = () => {
               height: 50,
               flex: 1,
               borderRadius: 30,
+              borderColor: '#555555',
             }}
             onKeyPress={(event) => {
               if (event.key === 'Enter') {
@@ -119,7 +117,7 @@ const Home = () => {
             variant="contained"
             sx={{
               marginLeft: 2,
-              width: { xs: 'auto', sm: 200, md: 300 },
+              width: { xs: 140, sm: 230 },
               height: 50,
             }}
           >
@@ -156,17 +154,17 @@ const Home = () => {
       <Box
         sx={{
           mb: 4,
+          backgroundColor: theme.palette.yellow.darker,
+          borderRadius: 5,
           display: 'flex',
-          width: { xs: 300, sm: 400 },
+          width: 1,
           flexDirection: 'column',
           alignItems: 'center',
         }}
       >
-        <Typography fontWeight={'bold'}>
-          🇫🇷 Only French dictionary is currently available
-        </Typography>
-        <Typography fontWeight={'bold'}>
-          🇬🇧 English dictionary is coming soon...
+        <Typography margin={2} fontSize={15}>
+          🇫🇷 Available with French words. <br /> 🇬🇧 English words are coming
+          soon...
         </Typography>
       </Box>
       <HowToPlay />

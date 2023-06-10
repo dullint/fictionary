@@ -94,7 +94,7 @@ export const palette: PaletteOptions = {
     main: '#86BAFE',
   },
   black: {
-    main: '#222222',
+    main: '#444444',
   },
 };
 
