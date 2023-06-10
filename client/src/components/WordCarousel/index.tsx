@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { RoomContext } from '../Room';
 import { Box } from '@mui/system';
@@ -13,6 +13,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { useParams } from 'react-router-dom';
 import DefinitionRender from '../DefinitionRender';
+import loupeImg from '../../img/loupe.png';
 
 const WordCarousel = () => {
   const { gameState, gameSettings } = useContext(RoomContext);
@@ -78,6 +79,22 @@ const WordCarousel = () => {
               )}
             </SwiperSlide>
           ))}
+          <SwiperSlide>
+            <Box
+              sx={{
+                display: 'flex',
+                height: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column',
+              }}
+            >
+              <img src={loupeImg} alt={'test'} />
+              <Typography fontSize={25} textAlign={'center'} fontWeight={600}>
+                Now Guess the right definition!
+              </Typography>
+            </Box>
+          </SwiperSlide>
         </Swiper>
       </Box>
     </Grid>
