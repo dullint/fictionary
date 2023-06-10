@@ -6,7 +6,7 @@ import dictionaryImage from '../../img/dictionary.jpg';
 export const getAvatarString = (player: Player) => {
   const isDictionary = player?.userId === 'DICTIONARY_PLAYER';
   const stringSVG = createAvatar(style, {
-    seed: player?.username,
+    seed: `${player?.username}7`,
     backgroundColor: player?.color,
     size: 120,
     topColor: ['black'],
