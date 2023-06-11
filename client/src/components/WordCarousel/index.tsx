@@ -17,7 +17,9 @@ import loupeImg from '../../img/loupe.png';
 
 const WordCarousel = () => {
   const { gameState, gameSettings } = useContext(RoomContext);
-  const [swiper, setSwiperInstance] = useState(null);
+  const [swiperInstance, setSwiperInstance] = useState<typeof Swiper | null>(
+    null
+  );
 
   const isUsingExample = gameSettings.useExample;
   const definitionsRef = useRef([]);
@@ -35,12 +37,12 @@ const WordCarousel = () => {
   }, [definitionsNumber]);
 
   useEffect(() => {
-    if (swiper) {
+    if (swiperInstance) {
       socket.on('show_next_def', () => {
-        swiper.slideNext();
+        swiperInstance.slideNext();
       });
     }
-  }, [swiper]);
+  }, [swiperInstance]);
 
   return (
     <Grid container flexDirection="column" height={1} width={1}>

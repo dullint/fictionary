@@ -1,13 +1,4 @@
-import {
-  Box,
-  Button,
-  Grid,
-  IconButton,
-  TextField,
-  Tooltip,
-  Typography,
-} from '@mui/material';
-import FindReplaceIcon from '@mui/icons-material/FindReplace';
+import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { RoomContext } from '../Room';
 import {
@@ -16,12 +7,13 @@ import {
 } from './constants';
 import { theme } from '../../theme';
 import GameHeader from '../GameHeader';
-import { bottomPageButtonSx } from '../../constants/style';
 import DefinitionRender from '../DefinitionRender';
 import { cleanSentence } from './helpers';
 import socket from '../../socket';
 import { getInGamePlayers } from '../Room/helpers';
 import { getMyPlayer } from '../WaitingRoom/helpers';
+import writtingImg from '../../img/writting.png';
+import { ReactComponent as AlarmIcon } from '../../img/alarm.svg';
 
 const WordPrompt = () => {
   const { gameState, gameSettings, players } = useContext(RoomContext);
@@ -120,156 +112,178 @@ const WordPrompt = () => {
   const minutes = counter && Math.floor(counter / 60);
   const seconds = counter && counter - minutes * 60;
   return (
-    <Grid container alignItems="center" direction="column" height={1} width={1}>
-      <Grid item width={1}>
-        <GameHeader>
-          <Box display="flex" flexDirection={'row'}>
-            <Typography variant="h6">
-              {`${usersWhoSubmittedDefinition.length} / ${
-                usersWhoSubmittedDefinition.length +
-                missingInGamePlayersDefinitions.length
-              }`}
-            </Typography>
-            <Typography
-              variant="h6"
-              display={{ xs: 'none', sm: 'block' }}
-              sx={{ textIndent: 10 }}
-            >
-              players
-            </Typography>
-          </Box>
-        </GameHeader>
-      </Grid>
-      <Grid item width={1}>
-        <Grid
-          container
-          justifyContent={'space-between'}
-          direction="row"
-          alignItems={'center'}
-        >
-          {counter && (
-            <Typography sx={{ m: 1 }} variant="h4" color="secondary">{`${String(
-              minutes
-            ).padStart(2, '0')}:${String(seconds).padStart(
-              2,
-              '0'
-            )}`}</Typography>
-          )}
-          <Tooltip
-            title={
-              isAdmin ? 'change word' : 'Only the admin change change the word'
-            }
-            arrow
+    <Grid
+      container
+      height={1}
+      width={1}
+      justifyContent={'center'}
+      flexDirection={'column'}
+    >
+      <GameHeader>
+        <Box display="flex" flexDirection={'row'}>
+          <Typography variant="h6">
+            {`${usersWhoSubmittedDefinition.length} / ${
+              usersWhoSubmittedDefinition.length +
+              missingInGamePlayersDefinitions.length
+            }`}
+          </Typography>
+          <Typography
+            variant="h6"
+            display={{ xs: 'none', sm: 'block' }}
+            sx={{ textIndent: 10 }}
           >
-            <span>
-              <IconButton
-                onClick={handleKnowWord}
-                disabled={!isAdmin}
-                sx={{
-                  border: `2px solid ${
-                    isAdmin ? theme.palette.primary.main : 'rgba(0, 0, 0, 0.26)'
-                  }`,
-                  width: 40,
-                  height: 40,
-                  borderRadius: 4,
-                  color: theme.palette.primary.main,
-                }}
-              >
-                <FindReplaceIcon />
-              </IconButton>
-            </span>
-          </Tooltip>
-        </Grid>
-      </Grid>
-      <Grid container sx={{ overflowY: 'auto', flex: 1, position: 'relative' }}>
-        <Grid item width={1}>
-          <Grid container direction="column" flex={1}>
-            <Box
-              zIndex={2}
-              position="absolute"
-              ref={wordRef}
-              sx={{ m: 2.25, marginLeft: 2 }}
-            >
-              <DefinitionRender
-                entry={{ ...entry, definition: '', example: '' }}
-              ></DefinitionRender>
-            </Box>
-            <TextField
-              autoFocus
-              disabled={hasSubmited}
-              onKeyPress={handlePressKey}
-              value={definition}
-              multiline
-              minRows={2}
-              fullWidth
-              helperText={`${definition.length}/${DEFINITION_CHARACTER_LIMIT}`}
-              onChange={handleDefinitionChange}
-              inputProps={{
-                maxLength: DEFINITION_CHARACTER_LIMIT,
-                lineheight: '22px',
-              }}
-              sx={{
-                marginTop: 0.5,
-                marginBottom: '14px',
-                '& .MuiOutlinedInput-input': {
-                  lineheight: '22px',
-                  textIndent: wordWidth + 1,
-                },
-              }}
-            />
-            {isUsingExample && (
-              <Box>
-                <Box
-                  zIndex={2}
-                  position="absolute"
-                  ref={ExRef}
-                  sx={{ m: 2.25, marginLeft: 2 }}
-                >
-                  <Typography
-                    component="span"
-                    fontFamily="bespoke-medium"
-                    sx={{ marginRight: 0.5 }}
-                    fontSize={17}
-                  >
-                    Ex.
-                  </Typography>
-                </Box>
-                <TextField
-                  disabled={hasSubmited}
-                  onKeyPress={handlePressKey}
-                  value={example}
-                  multiline
-                  minRows={2}
-                  fullWidth
-                  helperText={`${example.length}/${EXAMPLE_CHARACTER_LIMIT}`}
-                  onChange={handleExampleChange}
-                  inputProps={{
-                    maxLength: EXAMPLE_CHARACTER_LIMIT,
-                    lineheight: '22px',
-                  }}
-                  sx={{
-                    marginTop: 0.5,
-                    marginBottom: '14px',
-                    '& .MuiOutlinedInput-input': {
-                      lineheight: '22px',
-                      textIndent: ExWidth + 1,
-                    },
-                  }}
-                />
-              </Box>
-            )}
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid item>
-        <Button
-          onClick={() => (hasSubmited ? handleModify() : handleSubmit())}
-          variant="contained"
-          sx={bottomPageButtonSx}
+            players
+          </Typography>
+        </Box>
+      </GameHeader>
+      <Box
+        display="flex"
+        sx={{ overflowY: 'auto', flex: 1 }}
+        alignItems={'center'}
+        flexDirection="column"
+      >
+        <Box
+          display={'flex'}
+          alignItems={'center'}
+          flexDirection={'column'}
+          sx={{ marginBottom: 3 }}
         >
-          {hasSubmited ? 'Modify' : 'Submit'}
-        </Button>
-      </Grid>
+          <Box
+            component={'img'}
+            src={writtingImg}
+            alt={'pen'}
+            sx={{ width: { xs: '100px', sm: 'auto' } }}
+          />
+          <Typography variant="subtitle1">Invent your definition</Typography>
+          <Box display="flex" alignItems={'center'}>
+            <AlarmIcon stroke={theme.palette.pink.main} />
+            {counter && (
+              <Typography
+                sx={{
+                  ml: 1,
+                  width: '60px',
+                }}
+                variant="h4"
+                color="secondary"
+              >{`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(
+                2,
+                '0'
+              )}`}</Typography>
+            )}
+          </Box>
+          {isAdmin && (
+            <Button
+              variant="outlined"
+              onClick={handleKnowWord}
+              size="small"
+              sx={{ mt: 2 }}
+            >
+              Change word
+            </Button>
+          )}
+        </Box>
+        <Box
+          display="flex"
+          flexDirection="column"
+          width={1}
+          sx={{ position: 'relative', maxWidth: 500 }}
+        >
+          <Box
+            zIndex={2}
+            position="absolute"
+            ref={wordRef}
+            sx={{ m: 2.25, marginLeft: 2 }}
+          >
+            <DefinitionRender
+              entry={{ ...entry, definition: '', example: '' }}
+            ></DefinitionRender>
+          </Box>
+          <TextField
+            autoFocus
+            disabled={hasSubmited}
+            onKeyPress={handlePressKey}
+            value={definition}
+            multiline
+            minRows={2}
+            fullWidth
+            helperText={`${definition.length}/${DEFINITION_CHARACTER_LIMIT}`}
+            onChange={handleDefinitionChange}
+            inputProps={{
+              maxLength: DEFINITION_CHARACTER_LIMIT,
+              lineheight: '22px',
+            }}
+            sx={{
+              marginTop: 0.5,
+              marginBottom: '14px',
+              '& .MuiOutlinedInput-input': {
+                lineheight: '22px',
+                textIndent: wordWidth + 1,
+              },
+            }}
+          />
+          {isUsingExample && (
+            <Box>
+              <Box
+                zIndex={2}
+                position="absolute"
+                ref={ExRef}
+                sx={{ m: 2.25, marginLeft: 2 }}
+              >
+                <Typography
+                  component="span"
+                  fontFamily="bespoke-medium"
+                  sx={{ marginRight: 0.5 }}
+                  fontSize={17}
+                >
+                  Ex.
+                </Typography>
+              </Box>
+              <TextField
+                disabled={hasSubmited}
+                onKeyPress={handlePressKey}
+                value={example}
+                multiline
+                minRows={2}
+                fullWidth
+                helperText={`${example.length}/${EXAMPLE_CHARACTER_LIMIT}`}
+                onChange={handleExampleChange}
+                inputProps={{
+                  maxLength: EXAMPLE_CHARACTER_LIMIT,
+                  lineheight: '22px',
+                }}
+                sx={{
+                  marginTop: 0.5,
+                  marginBottom: '14px',
+                  '& .MuiOutlinedInput-input': {
+                    lineheight: '22px',
+                    textIndent: ExWidth + 1,
+                  },
+                }}
+              />
+            </Box>
+          )}
+        </Box>
+        <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+          {hasSubmited ? (
+            <Typography
+              variant="subtitle1"
+              color={'primary'}
+              sx={{ marginBottom: 1 }}
+            >
+              Submitted! Waiting for other players...
+            </Typography>
+          ) : (
+            <></>
+          )}
+          <Button
+            onClick={() => (hasSubmited ? handleModify() : handleSubmit())}
+            variant={hasSubmited ? 'outlined' : 'contained'}
+            sx={{ width: 200 }}
+          >
+            {hasSubmited ? 'Modify' : 'Submit'}
+          </Button>
+        </Box>
+      </Box>
     </Grid>
   );
 };

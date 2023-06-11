@@ -117,7 +117,6 @@ const GameSettingsDisplayer = (props: PropsType) => {
             <Button
               key={`useExampleOptions-${value}`}
               onClick={() => {
-                console.log('changed', value);
                 setUseExample(value);
               }}
               variant={value === useExample ? 'contained' : 'outlined'}

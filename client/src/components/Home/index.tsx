@@ -125,6 +125,14 @@ const Home = () => {
           </Button>
         </Box>
         <Box width={1}>
+          {joinRoomError && (
+            <Typography
+              sx={{ color: theme.palette.secondary.main }}
+              textAlign={'center'}
+            >
+              {joinRoomError}
+            </Typography>
+          )}
           <Divider
             sx={{
               marginBottom: 1,
@@ -145,11 +153,6 @@ const Home = () => {
         >
           Create game
         </Button>
-        {joinRoomError && (
-          <Typography sx={{ color: theme.palette.secondary.main }}>
-            {joinRoomError}
-          </Typography>
-        )}
       </Box>
       <Box
         sx={{

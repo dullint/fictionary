@@ -9,7 +9,6 @@ import {
   SHOW_CAROUSEL_TIME,
 } from './constants';
 import { GameStep, InputDictionaryEntries, Player } from './types';
-import logger from '../logging';
 
 export const get_random_entry = (language: DictionaryLanguage) =>
   dictionary[language][Math.floor(Math.random() * dictionary[language].length)];
@@ -105,7 +104,6 @@ export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
   var definitionIndex = 0;
   const numberOfDefinitions = Object.values(room.game.inputEntries).length + 1;
   const roomId = room.roomId;
-  console.log('runCarouselInterval');
   const carouselTimer = setInterval(() => {
     if (definitionIndex === numberOfDefinitions - 1 && carouselTimer) {
       io.to(roomId).emit('show_next_def');
