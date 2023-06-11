@@ -101,7 +101,7 @@ export const palette: PaletteOptions = {
     main: '#86BAFE',
   },
   black: {
-    main: '#666666',
+    main: '#333333',
     contrastText: '#fff',
   },
 };

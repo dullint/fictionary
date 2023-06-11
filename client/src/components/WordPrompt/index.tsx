@@ -161,7 +161,6 @@ const WordPrompt = () => {
               <Typography
                 sx={{
                   ml: 1,
-                  width: '60px',
                 }}
                 variant="h4"
                 color="secondary"
