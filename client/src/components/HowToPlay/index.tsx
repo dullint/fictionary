@@ -66,38 +66,6 @@ const card1 = (
 );
 
 const card2 = (
-  <Box sx={cardSx} display="flex" flexDirection="column">
-    <Typography
-      marginBottom={1}
-      variant="subtitle1"
-      sx={{ marginBottom: 2, lineHeight: 'normal' }}
-    >
-      If one of the players knows the word, the game admin can change it
-    </Typography>
-    <Box display={'flex'} alignItems="center" justifyContent={'center'}>
-      <IconButton
-        sx={{
-          border: `2px solid ${theme.palette.primary.main}`,
-          width: 60,
-          height: 60,
-          borderRadius: 4,
-          color: theme.palette.primary.main,
-        }}
-      >
-        <FindReplaceIcon fontSize="large" />
-      </IconButton>
-      <PanToolAltIcon
-        sx={{
-          transform: 'rotate(-40deg)',
-          translate: '-25px 15px',
-          fontSize: 60,
-        }}
-      />
-    </Box>
-  </Box>
-);
-
-const card3 = (
   <Box sx={cardSx}>
     <Typography variant="subtitle1" sx={{ mb: 1, lineHeight: 'normal' }}>
       You are then anonymously given all players definitions and the true one.
@@ -136,7 +104,7 @@ const card3 = (
   </Box>
 );
 
-const card4 = (
+const card3 = (
   <Box sx={cardSx}>
     <Typography variant="h6" sx={{ mb: 1 }} fontSize={16}>
       Earn point by:
@@ -150,25 +118,6 @@ const card4 = (
     <Typography textAlign={'end'} variant="h5" sx={{ mr: 1 }}>
       +1 point each
     </Typography>
-  </Box>
-);
-
-const card5 = (
-  <Box sx={cardSx}>
-    <Typography variant="subtitle1" sx={{ mb: 2 }}>
-      When creating a room, take a look at game settings to see game variants!
-    </Typography>
-
-    <Box display={'flex'} alignItems="center" justifyContent={'center'}>
-      <Button
-        color="primary"
-        variant="outlined"
-        endIcon={<SettingsIcon />}
-        disableRipple
-      >
-        Game settings
-      </Button>
-    </Box>
   </Box>
 );
 
@@ -187,7 +136,7 @@ const HowToPlay = () => {
           width: { xs: '348px', sm: '400px' },
         }}
       >
-        {[card1, card2, card3, card4, card5]}
+        {[card1, card2, card3]}
       </Carousel>
     </Box>
   );
