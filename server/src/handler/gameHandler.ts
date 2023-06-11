@@ -143,7 +143,6 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     var counter = time * 60;
     const roomId = room.roomId;
     room.timer = setInterval(() => {
-      console.log('prompt timer');
       io.to(roomId).emit('timer', counter);
       if (counter === 0 && room.timer) {
         clearInterval(room.timer);
