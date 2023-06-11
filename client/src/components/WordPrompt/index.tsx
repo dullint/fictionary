@@ -265,11 +265,7 @@ const WordPrompt = () => {
         </Box>
         <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
           {hasSubmited ? (
-            <Typography
-              variant="subtitle1"
-              color={'primary'}
-              sx={{ marginBottom: 1 }}
-            >
+            <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
               Submitted! Waiting for other players...
             </Typography>
           ) : (
