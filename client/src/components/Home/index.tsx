@@ -2,7 +2,7 @@ import { Button, Divider, Grid, Input, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { theme } from '../../theme';
-import { generateRandomRoomId } from '../GameSettingsDialog/helpers';
+import { generateRandomRoomId } from '../GameSettingsDisplayer/helpers';
 import { Box } from '@mui/system';
 import { TypeAnimation } from 'react-type-animation';
 import { getTypingSequence } from './helpers';

@@ -2,10 +2,9 @@ import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { useContext } from 'react';
 import { DictionnaryEntry } from '../../../../server/src/dictionary/types';
-import { DictionaryLanguage } from '../GameSettingsDialog';
 import { RoomContext } from '../Room';
 import { cleanSentence } from '../WordPrompt/helpers';
-import { getNatureGenre } from './helpers';
+import { DictionaryLanguage, getNatureGenre } from './helpers';
 
 interface PropsType {
   entry: DictionnaryEntry;

@@ -16,7 +16,11 @@ export default (server: HTTPServer) => {
     server,
     {
       cors: {
-        origin: ['http://localhost:3021', 'http://192.168.1.24:3021'],
+        origin: [
+          'http://localhost:3021',
+          'http://192.168.1.24:3021',
+          'http://172.20.10.3:3021',
+        ],
         methods: ['GET', 'POST'],
       },
       pingInterval: PING_INTERVAL,

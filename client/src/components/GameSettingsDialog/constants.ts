@@ -1,4 +1,0 @@
-export const promptTimeOptions = [2, 3, 4, 5, 60];
-export const roundNumberOptions = [2, 3, 4, 5, 6];
-export const useExampleOptions = [true, false];
-export const showGuessVoteOptions = [true, false];
