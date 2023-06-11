@@ -21,7 +21,7 @@ const Avatar = (props: PropsType) => {
     showCrown = false,
   } = props;
   const avatarSize =
-    size === 'small' ? 35 : size === 'medium' ? 60 : size === 'big' ? 80 : 120;
+    size === 'small' ? 35 : size === 'medium' ? 55 : size === 'big' ? 80 : 120;
   const badgeSize =
     size === 'small' ? 18 : size === 'medium' ? 30 : size === 'big' ? 40 : 50;
   const borderSize = size === 'small' ? 1 : 2;
@@ -39,8 +39,8 @@ const Avatar = (props: PropsType) => {
             style={{
               transform: 'rotate(26deg)',
               translate: '0 -42%',
-              height: 1.5 * badgeSize,
-              width: 1.5 * badgeSize,
+              height: 1.2 * badgeSize,
+              width: 1.2 * badgeSize,
             }}
           />
         ) : null

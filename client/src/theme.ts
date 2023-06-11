@@ -69,6 +69,13 @@ declare module '@mui/material/styles' {
   interface PaletteColorOptions {
     darker?: string;
     main: string;
+    contrastText?: string;
+  }
+}
+
+declare module '@mui/material/Button' {
+  interface ButtonPropsColorOverrides {
+    black: true;
   }
 }
 
@@ -94,7 +101,8 @@ export const palette: PaletteOptions = {
     main: '#86BAFE',
   },
   black: {
-    main: '#444444',
+    main: '#666666',
+    contrastText: '#fff',
   },
 };
 
