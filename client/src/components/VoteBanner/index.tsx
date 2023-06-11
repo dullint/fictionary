@@ -8,7 +8,7 @@ interface PropsType {
   votingPlayers: Player[];
   authorPlayer?: Player;
   revealed: boolean;
-  size?: 'big' | 'small' | 'medium';
+  size?: 'big' | 'small' | 'medium' | 'huge';
 }
 
 const VoteBanner = (props: PropsType) => {

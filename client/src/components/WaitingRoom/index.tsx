@@ -1,29 +1,20 @@
-import {
-  Box,
-  Button,
-  Grid,
-  Snackbar,
-  Tooltip,
-  Typography,
-} from '@mui/material';
-import React, { useContext, useState } from 'react';
+import { Box, Button, Grid, Typography } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { RoomContext } from '../Room';
 import UsernameDialog from '../UsernameDialog';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { getMyPlayer, getPlayTooltip } from './helpers';
-import GameSettingsDialog from '../GameSettingsDialog';
-import SettingsIcon from '@mui/icons-material/Settings';
+import { getMyPlayer } from './helpers';
 import Avatar from '../Avatar';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
+import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
+import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import { theme } from '../../theme';
-import { bottomPageButtonSx } from '../../constants/style';
 import socket from '../../socket';
 import { getInGamePlayers } from '../Room/helpers';
-import { DictionaryLanguage } from '../../../../server/src/dictionary/types';
+import GameSettingsDisplayer from '../GameSettingsDisplayer';
 
 const WaitingRoom = () => {
-  const { players, gameSettings } = useContext(RoomContext);
+  const { players } = useContext(RoomContext);
   const inGamePlayers = getInGamePlayers(players);
 
   const myPlayer = getMyPlayer(players);
@@ -31,8 +22,12 @@ const WaitingRoom = () => {
   const isAdmin = myPlayer?.isAdmin;
 
   const [openUsernameDialog, setOpenUsernameDialog] = useState(!myUsername);
-  const [openSettingsDialog, setOpenSettingsDialog] = useState(false);
-  const [copyToClipboardMsg, setCopyToClipboardMsg] = useState(false);
+  const [showCopiedToClipboard, setShowCopiedToClipboard] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => setShowCopiedToClipboard(false), 2000);
+  });
+
   const navigate = useNavigate();
   const { roomId } = useParams();
 
@@ -45,12 +40,8 @@ const WaitingRoom = () => {
     navigate('/');
   };
 
-  const handleChangeGameSettings = () => {
-    setOpenSettingsDialog(true);
-  };
-
   const handleCopyToClipboard = () => {
-    setCopyToClipboardMsg(true);
+    setShowCopiedToClipboard(true);
     navigator.clipboard.writeText(window.location.href);
   };
 
@@ -59,121 +50,112 @@ const WaitingRoom = () => {
     .every((username) => username);
 
   return (
-    <Grid
-      alignItems="center"
-      container
-      justifyContent="center"
-      direction="column"
-      height={1}
-    >
-      <Grid
+    <Grid alignItems="center" container justifyContent="center" height={1}>
+      <Box
         alignItems="center"
-        container
+        width={1}
+        display={'flex'}
+        flexDirection="row"
         justifyContent="space-between"
-        direction="row"
       >
         <Button
-          startIcon={<ArrowBackIosIcon />}
+          startIcon={<ArrowBackIosNewRoundedIcon />}
           variant="outlined"
           onClick={handleLeaveRoom}
           size="small"
+          sx={{ justifySelf: 'start' }}
+        >
+          <Typography variant="body1" align="center" sx={{ marginLeft: -0.5 }}>
+            Back
+          </Typography>
+        </Button>
+        <Box>
+          <Typography variant="body1" align="center">
+            Room code
+          </Typography>
+          <Typography
+            variant="h2"
+            color={theme.palette.pink.main}
+            sx={{ marginTop: -1.2 }}
+          >
+            {roomId}
+          </Typography>
+        </Box>
+        {/* Just for centering */}
+        <Button
+          startIcon={<ArrowBackIosNewRoundedIcon fontSize="large" />}
+          variant="outlined"
+          onClick={handleLeaveRoom}
+          size="small"
+          sx={{ justifySelf: 'start', visibility: 'hidden' }}
         >
           Back
         </Button>
-        <Button
-          color="primary"
-          onClick={handleChangeGameSettings}
-          size="small"
-          variant="outlined"
-          endIcon={<SettingsIcon />}
-        >
-          Settings
-        </Button>
-      </Grid>
-      <Typography variant="body1" align="center" sx={{ marginTop: 2 }}>
-        Your room code is
-      </Typography>
-      <Typography variant="h2" color={theme.palette.pink.main}>
-        {roomId}
-      </Typography>
-      <Grid container alignContent={'center'} justifyContent="center">
-        <Button
-          onClick={handleCopyToClipboard}
-          sx={{ m: 0 }}
-          endIcon={<ContentCopyIcon />}
-        >
-          <Typography>Click to copy the link</Typography>
-        </Button>
-      </Grid>
-      <Snackbar
-        open={copyToClipboardMsg}
-        onClose={() => setCopyToClipboardMsg(false)}
-        autoHideDuration={2000}
-        message="Copied to clipboard"
-      />
+      </Box>
       <Box
         sx={{
-          paddingTop: 4, //to be able to show the admin crown
-          marginTop: 3,
-          marginBottom: 2,
-          overflowY: 'auto',
-          flex: 1,
+          display: 'flex',
+          paddingTop: 2, //to be able to show the admin crown
+          overflowX: 'auto',
           width: 1,
         }}
       >
-        <Grid container spacing={2}>
-          {inGamePlayers.map((player) => (
-            <Grid item xs={4} sm={3} key={player.userId}>
-              <Box
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Avatar
-                  player={player}
-                  displayBadge={false}
-                  size="medium"
-                  showCrown={true}
-                />
-                <Typography
-                  variant="subtitle1"
-                  align="center"
-                  textOverflow="ellipsis"
-                  overflow={'hidden'}
-                  sx={{ flex: 1, width: 1 }}
-                >
-                  {player.username}
-                </Typography>
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
-      <Tooltip
-        title={getPlayTooltip(isAdmin, allInGamePlayersHaveAUsername)}
-        placement="top"
-        arrow
-      >
-        <span>
-          <Button
-            onClick={handlePlay}
-            variant="contained"
-            sx={bottomPageButtonSx}
-            disabled={!isAdmin || !allInGamePlayersHaveAUsername}
+        {inGamePlayers.map((player) => (
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            margin={1}
+            width={70}
           >
-            Play
-          </Button>
-        </span>
-      </Tooltip>
+            <Avatar
+              player={player}
+              displayBadge={false}
+              size="medium"
+              showCrown={true}
+            />
+            <Typography
+              variant="body1"
+              align="center"
+              textOverflow="ellipsis"
+              overflow={'hidden'}
+              sx={{ flex: 1, width: 1 }}
+            >
+              {player.username}
+            </Typography>
+          </Box>
+        ))}
+      </Box>
+      <GameSettingsDisplayer isAdmin={isAdmin} />
+      <Box display={'flex'} width={1} sx={{ marginTop: 1 }}>
+        <Button
+          startIcon={<PersonAddAltRoundedIcon />}
+          onClick={handleCopyToClipboard}
+          variant="contained"
+          fullWidth
+          sx={{ margin: 1 }}
+        >
+          {showCopiedToClipboard ? (
+            <Typography variant="body1">Copied</Typography>
+          ) : (
+            <Typography variant="button">Invite</Typography>
+          )}
+        </Button>
+        <Button
+          startIcon={<PlayArrowRoundedIcon />}
+          onClick={handlePlay}
+          variant="contained"
+          disabled={!isAdmin || !allInGamePlayersHaveAUsername}
+          fullWidth
+          sx={{ margin: 1 }}
+        >
+          Play
+        </Button>
+      </Box>
       <UsernameDialog
         open={openUsernameDialog}
         setOpen={setOpenUsernameDialog}
-      />
-      <GameSettingsDialog
-        open={openSettingsDialog}
-        setOpen={setOpenSettingsDialog}
-        isAdmin={isAdmin}
       />
     </Grid>
   );
