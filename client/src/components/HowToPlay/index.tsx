@@ -1,13 +1,9 @@
-import { Button, IconButton, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
 import Carousel from 'react-material-ui-carousel';
-import { theme } from '../../theme';
 import DefinitionRender from '../DefinitionRender';
 import { WordGenre, WordNature } from '../DefinitionRender/helpers';
-import FindReplaceIcon from '@mui/icons-material/FindReplace';
-import PanToolAltIcon from '@mui/icons-material/PanToolAlt';
-import SettingsIcon from '@mui/icons-material/Settings';
 import { TypeAnimation } from 'react-type-animation';
 
 const cardSx = {

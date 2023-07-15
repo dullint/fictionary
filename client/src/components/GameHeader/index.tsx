@@ -1,7 +1,6 @@
 import { Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { useContext } from 'react';
-import { localSocketUserId } from '../../socket';
 import Avatar from '../Avatar';
 import { RoomContext } from '../Room';
 import { getMyPlayer } from '../WaitingRoom/helpers';

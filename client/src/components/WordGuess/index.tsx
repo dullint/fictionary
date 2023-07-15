@@ -18,7 +18,6 @@ const WordGuess = () => {
   const definitionsRef = useRef([]);
   const definitionsNumber = getNumberOfDefinitionToDisplay(gameState);
   const showGuessVote = gameSettings?.showGuessVote;
-  const numberOfGuess = Object.values(selections).length;
 
   useEffect(() => {
     definitionsRef.current = definitionsRef.current.slice(0, definitionsNumber);
