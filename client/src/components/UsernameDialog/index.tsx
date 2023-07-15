@@ -29,6 +29,7 @@ const UsernameDialog = (props: Propstype) => {
   };
 
   const handleSubmit = async () => {
+    if (!username) return;
     const callback = (response: ServerResponse) => {
       const { error, success } = response;
       if (success) setOpen(false);

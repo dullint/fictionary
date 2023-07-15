@@ -9,6 +9,7 @@ import {
   SHOW_CAROUSEL_TIME,
 } from './constants';
 import { GameStep, InputDictionaryEntries, Player } from './types';
+import { shuffle } from 'shuffle-seed';
 
 export const get_random_entry = (language: DictionaryLanguage) =>
   dictionary[language][Math.floor(Math.random() * dictionary[language].length)];
@@ -97,6 +98,19 @@ export const goToNextGameStepIfNeededAfterPlayerLeave = (
   }
 };
 
+const getDefinitionDisplayDelay = (definition: string) => {
+  const defLength = definition.length;
+  if (defLength < 50) {
+    return 4000;
+  } else if (defLength < 70) {
+    return 5000;
+  } else if (defLength < 100) {
+    return 6500;
+  } else if (defLength < 130) {
+    return 8000;
+  } else return 10000;
+};
+
 export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
   const interval =
     step == GameStep.SHOW ? SHOW_CAROUSEL_TIME : REVEAL_CAROUSEL_TIME;
@@ -104,11 +118,19 @@ export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
   var definitionIndex = 0;
   const numberOfDefinitions = Object.values(room.game.inputEntries).length + 1;
   const roomId = room.roomId;
-  const carouselTimer = setInterval(() => {
+  if (!room.game.entry) throw new Error('No word');
+  const seed = `${room.game.entry.word}-${roomId}`;
+  const shuffledDefinitions = shuffle(
+    Object.values(room.game.inputEntries)
+      .map((entry) => entry.definition)
+      .concat([room.game.entry.definition]),
+    seed
+  );
+  let defDelay = getDefinitionDisplayDelay(shuffledDefinitions[0]);
+  const loop = () => {
     if (definitionIndex === numberOfDefinitions - 1 && carouselTimer) {
       io.to(roomId).emit('show_next_def');
       setTimeout(() => {
-        clearInterval(carouselTimer);
         room.game.gameStep = nextStep;
         room.updateClient(io);
       }, 3000);
@@ -116,5 +138,18 @@ export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
     }
     io.to(roomId).emit('show_next_def');
     definitionIndex++;
-  }, interval);
+    defDelay = getDefinitionDisplayDelay(shuffledDefinitions[definitionIndex]);
+    console.log('loop', {
+      currentDelay: defDelay,
+      def: shuffledDefinitions[definitionIndex],
+      length: shuffledDefinitions[definitionIndex].length,
+    });
+    setTimeout(loop, defDelay);
+  };
+  console.log('loop', {
+    firstDelay: defDelay,
+    def: shuffledDefinitions[definitionIndex],
+    length: shuffledDefinitions[definitionIndex].length,
+  });
+  const carouselTimer = setTimeout(loop, defDelay);
 };

@@ -13,6 +13,8 @@ import { useParams } from 'react-router-dom';
 import DefinitionRender from '../DefinitionRender';
 import loupeImg from '../../img/loupe.png';
 import SwiperCore from 'swiper';
+import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import { getDefinitionDisplayDelay } from './helpers';
 
 const WordCarousel = () => {
   const { gameState, gameSettings } = useContext(RoomContext);
@@ -61,20 +63,32 @@ const WordCarousel = () => {
         >
           {inputEntriesToDisplay.map(([_, inputEntry]) => (
             <SwiperSlide>
-              <Box
-                display={'flex'}
-                height={1}
-                flexDirection={'column'}
-                sx={{ alignItems: 'start', justifyContent: 'center' }}
-              >
-                <DefinitionRender
-                  entry={{
-                    ...entry,
-                    definition: inputEntry.definition,
-                    example: isUsingExample ? inputEntry.example : '',
-                  }}
-                />
-              </Box>
+              {({ isActive }) => (
+                <Box
+                  display={'flex'}
+                  height={1}
+                  flexDirection={'column'}
+                  sx={{ alignItems: 'center', justifyContent: 'center' }}
+                >
+                  <DefinitionRender
+                    entry={{
+                      ...entry,
+                      definition: inputEntry.definition,
+                      example: isUsingExample ? inputEntry.example : '',
+                    }}
+                  />
+                  <Box margin={1}></Box>
+                  <CountdownCircleTimer
+                    isPlaying={isActive}
+                    duration={
+                      getDefinitionDisplayDelay(inputEntry.definition) / 1000
+                    }
+                    size={30}
+                    strokeWidth={5}
+                    colors={'#D89A9E'}
+                  />
+                </Box>
+              )}
             </SwiperSlide>
           ))}
           <SwiperSlide>
