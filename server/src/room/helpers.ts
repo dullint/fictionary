@@ -139,17 +139,7 @@ export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
     io.to(roomId).emit('show_next_def');
     definitionIndex++;
     defDelay = getDefinitionDisplayDelay(shuffledDefinitions[definitionIndex]);
-    console.log('loop', {
-      currentDelay: defDelay,
-      def: shuffledDefinitions[definitionIndex],
-      length: shuffledDefinitions[definitionIndex].length,
-    });
     setTimeout(loop, defDelay);
   };
-  console.log('loop', {
-    firstDelay: defDelay,
-    def: shuffledDefinitions[definitionIndex],
-    length: shuffledDefinitions[definitionIndex].length,
-  });
   const carouselTimer = setTimeout(loop, defDelay);
 };
