@@ -4,7 +4,7 @@ import Home from './components/Home';
 import Room from './components/Room';
 import { ThemeProvider } from '@mui/material/styles';
 import { getTheme, palette } from './theme';
-import { Box, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import Div100vh from 'react-div-100vh';
 import socket from './socket';
 

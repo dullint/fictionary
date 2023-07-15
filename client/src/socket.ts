@@ -8,7 +8,7 @@ import {
 
 const serverAddress =
   process.env.NODE_ENV === 'development'
-    ? 'http://172.20.10.3:3020'
+    ? 'http://localhost:3020'
     : 'https://fictionary.io/';
 
 export type ClientSocket = Socket<ServerToClientEvents, ClientToServerEvents>;

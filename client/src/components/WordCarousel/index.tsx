@@ -1,31 +1,26 @@
 import { Grid, Typography } from '@mui/material';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { RoomContext } from '../Room';
 import { Box } from '@mui/system';
 import GameHeader from '../GameHeader';
-import {
-  getEntriesWithUserIdToDisplay,
-  getNumberOfDefinitionToDisplay,
-} from '../DefinitionList/helpers';
+import { getEntriesWithUserIdToDisplay } from '../DefinitionList/helpers';
 import socket from '../../socket';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
+
 import { useParams } from 'react-router-dom';
 import DefinitionRender from '../DefinitionRender';
 import loupeImg from '../../img/loupe.png';
+import SwiperCore from 'swiper';
 
 const WordCarousel = () => {
   const { gameState, gameSettings } = useContext(RoomContext);
-  const [swiperInstance, setSwiperInstance] = useState<typeof Swiper | null>(
-    null
-  );
+  const [swiper, setSwiper] = useState<SwiperCore>();
 
   const isUsingExample = gameSettings.useExample;
-  const definitionsRef = useRef([]);
   const { inputEntries, entry } = gameState;
   const { roomId } = useParams();
-  const definitionsNumber = getNumberOfDefinitionToDisplay(gameState);
   const inputEntriesToDisplay = getEntriesWithUserIdToDisplay(
     inputEntries,
     entry,
@@ -33,16 +28,12 @@ const WordCarousel = () => {
   );
 
   useEffect(() => {
-    definitionsRef.current = definitionsRef.current.slice(0, definitionsNumber);
-  }, [definitionsNumber]);
-
-  useEffect(() => {
-    if (swiperInstance) {
+    if (swiper) {
       socket.on('show_next_def', () => {
-        swiperInstance.slideNext();
+        swiper.slideNext();
       });
     }
-  }, [swiperInstance]);
+  }, [swiper]);
 
   return (
     <Grid container flexDirection="column" height={1} width={1}>
@@ -59,27 +50,31 @@ const WordCarousel = () => {
         <Swiper
           direction="vertical"
           style={{ height: '100%' }}
-          onSwiper={setSwiperInstance}
+          observer={true}
+          onSwiper={(swiper) => {
+            setSwiper(swiper);
+          }}
+          onDestroy={() => {
+            socket.off('show_next_def');
+          }}
           allowTouchMove={false}
         >
-          {inputEntriesToDisplay.map(([userId, inputEntry]) => (
+          {inputEntriesToDisplay.map(([_, inputEntry]) => (
             <SwiperSlide>
-              {({ isActive }) => (
-                <Box
-                  display={'flex'}
-                  height={1}
-                  flexDirection={'column'}
-                  sx={{ alignItems: 'start', justifyContent: 'center' }}
-                >
-                  <DefinitionRender
-                    entry={{
-                      ...entry,
-                      definition: inputEntry.definition,
-                      example: isUsingExample ? inputEntry.example : '',
-                    }}
-                  />
-                </Box>
-              )}
+              <Box
+                display={'flex'}
+                height={1}
+                flexDirection={'column'}
+                sx={{ alignItems: 'start', justifyContent: 'center' }}
+              >
+                <DefinitionRender
+                  entry={{
+                    ...entry,
+                    definition: inputEntry.definition,
+                    example: isUsingExample ? inputEntry.example : '',
+                  }}
+                />
+              </Box>
             </SwiperSlide>
           ))}
           <SwiperSlide>
