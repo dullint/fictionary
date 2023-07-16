@@ -1,10 +1,14 @@
 import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
-import Carousel from 'react-material-ui-carousel';
 import DefinitionRender from '../DefinitionRender';
 import { WordGenre, WordNature } from '../DefinitionRender/helpers';
 import { TypeAnimation } from 'react-type-animation';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import { Pagination } from 'swiper';
+import './styles.css';
 
 const cardSx = {
   border: '1px solid black',
@@ -123,17 +127,19 @@ const HowToPlay = () => {
       <Typography variant="h6" sx={{ marginBottom: 1, marginLeft: 3 }}>
         How to play ?
       </Typography>
-      <Carousel
-        autoPlay={false}
-        animation="slide"
-        duration={500}
-        interval={6000}
-        sx={{
-          width: { xs: '348px', sm: '400px' },
+      <Swiper
+        modules={[Pagination]}
+        style={{
+          width: '350px',
         }}
+        className="mySwiper"
+        pagination={true}
+        loop={true}
       >
-        {[card1, card2, card3]}
-      </Carousel>
+        <SwiperSlide>{card1}</SwiperSlide>
+        <SwiperSlide>{card2}</SwiperSlide>
+        <SwiperSlide>{card3}</SwiperSlide>
+      </Swiper>
     </Box>
   );
 };
