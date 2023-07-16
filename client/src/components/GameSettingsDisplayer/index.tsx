@@ -1,5 +1,12 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { Button, ButtonGroup, Grid, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Grid,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import {
   promptTimeOptions,
   roundNumberOptions,
@@ -9,6 +16,7 @@ import { RoomContext } from '../Room';
 import { GameSettings } from '../../../../server/src/room/types';
 import socket from '../../socket';
 import { theme } from '../../theme';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 export enum DictionaryLanguage {
   French = 'french',
@@ -103,9 +111,20 @@ const GameSettingsDisplayer = (props: PropsType) => {
           );
         })}
       </ButtonGroup>
-      <Typography variant="body1" sx={{ marginTop: 2, marginBottom: 1 }}>
-        Examples in definitions
-      </Typography>
+      <Box
+        display="flex"
+        alignItems={'center'}
+        justifyContent={'center'}
+        sx={{ marginTop: 2, marginBottom: 1 }}
+      >
+        <Typography variant="body1">Examples in definitions</Typography>
+        <Tooltip
+          title="Extension of the game where you will also be asked to invent an example sentence using the word you are given"
+          placement="top"
+        >
+          <InfoOutlinedIcon sx={{ marginLeft: 1 }} />
+        </Tooltip>
+      </Box>
       <ButtonGroup
         variant="outlined"
         disabled={!isAdmin}
