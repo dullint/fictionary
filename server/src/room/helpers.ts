@@ -115,7 +115,6 @@ export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
   const interval =
     step == GameStep.SHOW ? SHOW_CAROUSEL_TIME : REVEAL_CAROUSEL_TIME;
   const nextStep = step == GameStep.SHOW ? GameStep.GUESS : GameStep.RESULTS;
-  var definitionIndex = 0;
   const numberOfDefinitions = Object.values(room.game.inputEntries).length + 1;
   const roomId = room.roomId;
   if (!room.game.entry) throw new Error('No word');
@@ -126,9 +125,9 @@ export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
       .concat([room.game.entry.definition]),
     seed
   );
-  let defDelay = getDefinitionDisplayDelay(shuffledDefinitions[0]);
+  var definitionIndex = 0;
   const loop = () => {
-    if (definitionIndex === numberOfDefinitions - 1 && carouselTimer) {
+    if (definitionIndex === numberOfDefinitions && carouselTimer) {
       io.to(roomId).emit('show_next_def');
       setTimeout(() => {
         room.game.gameStep = nextStep;
@@ -137,9 +136,11 @@ export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
       return;
     }
     io.to(roomId).emit('show_next_def');
-    definitionIndex++;
-    defDelay = getDefinitionDisplayDelay(shuffledDefinitions[definitionIndex]);
+    const defDelay = getDefinitionDisplayDelay(
+      shuffledDefinitions[definitionIndex]
+    );
     setTimeout(loop, defDelay);
+    definitionIndex++;
   };
-  const carouselTimer = setTimeout(loop, defDelay);
+  const carouselTimer = setTimeout(loop, 4000);
 };

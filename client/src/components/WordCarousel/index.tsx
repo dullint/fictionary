@@ -12,6 +12,8 @@ import 'swiper/css/pagination';
 import { useParams } from 'react-router-dom';
 import DefinitionRender from '../DefinitionRender';
 import loupeImg from '../../img/loupe.png';
+import defWritten from '../../img/defWritten.png';
+
 import SwiperCore from 'swiper';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { getDefinitionDisplayDelay } from './helpers';
@@ -61,6 +63,30 @@ const WordCarousel = () => {
           }}
           allowTouchMove={false}
         >
+          <SwiperSlide>
+            <Box
+              sx={{
+                display: 'flex',
+                height: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column',
+              }}
+            >
+              <img src={defWritten} alt={'test'} />
+              <Typography
+                fontSize={18}
+                textAlign={'center'}
+                fontWeight={400}
+                marginTop={3}
+              >
+                All players have finished writting.
+              </Typography>
+              <Typography fontSize={22} textAlign={'center'} fontWeight={600}>
+                Here are all the definition propositions:
+              </Typography>
+            </Box>
+          </SwiperSlide>
           {inputEntriesToDisplay.map(([_, inputEntry]) => (
             <SwiperSlide>
               {({ isActive }) => (
