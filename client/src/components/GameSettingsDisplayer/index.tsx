@@ -88,7 +88,7 @@ const GameSettingsDisplayer = (props: PropsType) => {
         })}
       </ButtonGroup>
       <Typography variant="body1" sx={{ marginTop: 2, marginBottom: 1 }}>
-        Max writing time (Min):
+        Max writing time (min):
       </Typography>
       <ButtonGroup
         variant="outlined"
