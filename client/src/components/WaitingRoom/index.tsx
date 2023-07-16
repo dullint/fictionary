@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Typography } from '@mui/material';
+import { Box, Button, Grid, Snackbar, Typography } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { RoomContext } from '../Room';
@@ -24,9 +24,9 @@ const WaitingRoom = () => {
   const [openUsernameDialog, setOpenUsernameDialog] = useState(!myUsername);
   const [showCopiedToClipboard, setShowCopiedToClipboard] = useState(false);
 
-  useEffect(() => {
-    setTimeout(() => setShowCopiedToClipboard(false), 2000);
-  });
+  // useEffect(() => {
+  //   setTimeout(() => setShowCopiedToClipboard(false), 2000);
+  // });
 
   const navigate = useNavigate();
   const { roomId } = useParams();
@@ -136,11 +136,7 @@ const WaitingRoom = () => {
           fullWidth
           sx={{ margin: 1 }}
         >
-          {showCopiedToClipboard ? (
-            <Typography variant="body1">Copied</Typography>
-          ) : (
-            <Typography variant="button">Invite</Typography>
-          )}
+          <Typography variant="button">Invite</Typography>
         </Button>
         <Button
           startIcon={<PlayArrowRoundedIcon />}
@@ -156,6 +152,12 @@ const WaitingRoom = () => {
       <UsernameDialog
         open={openUsernameDialog}
         setOpen={setOpenUsernameDialog}
+      />
+      <Snackbar
+        open={showCopiedToClipboard}
+        autoHideDuration={2000}
+        onClose={() => setShowCopiedToClipboard(false)}
+        message="Invite Link copied to clipboard"
       />
     </Grid>
   );
