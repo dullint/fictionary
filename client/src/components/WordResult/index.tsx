@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Tooltip, Typography } from '@mui/material';
+import { Box, Button, Grid, Grow, Snackbar, Typography } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { useParams } from 'react-router-dom';
@@ -85,23 +85,23 @@ const WordResult = () => {
             </Grid>
           ))}
       </Grid>
-
-      <Tooltip
-        title={isAdmin ? null : 'Waiting for the admin to continue'}
-        placement="top"
-        arrow
-      >
-        <span>
-          <Button
-            onClick={handleNextStep}
-            disabled={!isAdmin}
-            variant="contained"
-            sx={{ marginTop: 1 }}
-          >
-            Next round
-          </Button>
-        </span>
-      </Tooltip>
+      <Grow in={isAdmin} style={{ transitionDelay: '1s' }}>
+        <Button
+          onClick={handleNextStep}
+          disabled={!isAdmin}
+          variant="contained"
+          sx={{ marginTop: 1 }}
+        >
+          Next round
+        </Button>
+      </Grow>
+      <Snackbar
+        message="Waiting for the admin to continue..."
+        open={!isAdmin}
+        TransitionComponent={(props) => (
+          <Grow {...props} style={{ transitionDelay: '1s' }} />
+        )}
+      />
     </Grid>
   );
 };

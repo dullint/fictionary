@@ -1,4 +1,11 @@
-import { Box, Button, Grid, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Grid,
+  Snackbar,
+  TextField,
+  Typography,
+} from '@mui/material';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { RoomContext } from '../Room';
 import {
@@ -263,13 +270,6 @@ const WordPrompt = () => {
           )}
         </Box>
         <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
-          {hasSubmited ? (
-            <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
-              Submitted! Waiting for other players...
-            </Typography>
-          ) : (
-            <></>
-          )}
           <Button
             onClick={() => (hasSubmited ? handleModify() : handleSubmit())}
             variant={hasSubmited ? 'outlined' : 'contained'}
@@ -278,6 +278,10 @@ const WordPrompt = () => {
             {hasSubmited ? 'Modify' : 'Submit'}
           </Button>
         </Box>
+        <Snackbar
+          open={hasSubmited}
+          message={'Submitted! Waiting for other players...'}
+        />
       </Box>
     </Grid>
   );

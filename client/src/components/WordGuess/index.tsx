@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material';
+import { Grid, Snackbar, Typography } from '@mui/material';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import GameHeader from '../GameHeader';
 import DefinitionList from '../DefinitionList';
@@ -66,14 +66,11 @@ const WordGuess = () => {
           revealedBannerIndexes={[]}
         />
         <Box margin={2}></Box>
-        {selectedUserIdDef ? (
-          <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
-            Submitted! Waiting for other players...
-          </Typography>
-        ) : (
-          <></>
-        )}
       </Box>
+      <Snackbar
+        message={'Submitted! Waiting for other players...'}
+        open={selectedUserIdDef}
+      />
     </Grid>
   );
 };

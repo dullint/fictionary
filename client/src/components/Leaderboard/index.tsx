@@ -92,7 +92,6 @@ const Leaderboard = () => {
             : 'Only the admin can send everyone to the waiting room'
         }
         placement="top"
-        arrow
       >
         <span>
           <Button

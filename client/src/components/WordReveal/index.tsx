@@ -1,4 +1,4 @@
-import { Grid, Tooltip, Button, Fade, Snackbar, Grow } from '@mui/material';
+import { Grid, Button, Snackbar, Grow } from '@mui/material';
 import React, {
   useCallback,
   useContext,
@@ -106,7 +106,7 @@ const WordReveal = () => {
           definitionsRef={definitionsRef}
         />
       </Box>
-      <Fade
+      <Grow
         in={isAdmin && allDefinitionsAreRevealed}
         style={{ transitionDelay: '2s' }}
       >
@@ -119,14 +119,14 @@ const WordReveal = () => {
             See scores
           </Button>
         </Box>
-      </Fade>
+      </Grow>
       <Snackbar
-        message="Waiting for the admin to go to the next step"
+        message="Waiting for the admin to continue..."
         open={!isAdmin && allDefinitionsAreRevealed}
         TransitionComponent={(props) => (
           <Grow {...props} style={{ transitionDelay: '2s' }} />
         )}
-      ></Snackbar>
+      />
     </Grid>
   );
 };
