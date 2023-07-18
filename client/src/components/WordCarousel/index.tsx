@@ -107,7 +107,10 @@ const WordCarousel = () => {
                   <CountdownCircleTimer
                     isPlaying={isActive}
                     duration={
-                      getDefinitionDisplayDelay(inputEntry.definition) / 1000
+                      getDefinitionDisplayDelay({
+                        definition: inputEntry.definition,
+                        example: isUsingExample ? inputEntry.example : '',
+                      }) / 1000
                     }
                     size={30}
                     strokeWidth={5}

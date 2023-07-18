@@ -4,6 +4,7 @@ import {
 } from '../../../../server/src/room/types';
 
 export const cleanSentence = (sentence: string) => {
+  if (!sentence) return sentence;
   const trimedSentence = sentence.trim();
   const loweredSentence =
     trimedSentence.charAt(0).toLowerCase() + trimedSentence.slice(1);

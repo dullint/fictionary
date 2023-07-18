@@ -98,17 +98,26 @@ export const goToNextGameStepIfNeededAfterPlayerLeave = (
   }
 };
 
-const getDefinitionDisplayDelay = (definition: string) => {
-  const defLength = definition.length;
-  if (defLength < 50) {
+const getDefinitionDisplayDelay = (entry: {
+  definition: string;
+  example: string;
+}) => {
+  const readingLength = entry.definition.length + entry.example.length;
+  if (readingLength < 50) {
     return 4000;
-  } else if (defLength < 70) {
+  } else if (readingLength < 70) {
     return 5000;
-  } else if (defLength < 100) {
+  } else if (readingLength < 100) {
     return 6500;
-  } else if (defLength < 130) {
+  } else if (readingLength < 130) {
     return 8000;
-  } else return 10000;
+  } else if (readingLength < 160) {
+    return 10000;
+  } else if (readingLength < 200) {
+    return 13000;
+  } else if (readingLength < 250) {
+    return 15000;
+  } else return 17000;
 };
 
 export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
@@ -119,10 +128,21 @@ export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
   const roomId = room.roomId;
   if (!room.game.entry) throw new Error('No word');
   const seed = `${room.game.entry.word}-${roomId}`;
-  const shuffledDefinitions = shuffle(
+  const isUsingExample = room.gameSettings.useExample;
+  const shuffledEntries = shuffle(
     Object.values(room.game.inputEntries)
-      .map((entry) => entry.definition)
-      .concat([room.game.entry.definition]),
+      .map((entry) => {
+        return {
+          definition: entry.definition,
+          example: isUsingExample ? entry.example : '',
+        };
+      })
+      .concat([
+        {
+          definition: room.game.entry.definition,
+          example: isUsingExample ? room.game.entry.example : '',
+        },
+      ]),
     seed
   );
   var definitionIndex = 0;
@@ -137,7 +157,7 @@ export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
     }
     io.to(roomId).emit('show_next_def');
     const defDelay = getDefinitionDisplayDelay(
-      shuffledDefinitions[definitionIndex]
+      shuffledEntries[definitionIndex]
     );
     setTimeout(loop, defDelay);
     definitionIndex++;
