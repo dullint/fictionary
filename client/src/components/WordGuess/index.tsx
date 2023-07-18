@@ -52,6 +52,9 @@ const WordGuess = () => {
           </Typography>
         </Box>
       </GameHeader>
+      <Typography variant={'h6'} color={'primary'}>
+        Select a definition:
+      </Typography>
       <Box sx={{ overflowY: 'auto', flex: 1 }} width={1}>
         <DefinitionList
           showVoteBanner={showGuessVote}
@@ -62,6 +65,14 @@ const WordGuess = () => {
           definitionsRef={definitionsRef}
           revealedBannerIndexes={[]}
         />
+        <Box margin={2}></Box>
+        {selectedUserIdDef ? (
+          <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
+            Submitted! Waiting for other players...
+          </Typography>
+        ) : (
+          <></>
+        )}
       </Box>
     </Grid>
   );
