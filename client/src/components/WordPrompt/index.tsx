@@ -210,7 +210,7 @@ const WordPrompt = () => {
             onKeyPress={handlePressKey}
             value={definition}
             multiline
-            minRows={2}
+            minRows={3}
             fullWidth
             helperText={`${definition.length}/${DEFINITION_CHARACTER_LIMIT}`}
             onChange={handleDefinitionChange}
@@ -249,7 +249,7 @@ const WordPrompt = () => {
                 onKeyPress={handlePressKey}
                 value={example}
                 multiline
-                minRows={2}
+                minRows={3}
                 fullWidth
                 helperText={`${example.length}/${EXAMPLE_CHARACTER_LIMIT}`}
                 onChange={handleExampleChange}
