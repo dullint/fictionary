@@ -121,6 +121,8 @@ const GameSettingsDisplayer = (props: PropsType) => {
         <Tooltip
           title="Extension of the game where you will also be asked to invent an example sentence using the word you are given"
           placement="top"
+          enterTouchDelay={0}
+          leaveDelay={3000}
         >
           <InfoOutlinedIcon sx={{ marginLeft: 1 }} />
         </Tooltip>
