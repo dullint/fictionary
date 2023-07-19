@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Grid,
+  Slide,
   Snackbar,
   TextField,
   Typography,
@@ -22,6 +23,14 @@ import { getMyPlayer } from '../WaitingRoom/helpers';
 import writtingImg from '../../img/writting.png';
 import { ReactComponent as AlarmIcon } from '../../img/alarm.svg';
 
+const useIsMount = () => {
+  const isMountRef = useRef(true);
+  useEffect(() => {
+    isMountRef.current = false;
+  }, []);
+  return isMountRef.current;
+};
+
 const WordPrompt = () => {
   const { gameState, gameSettings, players } = useContext(RoomContext);
   const { entry, inputEntries } = gameState;
@@ -37,6 +46,11 @@ const WordPrompt = () => {
   const [hasSubmited, setHasSubmited] = useState(false);
   const [counter, setCounter] = useState(gameSettings.maxPromptTime * 60);
   const isUsingExample = gameSettings.useExample;
+  const [showInput, setShowInput] = useState(true);
+  const [slideInputDirection, setSlideInputDirection] = useState<
+    'left' | 'right'
+  >('left');
+  const isMount = useIsMount();
 
   useEffect(() => {
     setWordWidth(wordRef?.current?.clientWidth);
@@ -47,9 +61,17 @@ const WordPrompt = () => {
   }, [ExRef, entry]);
 
   useEffect(() => {
-    setHasSubmited(false);
-    setDefinition('');
-    setExample('');
+    if (isMount) return;
+    setSlideInputDirection('right');
+    setShowInput(false);
+    setTimeout(() => setSlideInputDirection('left'), 200);
+    setTimeout(() => {
+      setShowInput(true);
+      setHasSubmited(false);
+      setDefinition('');
+      setExample('');
+    }, 300);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entry.word]);
 
   const handleKnowWord = () => {
@@ -145,7 +167,7 @@ const WordPrompt = () => {
       </GameHeader>
       <Box
         display="flex"
-        sx={{ overflowY: 'auto', flex: 1 }}
+        sx={{ overflowY: 'auto', flex: 1, overflowX: 'hidden' }}
         alignItems={'center'}
         flexDirection="column"
       >
@@ -188,87 +210,89 @@ const WordPrompt = () => {
             </Button>
           )}
         </Box>
-        <Box
-          display="flex"
-          flexDirection="column"
-          width={1}
-          sx={{ position: 'relative', maxWidth: 500 }}
-        >
+        <Slide direction={slideInputDirection} in={showInput} appear={false}>
           <Box
-            zIndex={2}
-            position="absolute"
-            ref={wordRef}
-            sx={{ m: 2.25, marginLeft: 2 }}
+            display="flex"
+            flexDirection="column"
+            width={1}
+            sx={{ position: 'relative', maxWidth: 500 }}
           >
-            <DefinitionRender
-              entry={{ ...entry, definition: '', example: '' }}
-            ></DefinitionRender>
-          </Box>
-          <TextField
-            autoFocus
-            disabled={hasSubmited}
-            onKeyPress={handlePressKey}
-            value={definition}
-            multiline
-            minRows={3}
-            fullWidth
-            helperText={`${definition.length}/${DEFINITION_CHARACTER_LIMIT}`}
-            onChange={handleDefinitionChange}
-            inputProps={{
-              maxLength: DEFINITION_CHARACTER_LIMIT,
-              lineheight: '22px',
-            }}
-            sx={{
-              marginTop: 0.5,
-              marginBottom: '14px',
-              '& .MuiOutlinedInput-input': {
-                lineheight: '22px',
-                textIndent: wordWidth + 1,
-              },
-            }}
-          />
-          {isUsingExample && (
-            <Box>
-              <Box
-                zIndex={2}
-                position="absolute"
-                ref={ExRef}
-                sx={{ m: 2.25, marginLeft: 2 }}
-              >
-                <Typography
-                  component="span"
-                  fontFamily="bespoke-medium"
-                  sx={{ marginRight: 0.5 }}
-                  fontSize={17}
-                >
-                  Ex.
-                </Typography>
-              </Box>
-              <TextField
-                disabled={hasSubmited}
-                onKeyPress={handlePressKey}
-                value={example}
-                multiline
-                minRows={3}
-                fullWidth
-                helperText={`${example.length}/${EXAMPLE_CHARACTER_LIMIT}`}
-                onChange={handleExampleChange}
-                inputProps={{
-                  maxLength: EXAMPLE_CHARACTER_LIMIT,
-                  lineheight: '22px',
-                }}
-                sx={{
-                  marginTop: 0.5,
-                  marginBottom: '14px',
-                  '& .MuiOutlinedInput-input': {
-                    lineheight: '22px',
-                    textIndent: ExWidth + 1,
-                  },
-                }}
-              />
+            <Box
+              zIndex={2}
+              position="absolute"
+              ref={wordRef}
+              sx={{ m: 2.25, marginLeft: 2 }}
+            >
+              <DefinitionRender
+                entry={{ ...entry, definition: '', example: '' }}
+              ></DefinitionRender>
             </Box>
-          )}
-        </Box>
+            <TextField
+              autoFocus
+              disabled={hasSubmited}
+              onKeyPress={handlePressKey}
+              value={definition}
+              multiline
+              minRows={3}
+              fullWidth
+              helperText={`${definition.length}/${DEFINITION_CHARACTER_LIMIT}`}
+              onChange={handleDefinitionChange}
+              inputProps={{
+                maxLength: DEFINITION_CHARACTER_LIMIT,
+                lineheight: '22px',
+              }}
+              sx={{
+                marginTop: 0.5,
+                marginBottom: '14px',
+                '& .MuiOutlinedInput-input': {
+                  lineheight: '22px',
+                  textIndent: wordWidth + 1,
+                },
+              }}
+            />
+            {isUsingExample && (
+              <Box>
+                <Box
+                  zIndex={2}
+                  position="absolute"
+                  ref={ExRef}
+                  sx={{ m: 2.25, marginLeft: 2 }}
+                >
+                  <Typography
+                    component="span"
+                    fontFamily="bespoke-medium"
+                    sx={{ marginRight: 0.5 }}
+                    fontSize={17}
+                  >
+                    Ex.
+                  </Typography>
+                </Box>
+                <TextField
+                  disabled={hasSubmited}
+                  onKeyPress={handlePressKey}
+                  value={example}
+                  multiline
+                  minRows={3}
+                  fullWidth
+                  helperText={`${example.length}/${EXAMPLE_CHARACTER_LIMIT}`}
+                  onChange={handleExampleChange}
+                  inputProps={{
+                    maxLength: EXAMPLE_CHARACTER_LIMIT,
+                    lineheight: '22px',
+                  }}
+                  sx={{
+                    marginTop: 0.5,
+                    marginBottom: '14px',
+                    '& .MuiOutlinedInput-input': {
+                      lineheight: '22px',
+                      textIndent: ExWidth + 1,
+                    },
+                  }}
+                />
+              </Box>
+            )}
+          </Box>
+        </Slide>
         <Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
           <Button
             onClick={() => (hasSubmited ? handleModify() : handleSubmit())}
