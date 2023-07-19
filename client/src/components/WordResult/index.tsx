@@ -1,4 +1,12 @@
-import { Box, Button, Grid, Grow, Snackbar, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Fade,
+  Grid,
+  Grow,
+  Snackbar,
+  Typography,
+} from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { useParams } from 'react-router-dom';
@@ -85,7 +93,7 @@ const WordResult = () => {
             </Grid>
           ))}
       </Grid>
-      <Grow in={isAdmin} style={{ transitionDelay: '1s' }}>
+      <Fade in={isAdmin} style={{ transitionDelay: '1s' }}>
         <Button
           onClick={handleNextStep}
           disabled={!isAdmin}
@@ -94,7 +102,7 @@ const WordResult = () => {
         >
           Next round
         </Button>
-      </Grow>
+      </Fade>
       <Snackbar
         message="Waiting for the admin to continue..."
         open={!isAdmin}

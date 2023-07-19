@@ -33,25 +33,14 @@ const WordGuess = () => {
     (player) => !usersWhoSelectedDefinition.includes(player.userId)
   );
 
+  const numberOfRemainingPlayers =
+    usersWhoSelectedDefinition.length +
+    missingInGamePlayersGuesses.length -
+    usersWhoSelectedDefinition.length;
+
   return (
     <Grid container direction="column" height={1} width={1}>
-      <GameHeader>
-        <Box display="flex" flexDirection={'row'}>
-          <Typography variant="h6">
-            {`${usersWhoSelectedDefinition.length} / ${
-              usersWhoSelectedDefinition.length +
-              missingInGamePlayersGuesses.length
-            }`}
-          </Typography>
-          <Typography
-            variant="h6"
-            display={{ xs: 'none', sm: 'block' }}
-            sx={{ textIndent: 10 }}
-          >
-            players
-          </Typography>
-        </Box>
-      </GameHeader>
+      <GameHeader />
       <Typography variant={'h6'} color={'primary'}>
         Select a definition:
       </Typography>
@@ -68,7 +57,7 @@ const WordGuess = () => {
         <Box margin={2}></Box>
       </Box>
       <Snackbar
-        message={'Submitted! Waiting for other players...'}
+        message={`Submitted! Waiting for ${numberOfRemainingPlayers} other players...`}
         open={selectedUserIdDef}
       />
     </Grid>

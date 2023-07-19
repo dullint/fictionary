@@ -1,4 +1,4 @@
-import { Grid, Button, Snackbar, Grow } from '@mui/material';
+import { Grid, Button, Snackbar, Grow, Fade } from '@mui/material';
 import React, {
   useCallback,
   useContext,
@@ -106,7 +106,7 @@ const WordReveal = () => {
           definitionsRef={definitionsRef}
         />
       </Box>
-      <Grow
+      <Fade
         in={isAdmin && allDefinitionsAreRevealed}
         style={{ transitionDelay: '2s' }}
       >
@@ -119,7 +119,7 @@ const WordReveal = () => {
             See scores
           </Button>
         </Box>
-      </Grow>
+      </Fade>
       <Snackbar
         message="Waiting for the admin to continue..."
         open={!isAdmin && allDefinitionsAreRevealed}

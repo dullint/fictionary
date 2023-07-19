@@ -140,6 +140,10 @@ const WordPrompt = () => {
 
   const minutes = counter && Math.floor(counter / 60);
   const seconds = counter && counter - minutes * 60;
+  const numberOfRemainingPlayers =
+    usersWhoSubmittedDefinition.length +
+    missingInGamePlayersDefinitions.length -
+    usersWhoSubmittedDefinition.length;
   return (
     <Grid
       container
@@ -148,23 +152,7 @@ const WordPrompt = () => {
       justifyContent={'center'}
       flexDirection={'column'}
     >
-      <GameHeader>
-        <Box display="flex" flexDirection={'row'}>
-          <Typography variant="h6">
-            {`${usersWhoSubmittedDefinition.length} / ${
-              usersWhoSubmittedDefinition.length +
-              missingInGamePlayersDefinitions.length
-            }`}
-          </Typography>
-          <Typography
-            variant="h6"
-            display={{ xs: 'none', sm: 'block' }}
-            sx={{ textIndent: 10 }}
-          >
-            players
-          </Typography>
-        </Box>
-      </GameHeader>
+      <GameHeader />
       <Box
         display="flex"
         sx={{ overflowY: 'auto', flex: 1, overflowX: 'hidden' }}
@@ -304,7 +292,7 @@ const WordPrompt = () => {
         </Box>
         <Snackbar
           open={hasSubmited}
-          message={'Submitted! Waiting for other players...'}
+          message={`Submitted! Waiting for ${numberOfRemainingPlayers} other players...`}
         />
       </Box>
     </Grid>
