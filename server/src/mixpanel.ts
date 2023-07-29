@@ -42,7 +42,7 @@ class Mixpanel {
     });
   }
 
-  changeWord(userId: UserId, ip: string, word?: string) {
+  changeWord(userId: UserId, ip: string, word: string) {
     if (process.env.NODE_ENV === 'development') return;
     this.mixpanel.track('change_definition', {
       distinct_id: userId,

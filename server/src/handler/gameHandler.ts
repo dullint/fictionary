@@ -126,7 +126,13 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
     const game = room.game;
-    mixpanel.changeWord(socket.data?.userId, socket.data?.ip, game.entry?.word);
+    if (game.entry?.word) {
+      mixpanel.changeWord(
+        socket.data?.userId,
+        socket.data?.ip,
+        game.entry.word
+      );
+    }
     if (room.timer) clearInterval(room.timer);
     room.game.inputEntries = {};
     const language = room.gameSettings.language;
