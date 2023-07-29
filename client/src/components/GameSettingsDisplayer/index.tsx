@@ -57,13 +57,13 @@ const GameSettingsDisplayer = (props: PropsType) => {
         borderRadius: 5,
         paddingTop: 1.5,
         paddingBottom: 1.5,
-        paddingLeft: { xs: '10%', sm: '30%' },
-        paddingRight: { xs: '10%', sm: '30%' },
+        paddingLeft: { xs: '5%', sm: '20%' },
+        paddingRight: { xs: '5%', sm: '20%' },
         overflowY: 'auto',
       }}
     >
       <Typography variant={'h6'}>Settings</Typography>
-      <Typography variant={'body1'} sx={{ m: 1 }}>
+      <Typography variant={'body1'} sx={{ m: 0.5 }}>
         Number of rounds:
       </Typography>
       <ButtonGroup
@@ -87,8 +87,8 @@ const GameSettingsDisplayer = (props: PropsType) => {
           );
         })}
       </ButtonGroup>
-      <Typography variant="body1" sx={{ marginTop: 2, marginBottom: 1 }}>
-        Max writing time (min):
+      <Typography variant="body1" sx={{ marginTop: 1.5, marginBottom: 0.5 }}>
+        Max writing time:
       </Typography>
       <ButtonGroup
         variant="outlined"
@@ -106,7 +106,9 @@ const GameSettingsDisplayer = (props: PropsType) => {
               variant={value === maxPromptTime ? 'contained' : 'outlined'}
               color={'black'}
             >
-              {value}
+              {`${value >= 1 ? value : 60 * value} ${
+                value >= 1 ? 'min' : 'sec'
+              }`}
             </Button>
           );
         })}
@@ -115,7 +117,7 @@ const GameSettingsDisplayer = (props: PropsType) => {
         display="flex"
         alignItems={'center'}
         justifyContent={'center'}
-        sx={{ marginTop: 2, marginBottom: 1 }}
+        sx={{ marginTop: 1.5, marginBottom: 0.5 }}
       >
         <Typography variant="body1">Examples in definitions</Typography>
         <Tooltip
