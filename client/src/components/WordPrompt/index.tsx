@@ -75,7 +75,7 @@ const WordPrompt = () => {
   }, [entry.word]);
 
   const handleKnowWord = () => {
-    socket.emit('get_new_word');
+    socket.emit('change_word');
   };
 
   const handleDefinitionChange = (event) => {

@@ -43,7 +43,7 @@ const PlayerAloneDialog = (props: Propstype) => {
           justifyContent="center"
         >
           <Typography variant="h6" sx={{ marginBottom: 1 }} align="center">
-            You are alone in the room.
+            You are alone in the room
           </Typography>
           <Typography
             variant="subtitle1"

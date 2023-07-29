@@ -117,11 +117,11 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     game.selections = {};
     game.inputEntries = {};
     logger.info(`[ROOM ${roomId}] Round ${game.round} launched`);
-    getNewWord();
+    getNewWord(room);
     room.updateClient(io);
   };
 
-  const getNewWord = () => {
+  const changeWord = () => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
@@ -133,6 +133,10 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
         game.entry.word
       );
     }
+    getNewWord(room);
+  };
+
+  const getNewWord = (room: Room) => {
     if (room.timer) clearInterval(room.timer);
     room.game.inputEntries = {};
     const language = room.gameSettings.language;
@@ -140,8 +144,9 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     while (room.wordSeen.includes(entry.word)) {
       entry = get_random_entry(language);
     }
+    room.wordSeen.push(entry.word);
     room.game.entry = entry;
-    logger.info(`[ROOM ${roomId}] New word`);
+    logger.info(`[ROOM ${room.roomId}] New word`);
     runWritingTimer(room, room.gameSettings.maxPromptTime);
     room.updateClient(io);
   };
@@ -230,7 +235,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
   socket.on('submit_definition', submitDefinition);
   socket.on('select_definition', selectDefinition);
   socket.on('remove_definition', removeDefinition);
-  socket.on('get_new_word', getNewWord);
+  socket.on('change_word', changeWord);
   socket.on('show_results', showResults);
   socket.on('update_username', updateUsername);
   socket.on('change_game_settings', changeGameSettings);

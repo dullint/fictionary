@@ -50,7 +50,7 @@ export interface ClientToServerEvents {
 
   // *** In game
   //in Prompt
-  get_new_word: () => void;
+  change_word: () => void;
   submit_definition: (payload: SubmitDefinitionPayload) => void;
   remove_definition: () => void;
   show_results: () => void;
