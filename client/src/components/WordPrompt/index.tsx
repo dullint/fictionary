@@ -109,7 +109,7 @@ const WordPrompt = () => {
     if (socket) {
       socket.on('timer', (counter: number) => {
         setCounter(counter);
-        if (counter === 1) {
+        if (counter === 2) {
           socket.emit('submit_definition', {
             definition: cleanSentence(definition),
             example: cleanSentence(example),
