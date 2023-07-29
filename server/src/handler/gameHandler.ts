@@ -73,6 +73,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     if (!room) return;
     room.game.selections[socket.data.userId] = selectedUserId;
     if (haveAllPlayerGuessedDefinition(room)) {
+      if (room.timer) clearInterval(room.timer);
       room.game.gameStep = GameStep.REVEAL;
       logger.info(
         `[ROOM ${roomId}] All definitions guessed, moving forward to the REVEAL step`
@@ -135,11 +136,11 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     }
     room.game.entry = entry;
     logger.info(`[ROOM ${roomId}] New word`);
-    runTimer(room, room.gameSettings.maxPromptTime);
+    runWritingTimer(room, room.gameSettings.maxPromptTime);
     room.updateClient(io);
   };
 
-  const runTimer = (room: Room, time: number) => {
+  const runWritingTimer = (room: Room, time: number) => {
     var counter = time * 60;
     const roomId = room.roomId;
     room.timer = setInterval(() => {

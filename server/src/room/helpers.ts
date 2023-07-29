@@ -10,6 +10,7 @@ import {
 } from './constants';
 import { GameStep, InputDictionaryEntries, Player } from './types';
 import { shuffle } from 'shuffle-seed';
+import logger from '../logging';
 
 export const get_random_entry = (language: DictionaryLanguage) =>
   dictionary[language][Math.floor(Math.random() * dictionary[language].length)];
@@ -93,8 +94,8 @@ export const goToNextGameStepIfNeededAfterPlayerLeave = (
     haveAllPlayerGuessedDefinition(room) &&
     inGamePlayers.length > 0
   ) {
+    if (room.timer) clearInterval(room.timer);
     game.gameStep = GameStep.REVEAL;
-    runCarouselInterval(io, room, GameStep.REVEAL);
   }
 };
 
@@ -118,6 +119,29 @@ const getDefinitionDisplayDelay = (entry: {
   } else if (readingLength < 250) {
     return 15000;
   } else return 17000;
+};
+
+export const getGuessingTime = (numberOfDefinitions: number) => {
+  if (numberOfDefinitions < 5) return 30;
+  if (numberOfDefinitions < 10) return 60;
+  return 90;
+};
+
+const runGuessingTimer = (io: Server, room: Room) => {
+  var counter = getGuessingTime(Object.keys(room.game.inputEntries).length + 1);
+  const roomId = room.roomId;
+  room.timer = setInterval(() => {
+    io.to(roomId).emit('timer', counter);
+    if (counter === 0 && room.timer) {
+      clearInterval(room.timer);
+      room.game.gameStep = GameStep.REVEAL;
+      logger.info(
+        `[ROOM ${roomId}] Timer ran out of time, moving forward to the RESULT step`
+      );
+      room.updateClient(io);
+    }
+    counter--;
+  }, 1000);
 };
 
 export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
@@ -151,6 +175,9 @@ export const runCarouselInterval = (io: Server, room: Room, step: GameStep) => {
       io.to(roomId).emit('show_next_def');
       setTimeout(() => {
         room.game.gameStep = nextStep;
+        if (room.game.gameStep === GameStep.GUESS) {
+          runGuessingTimer(io, room);
+        }
         room.updateClient(io);
       }, 3000);
       return;
