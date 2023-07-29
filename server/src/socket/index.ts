@@ -18,7 +18,7 @@ export default (server: HTTPServer) => {
       cors: {
         origin: [
           'http://localhost:3021',
-          'http://192.168.1.24:3021',
+          'http://192.168.1.66:3021',
           'http://172.20.10.3:3021',
         ],
         methods: ['GET', 'POST'],

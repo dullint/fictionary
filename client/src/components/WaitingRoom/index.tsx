@@ -1,5 +1,5 @@
 import { Box, Button, Grid, Snackbar, Typography } from '@mui/material';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { RoomContext } from '../Room';
 import UsernameDialog from '../UsernameDialog';
@@ -12,6 +12,7 @@ import { theme } from '../../theme';
 import socket from '../../socket';
 import { getInGamePlayers } from '../Room/helpers';
 import GameSettingsDisplayer from '../GameSettingsDisplayer';
+import PlayerAloneDialog from '../PlayerAloneDialog';
 
 const WaitingRoom = () => {
   const { players } = useContext(RoomContext);
@@ -22,16 +23,17 @@ const WaitingRoom = () => {
   const isAdmin = myPlayer?.isAdmin;
 
   const [openUsernameDialog, setOpenUsernameDialog] = useState(!myUsername);
+  const [openPlayerAloneDialog, setOpenPlayerAloneDialog] = useState(false);
   const [showCopiedToClipboard, setShowCopiedToClipboard] = useState(false);
-
-  // useEffect(() => {
-  //   setTimeout(() => setShowCopiedToClipboard(false), 2000);
-  // });
 
   const navigate = useNavigate();
   const { roomId } = useParams();
 
   const handlePlay = () => {
+    if (players.length === 1) {
+      setOpenPlayerAloneDialog(true);
+      return;
+    }
     socket.emit('launch_game', { roomId });
   };
 
@@ -152,6 +154,11 @@ const WaitingRoom = () => {
       <UsernameDialog
         open={openUsernameDialog}
         setOpen={setOpenUsernameDialog}
+      />
+      <PlayerAloneDialog
+        open={openPlayerAloneDialog}
+        setOpen={setOpenPlayerAloneDialog}
+        handleCopyToClipboard={handleCopyToClipboard}
       />
       <Snackbar
         open={showCopiedToClipboard}
