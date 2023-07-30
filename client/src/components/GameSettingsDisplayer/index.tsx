@@ -88,7 +88,7 @@ const GameSettingsDisplayer = (props: PropsType) => {
         })}
       </ButtonGroup>
       <Typography variant="body1" sx={{ marginTop: 1.5, marginBottom: 0.5 }}>
-        Max writing time:
+        Max writing time (in seconds):
       </Typography>
       <ButtonGroup
         variant="outlined"
@@ -106,14 +106,7 @@ const GameSettingsDisplayer = (props: PropsType) => {
               variant={value === maxPromptTime ? 'contained' : 'outlined'}
               color={'black'}
             >
-              <Box alignItems={'baseline'} display={'flex'}>
-                <Typography variant="button" marginRight={0.5}>
-                  {value >= 1 ? value : 60 * value}
-                </Typography>
-                <Typography variant="body2">
-                  {value >= 1 ? 'min' : 'sec'}
-                </Typography>
-              </Box>
+              {value * 60}
             </Button>
           );
         })}
