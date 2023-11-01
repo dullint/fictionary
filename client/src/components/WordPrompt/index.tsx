@@ -93,6 +93,7 @@ const WordPrompt = () => {
     setDefinition(cleanSentence(definition));
     setExample(cleanSentence(example));
     setHasSubmited(true);
+    console.log('submit definition', cleanSentence(definition));
     socket.emit('submit_definition', {
       definition: cleanSentence(definition),
       example: cleanSentence(example),
