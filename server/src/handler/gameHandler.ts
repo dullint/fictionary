@@ -45,8 +45,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
       autosave,
     };
     logger.info(
-      `[ROOM ${roomId}] Player submited a new definition`,
-      definition
+      `[ROOM ${roomId}] Player submited a new definition: ${definition}`
     );
     if (haveAllPlayerPromptDefinition(room)) {
       if (room.timer) clearInterval(room.timer);
