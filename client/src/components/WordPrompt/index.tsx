@@ -42,6 +42,7 @@ const WordPrompt = () => {
   const [wordWidth, setWordWidth] = useState(0);
   const [ExWidth, setExWidth] = useState(0);
   const [definition, setDefinition] = useState('');
+  const [autosaveSent, setAutosaveSent] = useState(false);
   const [example, setExample] = useState('');
   const [hasSubmited, setHasSubmited] = useState(false);
   const [counter, setCounter] = useState(gameSettings.maxPromptTime * 60);
@@ -93,7 +94,6 @@ const WordPrompt = () => {
     setDefinition(cleanSentence(definition));
     setExample(cleanSentence(example));
     setHasSubmited(true);
-    console.log('submit definition', cleanSentence(definition));
     socket.emit('submit_definition', {
       definition: cleanSentence(definition),
       example: cleanSentence(example),
@@ -110,16 +110,20 @@ const WordPrompt = () => {
     if (socket) {
       socket.on('timer', (counter: number) => {
         setCounter(counter);
-        if (counter === 2) {
-          socket.emit('submit_definition', {
-            definition: cleanSentence(definition),
-            example: cleanSentence(example),
-            autosave: true,
-          });
-        }
       });
     }
   });
+
+  useEffect(() => {
+    if (counter === 1 && !autosaveSent) {
+      socket.emit('submit_definition', {
+        definition: cleanSentence(definition),
+        example: cleanSentence(example),
+        autosave: true,
+      });
+      setAutosaveSent(true);
+    }
+  }, [counter, definition, autosaveSent, example]);
 
   const handlePressKey = (event) => {
     if (event.key === 'Enter') {
