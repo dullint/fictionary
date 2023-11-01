@@ -1,44 +1,42 @@
-import { Server } from 'socket.io';
-import mixpanel from '../mixpanel';
-import Mixpanel from '../mixpanel';
-import {
-  getSocketRoom,
-  haveAllPlayerGuessedDefinition,
-  haveAllPlayerPromptDefinition,
-  runCarouselInterval,
-} from '../room/helpers';
-import roomStore from '../room/roomStore';
-
-import {
-  EventCallback,
-  ServerSocket,
-  SubmitDefinitionPayload,
-  UserId,
-} from '../socket/types';
+import dictionary from '../dictionary';
 import logger from '../logging';
-import { DEFAULT_GAME_STATE } from '../room/constants';
-import { get_random_entry } from '../room/helpers';
-import { Room } from '../room';
-import { GameSettings, GameStep, Scores, Username } from '../room/types';
-import { UpdateUsernameError } from './errors';
+import { Game, GameSettings } from '../models/Game';
+import { RoomId } from '../room/types';
+import { SubmitDefinitionPayload, UserId } from '../socket/types';
 
-export const gameHandler = (io: Server, socket: ServerSocket) => {
-  const changeGameSettings = (gameSettings: GameSettings) => {
-    const roomId = getSocketRoom(socket);
-    const room = roomStore.getRoom(roomId, io);
-    if (!room) return;
-    room.gameSettings = gameSettings;
-    logger.info(`[ROOM ${roomId}] Game settings changed`);
-    room.updateClient(io);
+export class GameController {
+  private games: Map<string, Game>;
+
+  constructor() {
+    this.games = new Map<string, Game>();
+  }
+
+  // createGame(gameId: string) {}
+
+  getGame(roomId: RoomId): Game | undefined {
+    const game = this.games.get(roomId);
+    if (!game) {
+      logger.debug(`[GAME ${roomId}] Game not found`);
+      return;
+    }
+    return game;
+  }
+
+  changeSettings = (roomId: RoomId, gameSettings: GameSettings) => {
+    const game = this.getGame(roomId);
+    if (!game) return;
+    game.settings = gameSettings;
+    logger.info(`[GAME ${roomId}] Game settings changed`);
   };
 
-  const submitDefinition = async (payload: SubmitDefinitionPayload) => {
+  submitDefinition = async (
+    roomId: RoomId,
+    userId: UserId,
+    payload: SubmitDefinitionPayload
+  ) => {
+    const game = this.getGame(roomId);
+    if (!game) return;
     const { definition, example, autosave } = payload;
-    const roomId = getSocketRoom(socket);
-    const room = roomStore.getRoom(roomId, io);
-    const userId = socket.data.userId;
-    if (!room) return;
-    const game = room.game;
     game.inputEntries[userId] = {
       definition,
       example,
@@ -56,7 +54,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     room.updateClient(io);
   };
 
-  const removeDefinition = () => {
+  removeDefinition = () => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
@@ -67,7 +65,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     room.updateClient(io);
   };
 
-  const selectDefinition = async (selectedUserId: UserId) => {
+  selectDefinition = async (selectedUserId: UserId) => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
@@ -82,7 +80,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     room.updateClient(io);
   };
 
-  const updateScores = (scores: Scores) => {
+  updateScores = (scores: Scores) => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
@@ -92,7 +90,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     room.updateClient(io);
   };
 
-  const resetGame = () => {
+  resetGame = () => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
@@ -102,7 +100,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     room.updateClient(io);
   };
 
-  const launchNewRound = () => {
+  launchNewRound = () => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
@@ -123,7 +121,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     room.updateClient(io);
   };
 
-  const changeWord = () => {
+  changeWord = () => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
@@ -138,11 +136,11 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     getNewWord(room);
   };
 
-  const getNewWord = (room: Room) => {
+  getNewWord = (room: Room) => {
     if (room.timer) clearInterval(room.timer);
     room.game.inputEntries = {};
     const language = room.gameSettings.language;
-    var entry = get_random_entry(language);
+    var dictEntry = dictionary.getRandomWord(language);
     while (room.wordSeen.includes(entry.word)) {
       entry = get_random_entry(language);
     }
@@ -153,7 +151,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     room.updateClient(io);
   };
 
-  const runWritingTimer = (room: Room, time: number) => {
+  runWritingTimer = (room: Room, time: number) => {
     var counter = time * 60;
     const roomId = room.roomId;
     room.timer = setInterval(() => {
@@ -171,7 +169,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     }, 1000);
   };
 
-  const showResults = () => {
+  showResults = () => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
@@ -188,7 +186,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     room.updateClient(io);
   };
 
-  const launchGame = async () => {
+  launchGame = async () => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
@@ -205,10 +203,7 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     launchNewRound();
   };
 
-  const updateUsername = async (
-    username: Username,
-    callback: EventCallback
-  ) => {
+  updateUsername = async (username: Username, callback: EventCallback) => {
     const roomId = getSocketRoom(socket);
     const room = roomStore.getRoom(roomId, io);
     if (!room) return;
@@ -229,16 +224,6 @@ export const gameHandler = (io: Server, socket: ServerSocket) => {
     room.updateClient(io);
     logger.info(`[ROOM ${roomId}] User updated his username to ${username}`);
   };
+}
 
-  socket.on('reset_game', resetGame);
-  socket.on('launch_game', launchGame);
-  socket.on('update_scores', updateScores);
-  socket.on('new_round', launchNewRound);
-  socket.on('submit_definition', submitDefinition);
-  socket.on('select_definition', selectDefinition);
-  socket.on('remove_definition', removeDefinition);
-  socket.on('change_word', changeWord);
-  socket.on('show_results', showResults);
-  socket.on('update_username', updateUsername);
-  socket.on('change_game_settings', changeGameSettings);
-};
+export const gameController = new GameController();

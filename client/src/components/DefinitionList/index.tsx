@@ -47,6 +47,7 @@ const DefinitionList = (props: PropsType) => {
   );
 
   const extendedPlayers = players.concat(DICTIONARY_PLAYER);
+  console.log(inputEntries, inputEntriesToDisplay);
 
   return (
     <Box display="flex" flexDirection="column">

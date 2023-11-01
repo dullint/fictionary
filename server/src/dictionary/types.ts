@@ -14,8 +14,11 @@ export enum DictionaryLanguage {
   French = 'french',
   English = 'english',
 }
+
+export type Word = string;
+
 export interface DictionnaryEntry {
-  word: string;
+  word: Word;
   definition: string;
   example: string;
   nature: WordNature;

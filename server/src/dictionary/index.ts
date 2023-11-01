@@ -64,6 +64,13 @@ class Dictionary {
     this.french = [];
     this.english = [];
   }
+
+  getRandomWordEntry = (language: DictionaryLanguage): DictionnaryEntry => {
+    const dictionary =
+      language === DictionaryLanguage.French ? this.french : this.english;
+    const randomIndex = Math.floor(Math.random() * dictionary.length);
+    return dictionary[randomIndex];
+  };
 }
 
 export default new Dictionary();
