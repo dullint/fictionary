@@ -62,7 +62,7 @@ const Leaderboard = () => {
           players
             .sort(
               (player1, player2) =>
-                finalScores?.[player1.userId] - finalScores?.[player1.userId]
+                finalScores?.[player1.userId] - finalScores?.[player2.userId]
             )
             .map((player) => (
               <Grid

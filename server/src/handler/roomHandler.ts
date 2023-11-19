@@ -120,6 +120,9 @@ export const roomHandler = (io: Server, socket: ServerSocket) => {
     if (!room) return;
     const player = room.getOnePlayer(userId);
     if (!player) return;
+    if (!player.username) {
+      leaveRoom({ roomId });
+    }
     player.isConnected = false;
 
     setTimeout(() => {
