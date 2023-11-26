@@ -10,6 +10,7 @@ import {
 import { roomHandler } from "../handler/roomHandler";
 import logger from "../logging";
 import { gameHandler } from "../handler/gameHandler";
+import _ from "lodash";
 
 export default (server: HTTPServer) => {
   const io = new Server<ClientToServerEvents, ServerToClientEvents, SocketData>(
@@ -30,14 +31,22 @@ export default (server: HTTPServer) => {
 
   io.use((socket, next) => {
     const userId = socket.handshake.auth.userId;
-    const ip = socket.request.connection.remoteAddress;
+    // const ip = socket.request.connection.remoteAddress;
+    const ip =
+      socket.handshake.address == "127.0.0.1"
+        ? socket.handshake.headers["x-real-ip"] ||
+          socket.handshake.headers["x-forwarded-for"]
+        : socket.handshake.address;
     console.log({
       "socket.request.socket.remoteAddress":
         socket.request.socket.remoteAddress,
-      "socket.request.connection.remoteAddress":
-        socket.request.connection.remoteAddress,
       "socket.handshake.address": socket.handshake.address,
       "socket.conn.remoteAddress": socket.conn.remoteAddress,
+      'socket.handshake.headers["x-real-ip"]':
+        socket.handshake.headers["x-real-ip"],
+      'socket.handshake.headers["x-forwarded-for"]':
+        socket.handshake.headers["x-forwarded-for"],
+      ip: ip,
     });
     socket.data.userId = userId;
     socket.data.ip = ip;
