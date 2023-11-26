@@ -30,8 +30,15 @@ export default (server: HTTPServer) => {
 
   io.use((socket, next) => {
     const userId = socket.handshake.auth.userId;
-    const ip = socket.request.socket.remoteAddress;
-    console.log(ip);
+    const ip = socket.request.connection.remoteAddress;
+    console.log({
+      "socket.request.socket.remoteAddress":
+        socket.request.socket.remoteAddress,
+      "socket.request.connection.remoteAddress":
+        socket.request.connection.remoteAddress,
+      "socket.handshake.address": socket.handshake.address,
+      "socket.conn.remoteAddress": socket.conn.remoteAddress,
+    });
     socket.data.userId = userId;
     socket.data.ip = ip;
     return next();
