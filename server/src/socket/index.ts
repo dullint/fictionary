@@ -10,7 +10,6 @@ import {
 import { roomHandler } from "../handler/roomHandler";
 import logger from "../logging";
 import { gameHandler } from "../handler/gameHandler";
-import _ from "lodash";
 
 export default (server: HTTPServer) => {
   const io = new Server<ClientToServerEvents, ServerToClientEvents, SocketData>(
