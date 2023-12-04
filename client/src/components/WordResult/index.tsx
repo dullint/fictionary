@@ -6,15 +6,15 @@ import {
   Grow,
   Snackbar,
   Typography,
-} from '@mui/material';
-import React, { useContext, useEffect, useState } from 'react';
+} from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
 
-import { useParams } from 'react-router-dom';
-import socket from '../../socket';
-import Avatar from '../Avatar';
-import { RoomContext } from '../Room';
-import { getMyPlayer } from '../WaitingRoom/helpers';
-import { calculatePlayerRoundScore } from './helpers';
+import { useParams } from "react-router-dom";
+import socket from "../../socket";
+import Avatar from "../Avatar";
+import { RoomContext } from "../Room";
+import { getMyPlayer } from "../WaitingRoom/helpers";
+import { calculatePlayerRoundScore } from "./helpers";
 
 const WordResult = () => {
   const { gameState, players } = useContext(RoomContext);
@@ -29,8 +29,8 @@ const WordResult = () => {
   }, []);
 
   const handleNextStep = () => {
-    socket.emit('update_scores', newScores);
-    socket.emit('new_round', { roomId });
+    socket.emit("update_scores", newScores);
+    socket.emit("new_round", { roomId });
   };
 
   const roundScores = players.reduce((acc, { userId }) => {
@@ -66,34 +66,40 @@ const WordResult = () => {
 
       <Grid container spacing={2}>
         {players &&
-          players.map((player) => (
-            <Grid item xs={4} sm={3} key={player.userId}>
-              <Box
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Avatar
-                  player={player}
-                  size={'medium'}
-                  displayBadge={true}
-                  badgeContent={displayedScores?.[player.userId] ?? 0}
-                />
-                <Typography
-                  variant="subtitle1"
-                  align="center"
-                  textOverflow="ellipsis"
-                  overflow={'hidden'}
-                  sx={{ flex: 1, width: 1 }}
+          players
+            .sort(
+              (player1, player2) =>
+                displayedScores?.[player2.userId] -
+                displayedScores?.[player1.userId]
+            )
+            .map((player) => (
+              <Grid item xs={4} sm={3} key={player.userId}>
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="center"
+                  alignItems="center"
                 >
-                  {player.username}
-                </Typography>
-              </Box>
-            </Grid>
-          ))}
+                  <Avatar
+                    player={player}
+                    size={"medium"}
+                    displayBadge={true}
+                    badgeContent={displayedScores?.[player.userId] ?? 0}
+                  />
+                  <Typography
+                    variant="subtitle1"
+                    align="center"
+                    textOverflow="ellipsis"
+                    overflow={"hidden"}
+                    sx={{ flex: 1, width: 1 }}
+                  >
+                    {player.username}
+                  </Typography>
+                </Box>
+              </Grid>
+            ))}
       </Grid>
-      <Fade in={isAdmin} style={{ transitionDelay: '1s' }}>
+      <Fade in={isAdmin} style={{ transitionDelay: "1s" }}>
         <Button
           onClick={handleNextStep}
           disabled={!isAdmin}
@@ -107,7 +113,7 @@ const WordResult = () => {
         message="Waiting for the admin to continue..."
         open={!isAdmin}
         TransitionComponent={(props) => (
-          <Grow {...props} style={{ transitionDelay: '1s' }} />
+          <Grow {...props} style={{ transitionDelay: "1s" }} />
         )}
       />
     </Grid>

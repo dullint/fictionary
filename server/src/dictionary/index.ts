@@ -1,8 +1,8 @@
-import path from 'path';
-import fs from 'fs';
-import { parse } from 'csv-parse';
-import { DictionaryLanguage, DictionnaryEntry } from './types';
-import logger from '../logging';
+import path from "path";
+import fs from "fs";
+import { parse } from "csv-parse";
+import { DictionaryLanguage, DictionnaryEntry } from "./types";
+import logger from "../logging";
 
 class Dictionary {
   french: DictionnaryEntry[];
@@ -12,39 +12,39 @@ class Dictionary {
     return new Promise<DictionnaryEntry[]>((resolve, reject) => {
       const csvFilePath = path.resolve(
         __dirname,
-        'database',
-        `${language}.csv`
+        "database",
+        `database_fictionary - ${language}.csv`
       );
-      const headers = ['word', 'nature', 'genre', 'definition', 'example'];
-      const stream = fs.createReadStream(csvFilePath, { encoding: 'utf-8' });
+      const headers = ["word", "nature", "genre", "definition", "example"];
+      const stream = fs.createReadStream(csvFilePath, { encoding: "utf-8" });
       const entries: DictionnaryEntry[] = [];
 
       const parser = parse({
-        delimiter: ',',
+        delimiter: ",",
         columns: headers,
         fromLine: 2,
       });
-      stream.on('ready', () => {
+      stream.on("ready", () => {
         logger.info(`[SET UP] Parsing ${language} dictionary database`);
         stream.pipe(parser);
       });
 
-      parser.on('readable', function () {
+      parser.on("readable", function () {
         let entry;
         while ((entry = parser.read())) {
           entries.push(entry);
         }
       });
 
-      parser.on('error', (err) => {
+      parser.on("error", (err) => {
         logger.error(
-          '[SET UP] Error while parsing the Word CSV file',
+          "[SET UP] Error while parsing the Word CSV file",
           err.message
         );
         reject();
       });
 
-      parser.on('end', function () {
+      parser.on("end", function () {
         logger.info(`[SET UP] ${language} dictionary parsing complete`);
         resolve(entries);
       });

@@ -1,19 +1,19 @@
-import { Button, Divider, Grid, Input, Typography } from '@mui/material';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { theme } from '../../theme';
-import { generateRandomRoomId } from '../GameSettingsDisplayer/helpers';
-import { Box } from '@mui/system';
-import { TypeAnimation } from 'react-type-animation';
-import { getTypingSequence } from './helpers';
-import HowToPlay from '../HowToPlay';
-import socket from '../../socket';
-import { ServerResponse } from '../../../../server/src/socket/types';
-import CreditsDialog from '../CreditsDialog';
+import { Button, Divider, Grid, Input, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { theme } from "../../theme";
+import { generateRandomRoomId } from "../GameSettingsDisplayer/helpers";
+import { Box } from "@mui/system";
+import { TypeAnimation } from "react-type-animation";
+import { getTypingSequence } from "./helpers";
+import HowToPlay from "../HowToPlay";
+import socket from "../../socket";
+import { ServerResponse } from "../../../../server/src/socket/types";
+import CreditsDialog from "../CreditsDialog";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [roomId, setRoomId] = useState('');
+  const [roomId, setRoomId] = useState("");
   const [joinRoomError, setJoinRoomError] = useState<string | null>(null);
   const [openCredits, setOpenCredits] = useState(false);
 
@@ -23,7 +23,7 @@ const Home = () => {
     const callback = (response: ServerResponse) => {
       if (response.success) navigate(`/room/${newRoomId}`);
     };
-    socket.emit('create_room', newRoomId, callback);
+    socket.emit("create_room", newRoomId, callback);
   };
 
   const handleJoinGame = async () => {
@@ -33,15 +33,23 @@ const Home = () => {
         if (success) navigate(`/room/${roomId}`);
         if (error) setJoinRoomError(error);
       };
-      socket.emit('join_room', roomId, callback);
+      socket.emit("join_room", roomId, callback);
     }
+  };
+
+  const handleRedditClick = () => {
+    window.open("https://www.reddit.com/", "_blank");
+  };
+
+  const handleDiscordClick = () => {
+    window.open("https://discord.com/", "_blank");
   };
 
   return (
     <Box
-      display={'flex'}
+      display={"flex"}
       flexDirection="column"
-      alignItems={'center'}
+      alignItems={"center"}
       sx={{
         marginBottom: 2,
         maxWidth: {
@@ -49,7 +57,7 @@ const Home = () => {
           sm: 400,
         },
       }}
-      justifyContent={'space-between'}
+      justifyContent={"space-between"}
       height={1}
     >
       <Box
@@ -57,7 +65,7 @@ const Home = () => {
           marginBottom: 2,
         }}
       >
-        <Typography variant={'h1'}>Fictionary</Typography>
+        <Typography variant={"h1"}>Fictionary</Typography>
         <Box
           sx={{
             minHeight: 70,
@@ -65,12 +73,12 @@ const Home = () => {
         >
           <Typography
             component="span"
-            fontStyle={'italic'}
+            fontStyle={"italic"}
             fontSize={18}
             fontFamily="bespoke-light-italic"
             sx={{ marginRight: 0.5 }}
           >
-            {'proper noun: '}
+            {"proper noun: "}
           </Typography>
           <TypeAnimation
             sequence={getTypingSequence()}
@@ -81,13 +89,13 @@ const Home = () => {
             speed={50}
             style={{
               fontSize: 18,
-              fontFamily: 'bespoke-regular',
+              fontFamily: "bespoke-regular",
             }}
           />
         </Box>
       </Box>
-      <Box display={'flex'} flexDirection="column" sx={{ marginBottom: 4 }}>
-        <Box display={'flex'}>
+      <Box display={"flex"} flexDirection="column" sx={{ marginBottom: 4 }}>
+        <Box display={"flex"}>
           <Input
             placeholder="Room ID"
             onChange={(e) => {
@@ -98,10 +106,10 @@ const Home = () => {
               height: 50,
               flex: 1,
               borderRadius: 30,
-              borderColor: '#555555',
+              borderColor: "#555555",
             }}
             onKeyPress={(event) => {
-              if (event.key === 'Enter') {
+              if (event.key === "Enter") {
                 event.preventDefault();
                 handleJoinGame();
               }
@@ -109,7 +117,7 @@ const Home = () => {
             value={roomId}
             inputProps={{
               maxLength: 5,
-              style: { textAlign: 'center', fontWeight: 900, fontSize: 24 },
+              style: { textAlign: "center", fontWeight: 900, fontSize: 24 },
             }}
           />
           <Button
@@ -128,7 +136,7 @@ const Home = () => {
           {joinRoomError && (
             <Typography
               sx={{ color: theme.palette.secondary.main }}
-              textAlign={'center'}
+              textAlign={"center"}
             >
               {joinRoomError}
             </Typography>
@@ -147,7 +155,7 @@ const Home = () => {
           onClick={handleCreateGame}
           variant="contained"
           sx={{
-            width: { xs: 300, sm: 400, md: 'auto' },
+            width: { xs: 300, sm: 400, md: "auto" },
             height: 50,
           }}
         >
@@ -159,15 +167,17 @@ const Home = () => {
           mb: 4,
           backgroundColor: theme.palette.yellow.darker,
           borderRadius: 5,
-          display: 'flex',
+          display: "flex",
           width: 1,
-          flexDirection: 'column',
-          alignItems: 'center',
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
-        <Typography margin={2} fontSize={15}>
-          🇫🇷 Available with French words. <br /> 🇬🇧 English words are coming
-          soon...
+        <Typography mt={1} variant="subtitle2">
+          Supported dictionary languages:
+        </Typography>
+        <Typography mb={1}>
+          🇫🇷 French <br /> 🇬🇧 English
         </Typography>
       </Box>
       <HowToPlay />
@@ -175,13 +185,13 @@ const Home = () => {
         container
         direction="row"
         alignItems="center"
-        justifyContent={'space-between'}
+        justifyContent={"space-between"}
         sx={{
           width: { xs: 200, sm: 300 },
           mt: 1,
         }}
       >
-        <Button size="small" href={'mailto:fictionary.io@gmail.com'}>
+        <Button size="small" href={"mailto:fictionary.io@gmail.com"}>
           Contact
         </Button>
         <Button size="small" onClick={() => setOpenCredits(true)}>

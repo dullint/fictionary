@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext, useState } from "react";
 import {
   Box,
   Button,
@@ -6,21 +6,23 @@ import {
   Grid,
   Tooltip,
   Typography,
-} from '@mui/material';
+} from "@mui/material";
 import {
+  LanguageFlag,
+  languageOptions,
   promptTimeOptions,
   roundNumberOptions,
   useExampleOptions,
-} from './constants';
-import { RoomContext } from '../Room';
-import { GameSettings } from '../../../../server/src/room/types';
-import socket from '../../socket';
-import { theme } from '../../theme';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+} from "./constants";
+import { RoomContext } from "../Room";
+import { GameSettings } from "../../../../server/src/room/types";
+import socket from "../../socket";
+import { theme } from "../../theme";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 export enum DictionaryLanguage {
-  French = 'french',
-  English = 'english',
+  French = "french",
+  English = "english",
 }
 export interface PropsType {
   isAdmin: boolean;
@@ -34,6 +36,7 @@ const GameSettingsDisplayer = (props: PropsType) => {
   );
   const [useExample, setUseExample] = useState(gameSettings.useExample);
   const [roundNumber, setRoundNumber] = useState(gameSettings.roundNumber);
+  const [language, setLanguage] = useState(gameSettings.language);
 
   useEffect(() => {
     const newGameSettings: GameSettings = {
@@ -41,10 +44,10 @@ const GameSettingsDisplayer = (props: PropsType) => {
       roundNumber,
       useExample,
       showGuessVote: false,
-      language: DictionaryLanguage.French,
+      language,
     };
-    socket.emit('change_game_settings', newGameSettings);
-  }, [maxPromptTime, roundNumber, useExample]);
+    socket.emit("change_game_settings", newGameSettings);
+  }, [maxPromptTime, roundNumber, useExample, language]);
 
   return (
     <Grid
@@ -57,13 +60,37 @@ const GameSettingsDisplayer = (props: PropsType) => {
         borderRadius: 5,
         paddingTop: 1.5,
         paddingBottom: 1.5,
-        paddingLeft: { xs: '5%', sm: '20%' },
-        paddingRight: { xs: '5%', sm: '20%' },
-        overflowY: 'auto',
+        paddingLeft: { xs: "5%", sm: "20%" },
+        paddingRight: { xs: "5%", sm: "20%" },
+        overflowY: "auto",
       }}
     >
-      <Typography variant={'h6'}>Settings</Typography>
-      <Typography variant={'body1'} sx={{ m: 0.5 }}>
+      <Typography variant={"h6"}>Settings</Typography>
+      <Typography variant={"body1"} sx={{ m: 0.5 }}>
+        Dictionary language:
+      </Typography>
+      <ButtonGroup
+        variant="outlined"
+        disabled={!isAdmin}
+        size="small"
+        fullWidth
+      >
+        {languageOptions.map((value) => {
+          return (
+            <Button
+              onClick={() => {
+                setLanguage(value);
+              }}
+              variant={value === language ? "contained" : "outlined"}
+              key={`languageOptions-${value}`}
+              color={"black"}
+            >
+              {`${LanguageFlag[value]} ${value}`}
+            </Button>
+          );
+        })}
+      </ButtonGroup>
+      <Typography variant={"body1"} sx={{ m: 0.5 }}>
         Number of rounds:
       </Typography>
       <ButtonGroup
@@ -78,9 +105,9 @@ const GameSettingsDisplayer = (props: PropsType) => {
               onClick={() => {
                 setRoundNumber(value);
               }}
-              variant={value === roundNumber ? 'contained' : 'outlined'}
+              variant={value === roundNumber ? "contained" : "outlined"}
               key={`roundNumberOptions-${value}`}
-              color={'black'}
+              color={"black"}
             >
               {value}
             </Button>
@@ -103,8 +130,8 @@ const GameSettingsDisplayer = (props: PropsType) => {
               onClick={() => {
                 setMaxPromptTime(value);
               }}
-              variant={value === maxPromptTime ? 'contained' : 'outlined'}
-              color={'black'}
+              variant={value === maxPromptTime ? "contained" : "outlined"}
+              color={"black"}
             >
               {value * 60}
             </Button>
@@ -113,8 +140,8 @@ const GameSettingsDisplayer = (props: PropsType) => {
       </ButtonGroup>
       <Box
         display="flex"
-        alignItems={'center'}
-        justifyContent={'center'}
+        alignItems={"center"}
+        justifyContent={"center"}
         sx={{ marginTop: 1.5, marginBottom: 0.5 }}
       >
         <Typography variant="body1">Examples in definitions</Typography>
@@ -140,10 +167,10 @@ const GameSettingsDisplayer = (props: PropsType) => {
               onClick={() => {
                 setUseExample(value);
               }}
-              variant={value === useExample ? 'contained' : 'outlined'}
-              color={'black'}
+              variant={value === useExample ? "contained" : "outlined"}
+              color={"black"}
             >
-              {value ? 'Yes' : 'No'}
+              {value ? "Yes" : "No"}
             </Button>
           );
         })}

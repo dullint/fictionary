@@ -1,20 +1,13 @@
-import { Server } from 'socket.io';
-import { UserId } from '../socket/types';
+import { Server } from "socket.io";
+import { UserId } from "../socket/types";
 
 import {
   DEFAULT_GAME_SETTINGS,
   DEFAULT_GAME_STATE,
   ROOM_DELETE_DELAY,
-} from './constants';
-import roomStore from './roomStore';
-import {
-  ClientRoom,
-  GameSettings,
-  GameState,
-  GameStep,
-  Player,
-  RoomId,
-} from './types';
+} from "./constants";
+import roomStore from "./roomStore";
+import { ClientRoom, GameSettings, GameState, Player, RoomId } from "./types";
 
 export class Room {
   roomId: RoomId;
@@ -50,7 +43,7 @@ export class Room {
   }
 
   updateClient(io: Server) {
-    io.to(this.roomId).emit('room', this.getRoomClient());
+    io.to(this.roomId).emit("room", this.getRoomClient());
   }
 
   deleteIfNoPlayerLeft() {

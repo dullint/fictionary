@@ -1,11 +1,11 @@
-import { Button, Grid, Tooltip, Typography } from '@mui/material';
-import React, { useContext } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import socket from '../../socket';
-import Avatar from '../Avatar';
-import { RoomContext } from '../Room';
-import { getMyPlayer } from '../WaitingRoom/helpers';
-import { calculatePlayerRoundScore } from '../WordResult/helpers';
+import { Box, Button, Grid, Tooltip, Typography } from "@mui/material";
+import React, { useContext } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import socket from "../../socket";
+import Avatar from "../Avatar";
+import { RoomContext } from "../Room";
+import { getMyPlayer } from "../WaitingRoom/helpers";
+import { calculatePlayerRoundScore } from "../WordResult/helpers";
 
 const Leaderboard = () => {
   const { gameState, players } = useContext(RoomContext);
@@ -15,12 +15,12 @@ const Leaderboard = () => {
   const { roomId } = useParams();
 
   const handleLeaveToMenu = () => {
-    socket.emit('leave_room', { roomId });
-    navigate('/');
+    socket.emit("leave_room", { roomId });
+    navigate("/");
   };
 
   const handleGoToWaitingRoom = () => {
-    socket.emit('reset_game', { roomId });
+    socket.emit("reset_game", { roomId });
   };
   const isAdmin = getMyPlayer(players)?.isAdmin;
 
@@ -54,34 +54,40 @@ const Leaderboard = () => {
       <Grid
         container
         justifyContent="center"
-        alignItems={'center'}
-        sx={{ marginTop: 2, marginBottom: 2, overflowY: 'auto', flex: 1 }}
+        alignItems={"center"}
+        sx={{ marginTop: 2, marginBottom: 2, overflowY: "auto", flex: 1 }}
         maxWidth={500}
       >
         {players &&
           players
             .sort(
               (player1, player2) =>
-                finalScores?.[player1.userId] - finalScores?.[player2.userId]
+                finalScores?.[player2.userId] - finalScores?.[player1.userId]
             )
             .map((player) => (
-              <Grid
-                container
-                direction="column"
-                justifyContent="center"
-                alignItems="center"
-                sx={{ maxWidth: 130 }}
-                key={player.userId}
-              >
-                <Avatar
-                  player={player}
-                  size={'medium'}
-                  displayBadge={true}
-                  badgeContent={finalScores?.[player.userId] ?? 0}
-                />
-                <Typography variant="subtitle1" align="center">
-                  {player.username}
-                </Typography>
+              <Grid item xs={4} sm={3} key={player.userId}>
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Avatar
+                    player={player}
+                    size={"medium"}
+                    displayBadge={true}
+                    badgeContent={finalScores?.[player.userId] ?? 0}
+                  />
+                  <Typography
+                    variant="subtitle1"
+                    align="center"
+                    textOverflow="ellipsis"
+                    overflow={"hidden"}
+                    sx={{ flex: 1, width: 1 }}
+                  >
+                    {player.username}
+                  </Typography>
+                </Box>
               </Grid>
             ))}
       </Grid>
@@ -89,7 +95,7 @@ const Leaderboard = () => {
         title={
           isAdmin
             ? null
-            : 'Only the admin can send everyone to the waiting room'
+            : "Only the admin can send everyone to the waiting room"
         }
         placement="top"
       >
