@@ -10,6 +10,8 @@ import HowToPlay from "../HowToPlay";
 import socket from "../../socket";
 import { ServerResponse } from "../../../../server/src/socket/types";
 import CreditsDialog from "../CreditsDialog";
+import RedditIcon from "@mui/icons-material/Reddit";
+import redditBanner from "../../img/redditBanner.png";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -38,11 +40,7 @@ const Home = () => {
   };
 
   const handleRedditClick = () => {
-    window.open("https://www.reddit.com/", "_blank");
-  };
-
-  const handleDiscordClick = () => {
-    window.open("https://discord.com/", "_blank");
+    window.open("https://www.reddit.com/r/fictionaryio/", "_blank");
   };
 
   return (
@@ -164,7 +162,7 @@ const Home = () => {
       </Box>
       <Box
         sx={{
-          mb: 4,
+          mb: 3,
           backgroundColor: theme.palette.yellow.darker,
           borderRadius: 5,
           display: "flex",
@@ -173,7 +171,7 @@ const Home = () => {
           alignItems: "center",
         }}
       >
-        <Typography mt={1} variant="subtitle2">
+        <Typography mt={1} variant="subtitle1">
           Supported dictionary languages:
         </Typography>
         <Typography mb={1}>
@@ -181,6 +179,52 @@ const Home = () => {
         </Typography>
       </Box>
       <HowToPlay />
+      <Box
+        onClick={handleRedditClick}
+        sx={{
+          mt: 3,
+          position: "relative",
+          width: "100%",
+          height: "auto",
+          backgroundImage: `url(${redditBanner})`,
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          borderRadius: 5,
+        }}
+      >
+        <Box display={"flex"} flexDirection={"column"} margin={1.5}>
+          <Typography
+            sx={{
+              color: "white",
+              fontSize: 15,
+              borderColor: "black",
+              borderWidth: 3,
+              mb: 1,
+            }}
+            variant="h6"
+          >
+            Suggest new words, <br />
+            Get your language added, <br />
+            and more ...
+          </Typography>
+          <Box>
+            <Button
+              variant="contained"
+              startIcon={<RedditIcon />}
+              sx={{
+                backgroundColor: "secondary.main",
+                color: "white",
+                ":hover": {
+                  backgroundColor: "secondary.light",
+                },
+              }}
+            >
+              <Typography variant="subtitle1">Join the community</Typography>
+            </Button>
+          </Box>
+        </Box>
+      </Box>
       <Grid
         container
         direction="row"
